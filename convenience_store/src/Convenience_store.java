@@ -8,13 +8,13 @@
  *
  * @author Hieu PC
  */
+import gui.gui_main;
 public class Convenience_store {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
+
     }
-    
 }
