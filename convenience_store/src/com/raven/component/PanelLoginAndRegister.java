@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
@@ -37,14 +38,14 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         userPanel.setPreferredSize(new Dimension(500, 40)); // Đặt kích thước ưa thích
         userPanel.setBackground(new Color(255,255,255));
         MyTextField txtUser = new MyTextField();
-        txtUser.setPrefixIcon(new ImageIcon(getClass().getResource("/com/raven/icon/user.png")));
+        txtUser.setPrefixIcon(resizeIcon(new ImageIcon(getClass().getResource("/com/raven/icon/user.png")), 20, 20));
         txtUser.setHint("Username");
         txtUser.setBounds(55, 0, 336, 35); // Xác định vị trí và kích thước cho txtPass
         userPanel.add(txtUser, "w 100%");
         JButton btnSearchEmail = new JButton();
         btnSearchEmail.setBackground(new Color(0.0f,0.0f,0.0f,0.0f));
         btnSearchEmail.setForeground(new java.awt.Color(255, 255, 255));
-        btnSearchEmail.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/raven/icon/mail.png"))); // NOI18N
+        btnSearchEmail.setIcon(resizeIcon(new ImageIcon(getClass().getResource("/com/raven/icon/find.png")), 20, 20));
         btnSearchEmail.setToolTipText("Check&Find Email");
         btnSearchEmail.setBorder(null);
         btnSearchEmail.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -61,14 +62,14 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
             }
         });
         MyTextField txtEmail = new MyTextField();
-        txtEmail.setPrefixIcon(new ImageIcon(getClass().getResource("/com/raven/icon/mail.png")));
+        txtEmail.setPrefixIcon(resizeIcon(new ImageIcon(getClass().getResource("/com/raven/icon/mail.png")), 20, 20));
         txtEmail.setHint("Email");
         txtEmail.setEditable(false);
         txtEmail.setFocusable(false);
         fgpwd.add(txtEmail, "w 60%");
         MyPasswordField txtCode = new MyPasswordField();
         txtCode.setEchoChar('●');
-        txtCode.setPrefixIcon(new ImageIcon(getClass().getResource("/com/raven/icon/pass.png")));
+        txtCode.setPrefixIcon(resizeIcon(new ImageIcon(getClass().getResource("/com/raven/icon/verify.png")), 20, 20));
         txtCode.setHint("Verify Code");
         fgpwd.add(txtCode, "w 60%");
         Button sendCode = new Button();
@@ -91,14 +92,14 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         login.add(label);
 
         MyTextField txtUsername = new MyTextField();
-        txtUsername.setPrefixIcon(new ImageIcon(getClass().getResource("/com/raven/icon/user.png")));
+        txtUsername.setPrefixIcon(resizeIcon(new ImageIcon(getClass().getResource("/com/raven/icon/user.png")), 20, 20));
         txtUsername.setHint("Username");
         login.add(txtUsername, "w 60%");
         JPanel passwordPanel = new JPanel();
         passwordPanel.setLayout(null); // Thiết lập layout tuyệt đối
         passwordPanel.setPreferredSize(new Dimension(500, 40)); // Đặt kích thước ưa thích
         MyPasswordField txtPass = new MyPasswordField();
-        txtPass.setPrefixIcon(new ImageIcon(getClass().getResource("/com/raven/icon/pass.png")));
+        txtPass.setPrefixIcon(resizeIcon(new ImageIcon(getClass().getResource("/com/raven/icon/pass.png")), 20, 20));
         txtPass.setHint("Password");
         txtPass.setEchoChar('●');
         txtPass.setBounds(55, 0, 336, 35); // Xác định vị trí và kích thước cho txtPass
@@ -107,7 +108,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         // Thêm nút Show Password
         JButton btnShow = new JButton();
         btnShow.setForeground(new Color(100, 100, 100));
-        btnShow.setIcon(new ImageIcon((getClass().getResource("/com/raven/icon/pass.png"))));
+        btnShow.setIcon(resizeIcon(new ImageIcon(getClass().getResource("/com/raven/icon/eye.png")), 20, 20));
         btnShow.setFont(new Font("sansserif", 1, 12));
         btnShow.setContentAreaFilled(false);
         btnShow.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -124,8 +125,10 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         public void actionPerformed(ActionEvent e) {
             if (isPasswordVisible) {
                 txtPass.setEchoChar('●'); // Đặt lại ký tự dấu chấm
+                btnShow.setIcon(resizeIcon(new ImageIcon(getClass().getResource("/com/raven/icon/hidden.png")), 20, 20));
             } else {
                 txtPass.setEchoChar((char) 0); // Hiện mật khẩu
+                btnShow.setIcon(resizeIcon(new ImageIcon(getClass().getResource("/com/raven/icon/eye.png")), 20, 20));
 
             }
             isPasswordVisible = !isPasswordVisible;
@@ -141,6 +144,11 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         cmd.setText("SIGN IN");
         login.add(cmd, "w 40%, h 40");
     }
+    private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
+    Image img = icon.getImage();
+    Image newImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    return new ImageIcon(newImg);
+}
 
     public void showRegister(boolean show) {
         if (show) {
