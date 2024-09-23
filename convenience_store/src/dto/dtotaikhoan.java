@@ -17,8 +17,7 @@ public class dtotaikhoan {
     private int isblock;
     private int maNhanVien;
 
-    public dtotaikhoan(){
-    }
+    public dtotaikhoan(){}
 
     public dtotaikhoan(String tenDangNhap, String matKhau, Date ngayTao, int isblock, int isdelete, int maNhanVien) {
         this.tenDangNhap = tenDangNhap;

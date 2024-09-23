@@ -1,4 +1,4 @@
-package gui.swing;
+package gui.swing.dashboard;
 
 import gui.event.EventMenuSelected;
 import java.awt.Color;
@@ -77,7 +77,7 @@ public class PopupMenu extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panel = new gui.swing.PanelPopup();
+        panel = new gui.swing.dashboard.PanelPopup();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -119,6 +119,6 @@ public class PopupMenu extends javax.swing.JDialog {
     }//GEN-LAST:event_formWindowLostFocus
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private gui.swing.PanelPopup panel;
+    private gui.swing.dashboard.PanelPopup panel;
     // End of variables declaration//GEN-END:variables
 }

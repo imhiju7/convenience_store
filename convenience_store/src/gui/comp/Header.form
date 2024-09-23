@@ -63,14 +63,14 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="gui.swing.Button" name="cmdMenu">
+    <Component class="gui.swing.dashboard.Button" name="cmdMenu">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/source/image/icon/menu.png"/>
         </Property>
       </Properties>
     </Component>
-    <Container class="gui.swing.ImageAvatar" name="pic">
+    <Container class="gui.swing.dashboard.ImageAvatar" name="pic">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/source/image/icon/profile.jpg"/>
@@ -105,7 +105,7 @@
         <Property name="orientation" type="int" value="1"/>
       </Properties>
     </Component>
-    <Component class="gui.swing.ButtonBadges" name="buttonBadges1">
+    <Component class="gui.swing.dashboard.ButtonBadges" name="buttonBadges1">
       <Properties>
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="31" green="31" red="fa" type="rgb"/>
@@ -116,7 +116,7 @@
         <Property name="badges" type="int" value="12"/>
       </Properties>
     </Component>
-    <Component class="gui.swing.ButtonBadges" name="buttonBadges2">
+    <Component class="gui.swing.dashboard.ButtonBadges" name="buttonBadges2">
       <Properties>
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="e8" green="b2" red="3f" type="rgb"/>

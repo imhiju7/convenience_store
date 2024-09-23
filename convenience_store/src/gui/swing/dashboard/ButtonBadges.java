@@ -1,14 +1,16 @@
-package com.raven.swing;
+package gui.swing.dashboard;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
@@ -16,7 +18,15 @@ import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
-public class Button extends JButton {
+public class ButtonBadges extends JButton {
+
+    public int getBadges() {
+        return badges;
+    }
+
+    public void setBadges(int badges) {
+        this.badges = badges;
+    }
 
     public Color getEffectColor() {
         return effectColor;
@@ -31,11 +41,12 @@ public class Button extends JButton {
     private float animatSize;
     private Point pressedPoint;
     private float alpha;
-    private Color effectColor = new Color(255, 255, 255);
+    private Color effectColor = new Color(173, 173, 173);
+    private int badges;
 
-    public Button() {
+    public ButtonBadges() {
         setContentAreaFilled(false);
-        setBorder(new EmptyBorder(5, 0, 5, 0));
+        setBorder(new EmptyBorder(5, 5, 5, 5));
         setBackground(Color.WHITE);
         setCursor(new Cursor(Cursor.HAND_CURSOR));
         addMouseListener(new MouseAdapter() {
@@ -61,9 +72,7 @@ public class Button extends JButton {
                 repaint();
             }
         };
-        animator = new Animator(700, target);
-        animator.setAcceleration(0.5f);
-        animator.setDeceleration(0.5f);
+        animator = new Animator(400, target);
         animator.setResolution(0);
     }
 
@@ -84,5 +93,29 @@ public class Button extends JButton {
         g2.dispose();
         grphcs.drawImage(img, 0, 0, null);
         super.paintComponent(grphcs);
+    }
+
+    @Override
+    public void paint(Graphics grphcs) {
+        super.paint(grphcs);
+        if (badges > 0) {
+            String value = badges > 9 ? "+9" : badges + "";
+            int width = getWidth();
+            Graphics2D g2 = (Graphics2D) grphcs;
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            FontMetrics ft = g2.getFontMetrics();
+            Rectangle2D r2 = ft.getStringBounds(value, g2);
+            int fw = (int) r2.getWidth();
+            int fh = (int) r2.getHeight();
+            g2.setColor(getForeground());
+            int size = Math.max(fw, fh) + 4;
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.8f));
+            g2.fillOval(width - size, 0, size, size);
+            int x = (size - fw) / 2;
+            g2.setColor(Color.WHITE);
+            g2.setComposite(AlphaComposite.SrcOver);
+            g2.drawString(value, width - size + x, ft.getAscent() + 1);
+            g2.dispose();
+        }
     }
 }

@@ -1,4 +1,4 @@
-package gui.swing;
+package gui.swing.dashboard;
 
 import gui.event.EventMenu;
 import gui.event.EventMenuSelected;

@@ -99,7 +99,7 @@
             <Property name="text" type="java.lang.String" value="Message"/>
           </Properties>
         </Component>
-        <Component class="gui.swing.Button" name="button2">
+        <Component class="gui.swing.dashboard.Button" name="button2">
           <Properties>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="42" green="42" red="42" type="rgb"/>
@@ -110,7 +110,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button2ActionPerformed"/>
           </Events>
         </Component>
-        <Component class="gui.swing.Button" name="button1">
+        <Component class="gui.swing.dashboard.Button" name="button1">
           <Properties>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="42" green="42" red="42" type="rgb"/>

@@ -1,9 +1,9 @@
-package com.raven.component;
+package gui.comp;
 
 import bus.bustaikhoan;
-import com.raven.swing.Button;
-import com.raven.swing.MyPasswordField;
-import com.raven.swing.MyTextField;
+import gui.swing.login.Button;
+import gui.swing.login.MyPasswordField;
+import gui.swing.login.MyTextField;
 import dto.dtotaikhoan;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -45,7 +45,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         userPanel.setBackground(new Color(255,255,255));
         MyTextField txtUser = new MyTextField();
         //txtUser.setPrefixIcon(new ImageIcon(getClass().getResource("/com/raven/icon/user.png")));
-        txtUser.setPrefixIcon(new ImageIcon(System.getProperty("user.dir")+"/src/com/raven/icon/user.png"));
+        txtUser.setPrefixIcon(new ImageIcon(System.getProperty("user.dir")+"/src/source/image/icon/user.png"));
         txtUser.setHint("Username");
         txtUser.setBounds(55, 0, 336, 35); // Xác định vị trí và kích thước cho txtPass
         userPanel.add(txtUser, "w 100%");
@@ -53,7 +53,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         btnSearchEmail.setBackground(new Color(0.0f,0.0f,0.0f,0.0f));
         btnSearchEmail.setForeground(new java.awt.Color(255, 255, 255));
         //btnSearchEmail.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/raven/icon/mail.png")));
-        btnSearchEmail.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+"/src/com/raven/icon/mail.png")); // NOI18N
+        btnSearchEmail.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+"/src/source/image/icon/mail.png")); // NOI18N
         btnSearchEmail.setToolTipText("Check&Find Email");
         btnSearchEmail.setBorder(null);
         btnSearchEmail.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -101,7 +101,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
 
         txtUsername = new MyTextField();
         //txtUsername.setPrefixIcon(new ImageIcon(getClass().getResource("/com/raven/icon/user.png")));
-        txtUsername.setPrefixIcon(new ImageIcon(System.getProperty("user.dir")+"/src/com/raven/icon/user.png"));
+        txtUsername.setPrefixIcon(new ImageIcon(System.getProperty("user.dir")+"/src/source/image/icon/user.png"));
         txtUsername.setHint("Username");
         login.add(txtUsername, "w 60%");
         JPanel passwordPanel = new JPanel();
@@ -109,7 +109,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         passwordPanel.setPreferredSize(new Dimension(500, 40)); // Đặt kích thước ưa thích
         txtPass = new MyPasswordField();
         //txtPass.setPrefixIcon(new ImageIcon(getClass().getResource("/com/raven/icon/pass.png")));
-        txtPass.setPrefixIcon(new ImageIcon(System.getProperty("user.dir")+"/src/com/raven/icon/pass.png"));
+        txtPass.setPrefixIcon(new ImageIcon(System.getProperty("user.dir")+"/src/source/image/icon/pass.png"));
         txtPass.setHint("Password");
         txtPass.setEchoChar('●');
         txtPass.setBounds(55, 0, 336, 35); // Xác định vị trí và kích thước cho txtPass
@@ -119,7 +119,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         JButton btnShow = new JButton();
         btnShow.setForeground(new Color(100, 100, 100));
         //btnShow.setIcon(new ImageIcon((getClass().getResource("/com/raven/icon/pass.png"))));
-        btnShow.setIcon(new ImageIcon(System.getProperty("user.dir")+"/src/com/raven/icon/pass.png"));
+        btnShow.setIcon(new ImageIcon(System.getProperty("user.dir")+"/src/source/image/pass.png"));
         btnShow.setFont(new Font("sansserif", 1, 12));
         btnShow.setContentAreaFilled(false);
         btnShow.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -136,10 +136,10 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         public void actionPerformed(ActionEvent e) {
             if (isPasswordVisible) {
                 txtPass.setEchoChar('●'); // Đặt lại ký tự dấu chấm
-                btnShow.setIcon(resizeIcon(new ImageIcon(getClass().getResource("/com/raven/icon/hidden.png")), 20, 20));
+                btnShow.setIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/hidden.png")), 20, 20));
             } else {
                 txtPass.setEchoChar((char) 0); // Hiện mật khẩu
-                btnShow.setIcon(resizeIcon(new ImageIcon(getClass().getResource("/com/raven/icon/eye.png")), 20, 20));
+                btnShow.setIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/eye.png")), 20, 20));
 
             }
             isPasswordVisible = !isPasswordVisible;

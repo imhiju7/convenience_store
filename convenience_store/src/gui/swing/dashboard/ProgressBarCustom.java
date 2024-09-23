@@ -1,4 +1,4 @@
-package gui.swing;
+package gui.swing.dashboard;
 
 import java.awt.Color;
 import java.awt.Dimension;
