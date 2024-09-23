@@ -16,13 +16,13 @@ public class Header extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        cmdMenu = new gui.swing.Button();
-        pic = new gui.swing.ImageAvatar();
+        cmdMenu = new gui.swing.dashboard.Button();
+        pic = new gui.swing.dashboard.ImageAvatar();
         lbUserName = new javax.swing.JLabel();
         lbRole = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        buttonBadges1 = new gui.swing.ButtonBadges();
-        buttonBadges2 = new gui.swing.ButtonBadges();
+        buttonBadges1 = new gui.swing.dashboard.ButtonBadges();
+        buttonBadges2 = new gui.swing.dashboard.ButtonBadges();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -87,12 +87,12 @@ public class Header extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private gui.swing.ButtonBadges buttonBadges1;
-    private gui.swing.ButtonBadges buttonBadges2;
-    private gui.swing.Button cmdMenu;
+    private gui.swing.dashboard.ButtonBadges buttonBadges1;
+    private gui.swing.dashboard.ButtonBadges buttonBadges2;
+    private gui.swing.dashboard.Button cmdMenu;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lbRole;
     private javax.swing.JLabel lbUserName;
-    private gui.swing.ImageAvatar pic;
+    private gui.swing.dashboard.ImageAvatar pic;
     // End of variables declaration//GEN-END:variables
 }

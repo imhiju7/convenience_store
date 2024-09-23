@@ -8,13 +8,13 @@
  *
  * @author Hieu PC
  */
-import gui.gui_main;
+import gui.form.*;
 public class Convenience_store {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
+        new frmlogin().setVisible(true);
     }
 }

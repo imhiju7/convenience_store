@@ -37,7 +37,7 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="gui.swing.PanelPopup" name="panel">
+    <Container class="gui.swing.dashboard.PanelPopup" name="panel">
 
       <Layout>
         <DimensionLayout dim="0">
