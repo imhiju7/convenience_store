@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
@@ -135,8 +136,10 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         public void actionPerformed(ActionEvent e) {
             if (isPasswordVisible) {
                 txtPass.setEchoChar('●'); // Đặt lại ký tự dấu chấm
+                btnShow.setIcon(resizeIcon(new ImageIcon(getClass().getResource("/com/raven/icon/hidden.png")), 20, 20));
             } else {
                 txtPass.setEchoChar((char) 0); // Hiện mật khẩu
+                btnShow.setIcon(resizeIcon(new ImageIcon(getClass().getResource("/com/raven/icon/eye.png")), 20, 20));
 
             }
             isPasswordVisible = !isPasswordVisible;
@@ -158,6 +161,11 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
             }
         });
     }
+    private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
+    Image img = icon.getImage();
+    Image newImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    return new ImageIcon(newImg);
+}
 
     public void showRegister(boolean show) {
         if (show) {
