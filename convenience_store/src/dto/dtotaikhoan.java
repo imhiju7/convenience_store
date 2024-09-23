@@ -74,4 +74,14 @@ public class dtotaikhoan {
     public void setMaNhanVien(int maNhanVien) {
         this.maNhanVien = maNhanVien;
     }
+    @Override
+    public String toString() {
+        return "dtotaikhoan{" +
+                "tenDangNhap='" + tenDangNhap + '\'' +
+                ", matKhau='" + matKhau + '\'' +
+                ", ngayTao=" + ngayTao +
+                ", isblock=" + isblock +
+                ", maNhanVien=" + maNhanVien +
+                '}';
+    }
 }

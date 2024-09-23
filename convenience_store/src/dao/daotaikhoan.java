@@ -10,6 +10,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import dao.connect;
 import java.sql.Connection;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  *
@@ -18,6 +22,34 @@ import java.sql.Connection;
 public class daotaikhoan {
    
     public connect connect = new connect();
+    
+    public ArrayList<dtotaikhoan> getList() throws SQLException, ParseException {
+        Connection con = connect.connection();
+        String sql = "SELECT * FROM taikhoan";
+        ArrayList<dtotaikhoan> dstk = new ArrayList<>();
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                dtotaikhoan tk = new dtotaikhoan();
+                tk.setTenDangNhap(rs.getString("tenDangNhap"));
+                tk.setMatKhau(rs.getString("matKhau"));
+                tk.setNgayTao(rs.getTimestamp("ngayTao"));
+                tk.setIsblock(rs.getInt("isBlock"));
+                tk.setMaNhanVien(rs.getInt("maNhanVien"));
+                dstk.add(tk);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Collections.sort(dstk, new Comparator<dtotaikhoan>() {
+            @Override
+            public int compare(dtotaikhoan person1, dtotaikhoan person2) {
+                return person2.getNgayTao().compareTo(person1.getNgayTao());
+            }
+        });
+        return dstk;
+    }
     
     public dtotaikhoan kiemTraTaiKhoan(String tenDangNhap, String matKhau) {
         Connection con = connect.connection();
@@ -122,6 +154,6 @@ public class daotaikhoan {
     
     public static void main(String[] args) {
         daotaikhoan tk = new daotaikhoan();
-        tk.checkTenDangNhap("Fdfdfd");
+        System.out.print(tk.checkMatKhau("admin", "admin"));
     }
 }
