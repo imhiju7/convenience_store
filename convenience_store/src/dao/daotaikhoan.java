@@ -5,15 +5,18 @@
 package dao;
 
 import dto.dtotaikhoan;
+import dao.connect;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import dao.connect;
 import java.sql.Connection;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,10 +24,10 @@ import java.util.Comparator;
  */
 public class daotaikhoan {
    
-    public connect connect = new connect();
+    private connect conn = new connect();
     
-    public ArrayList<dtotaikhoan> getList() throws SQLException, ParseException {
-        Connection con = connect.connection();
+    public ArrayList<dtotaikhoan> getdstk() {
+        Connection con = conn.connection();
         String sql = "SELECT * FROM taikhoan";
         ArrayList<dtotaikhoan> dstk = new ArrayList<>();
         try {
@@ -32,11 +35,11 @@ public class daotaikhoan {
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
                 dtotaikhoan tk = new dtotaikhoan();
-                tk.setTenDangNhap(rs.getString("tenDangNhap"));
-                tk.setMatKhau(rs.getString("matKhau"));
-                tk.setNgayTao(rs.getTimestamp("ngayTao"));
+                tk.setTendangnhap(rs.getString("tenDangNhap"));
+                tk.setMatkhau(rs.getString("matKhau"));
+                tk.setNgaytao(rs.getTimestamp("ngayTao"));
                 tk.setIsblock(rs.getInt("isBlock"));
-                tk.setMaNhanVien(rs.getInt("maNhanVien"));
+                tk.setManhanvien(rs.getInt("maNhanVien"));
                 dstk.add(tk);
             }
         } catch (SQLException e) {
@@ -45,115 +48,128 @@ public class daotaikhoan {
         Collections.sort(dstk, new Comparator<dtotaikhoan>() {
             @Override
             public int compare(dtotaikhoan person1, dtotaikhoan person2) {
-                return person2.getNgayTao().compareTo(person1.getNgayTao());
+                return person2.getNgaytao().compareTo(person1.getNgaytao());
             }
         });
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return dstk;
     }
     
-    public dtotaikhoan kiemTraTaiKhoan(String tenDangNhap, String matKhau) {
-        Connection con = connect.connection();
+    public dtotaikhoan checktaikhoan(String tendangnhap, String matkhau) {
+        Connection con = conn.connection();
         String sql = "select * from taikhoan where tenDangNhap = ? and matKhau = ? and isBlock = 0 ";
         dtotaikhoan tk = new dtotaikhoan();
         try {
             PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, tenDangNhap);
-            pst.setString(2, matKhau);
+            pst.setString(1, tendangnhap);
+            pst.setString(2, matkhau);
 
             try (ResultSet rs = pst.executeQuery()) {
                 while (rs.next()) {
-                    tk.setTenDangNhap(rs.getString("tenDangNhap"));
-                    tk.setMatKhau(rs.getString("matKhau"));
-                    tk.setNgayTao(rs.getTimestamp("ngayTao"));
+                    tk.setTendangnhap(rs.getString("tenDangNhap"));
+                    tk.setMatkhau(rs.getString("matKhau"));
+                    tk.setNgaytao(rs.getTimestamp("ngayTao"));
                     tk.setIsblock(rs.getInt("isBlock"));
-                    tk.setMaNhanVien(rs.getInt("maNhanVien"));
+                    tk.setManhanvien(rs.getInt("maNhanVien"));
                 }
             }
         } catch (SQLException e) {
             return null;
         }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return tk;
     }
     
-    
-    public boolean checkTenDangNhap(String tenDangNhap) {
-        Connection con = connect.connection();
+    public boolean checktendangnhap(String tendangnhap) {
+        Connection con = conn.connection();
         String sql = "select * from taikhoan where tenDangNhap = ? ";
         try {
             PreparedStatement pst = con.prepareStatement(sql);
 
-            pst.setString(1, tenDangNhap);
+            pst.setString(1, tendangnhap);
             ResultSet rs = pst.executeQuery();
             return rs.next();
 
         } catch (SQLException e) {
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }
 
     //Kiểm tra mật khẩu
-    public boolean checkMatKhau(String tenDangNhap, String matKhau) {
-        Connection con = connect.connection();
+    public boolean checkmatkhau(String tendangnhap, String matkhau) {
+        Connection con = conn.connection();
         String sql = "select * from taikhoan where tenDangNhap = ? and matKhau = ? ";
         try {
             PreparedStatement pst = con.prepareStatement(sql);
 
-            pst.setString(1, tenDangNhap);
-            pst.setString(2, matKhau);
+            pst.setString(1, tendangnhap);
+            pst.setString(2, matkhau);
             ResultSet rs = pst.executeQuery();
             return rs.next();
 
         } catch (SQLException e) {
         }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return false;
     }
 
 
-    public boolean checkKhoaTaiKhoan(String tenDangNhap) {
-        Connection con = connect.connection();
+    public boolean checktaikhoanbikhoa(String tendangnhap) {
+        Connection con = conn.connection();
         String sql = "select * from taikhoan where tenDangNhap = ? and isBlock = 1 ";
         try {
             PreparedStatement pst = con.prepareStatement(sql);
 
-            pst.setString(1, tenDangNhap);
+            pst.setString(1, tendangnhap);
             ResultSet rs = pst.executeQuery();
             return rs.next();
 
         } catch (SQLException e) {
         }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return false;
     }
-    
-    public String getEmail(String tendn){
-        String email="";
-        String manv = "";
-        Connection con = connect.connection();
-        String sql1 = "select maNhanVien from taikhoan where maNhanVien = ? and isBlock = 1 ";
+    // get
+    public int getmanhanvien(String tendangnhap){
+        Connection con = conn.connection();
+        String sql = "select * from taikhoan where tenDangNhap = ? and isBlock = 0";
+        int manv = 0;
         try {
-            PreparedStatement pst1 = con.prepareStatement(sql1);
-            pst1.setString(1, tendn); 
-            ResultSet rs = pst1.executeQuery();
-            if (rs.next()) {
-                manv = rs.getString("maNhanVien"); 
-        }
-        } catch (SQLException e) {
-        }
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, tendangnhap);
         
-        String sql2 = "select email from nhanvien where maNhanVien = ? ";
-        try {
-            PreparedStatement pst = con.prepareStatement(sql2);
-            pst.setString(1, sql2);
             ResultSet rs = pst.executeQuery();
-            if(rs.next()){
-                email = rs.getString("email");
+            while(rs.next()){
+                manv = rs.getInt("maNhanVien");
             }
         } catch (SQLException e) {
         }
-        return email;
-    }
-    
-    public static void main(String[] args) {
-        daotaikhoan tk = new daotaikhoan();
-        System.out.print(tk.checkMatKhau("admin", "admin"));
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daonhanvien.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return manv;
     }
 }

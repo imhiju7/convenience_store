@@ -12,104 +12,106 @@ import java.util.Date;
  * @author Hieu PC
  */
 public class dtonhanvien {
-    private int maNhanVien;
-    private String tenNhanVien;
-    private int maChucVu;
-    private int gioiTinh;
-    private Date ngaySinh;
-    private String diaChi;
-    private String Email;
-    private String SDT;
+
+    private int manhanvien;
+    private String tennhanvien;
+    private int machucvu;
+    private int gioitinh;
+    private Date ngaysinh;
+    private String diachi;
+    private String email;
+    private String sdt;
     private int isdelete;
-    private Date ngayTao;
+    private Date ngaytao;
     private String img;
-    private int maHopDong;
-    private float luongCoBan;
-    private Date ngayLamViec;
-    private Date ngayKetThuc;
+    private int mahopdong;
+    private float luongcoban;
+    private Date ngaylamviec;
+    private Date ngayketthuc;
     
-    public dtonhanvien() {}
-    
-    public dtonhanvien(int maNhanVien, String tenNhanVien, int maChucVu, int gioiTinh, Date ngaySinh, String diaChi, String Email, String SDT, int isdelete, Date ngayTao, String img, int maHopDong, float luongCoBan, Date ngayLamViec, Date ngayKetThuc) {
-        this.maNhanVien = maNhanVien;
-        this.tenNhanVien = tenNhanVien;
-        this.maChucVu = maChucVu;
-        this.gioiTinh = gioiTinh;
-        this.ngaySinh = ngaySinh;
-        this.diaChi = diaChi;
-        this.Email = Email;
-        this.SDT = SDT;
+    public dtonhanvien() {
+    }
+
+    public dtonhanvien(int manhanvien, String tennhanvien, int machucvu, int gioitinh, Date ngaysinh, String diachi, String email, String sdt, int isdelete, Date ngaytao, String img, int mahopdong, float luongcoban, Date ngaylamviec, Date ngayketthuc) {
+        this.manhanvien = manhanvien;
+        this.tennhanvien = tennhanvien;
+        this.machucvu = machucvu;
+        this.gioitinh = gioitinh;
+        this.ngaysinh = ngaysinh;
+        this.diachi = diachi;
+        this.email = email;
+        this.sdt = sdt;
         this.isdelete = isdelete;
-        this.ngayTao = ngayTao;
+        this.ngaytao = ngaytao;
         this.img = img;
-        this.maHopDong = maHopDong;
-        this.luongCoBan = luongCoBan;
-        this.ngayLamViec = ngayLamViec;
-        this.ngayKetThuc = ngayKetThuc;
+        this.mahopdong = mahopdong;
+        this.luongcoban = luongcoban;
+        this.ngaylamviec = ngaylamviec;
+        this.ngayketthuc = ngayketthuc;
     }
 
-    public int getMaNhanVien() {
-        return maNhanVien;
+    public int getManhanvien() {
+        return manhanvien;
     }
 
-    public void setMaNhanVien(int maNhanVien) {
-        this.maNhanVien = maNhanVien;
+    public void setManhanvien(int manhanvien) {
+        this.manhanvien = manhanvien;
     }
 
-    public String getTenNhanVien() {
-        return tenNhanVien;
+    public String getTennhanvien() {
+        return tennhanvien;
     }
 
-    public void setTenNhanVien(String tenNhanVien) {
-        this.tenNhanVien = tenNhanVien;
+    public void setTennhanvien(String tennhanvien) {
+        this.tennhanvien = tennhanvien;
     }
 
-    public int getMaChucVu() {
-        return maChucVu;
+    public int getMachucvu() {
+        return machucvu;
     }
 
-    public void setMaChucVu(int maChucVu) {
-        this.maChucVu = maChucVu;
+    public void setMachucvu(int machucvu) {
+        this.machucvu = machucvu;
     }
 
-    public int getGioiTinh() {
-        return gioiTinh;
+    public int getGioitinh() {
+        return gioitinh;
     }
 
-    public void setGioiTinh(int gioiTinh) {
-        this.gioiTinh = gioiTinh;
+    public void setGioitinh(int gioitinh) {
+        this.gioitinh = gioitinh;
     }
 
-    public Date getNgaySinh() {
-        return ngaySinh;
+    public Date getNgaysinh() {
+        return ngaysinh;
     }
 
-    public void setNgaySinh(Date ngaySinh) {
-        this.ngaySinh = ngaySinh;
+    public void setNgaysinh(Date ngaysinh) {
+        this.ngaysinh = ngaysinh;
     }
 
-    public String getDiaChi() {
-        return diaChi;
+    public String getDiachi() {
+        return diachi;
     }
 
-    public void setDiaChi(String diaChi) {
-        this.diaChi = diaChi;
+    public void setDiachi(String diachi) {
+        this.diachi = diachi;
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
-    public void setEmail(String Email) {
-        this.Email = Email;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getSDT() {
-        return SDT;
+    public String getSdt() {
+        return sdt;
     }
 
-    public void setSDT(String SDT) {
-        this.SDT = SDT;
+    public void setSdt(String sdt) {
+        this.sdt = sdt;
     }
 
     public int getIsdelete() {
@@ -120,12 +122,12 @@ public class dtonhanvien {
         this.isdelete = isdelete;
     }
 
-    public Date getNgayTao() {
-        return ngayTao;
+    public Date getNgaytao() {
+        return ngaytao;
     }
 
-    public void setNgayTao(Date ngayTao) {
-        this.ngayTao = ngayTao;
+    public void setNgaytao(Date ngaytao) {
+        this.ngaytao = ngaytao;
     }
 
     public String getImg() {
@@ -136,39 +138,40 @@ public class dtonhanvien {
         this.img = img;
     }
 
-    public int getMaHopDong() {
-        return maHopDong;
+    public int getMahopdong() {
+        return mahopdong;
     }
 
-    public void setMaHopDong(int maHopDong) {
-        this.maHopDong = maHopDong;
+    public void setMahopdong(int mahopdong) {
+        this.mahopdong = mahopdong;
     }
 
-    public float getLuongCoBan() {
-        return luongCoBan;
+    public float getLuongcoban() {
+        return luongcoban;
     }
 
-    public void setLuongCoBan(float luongCoBan) {
-        this.luongCoBan = luongCoBan;
+    public void setLuongcoban(float luongcoban) {
+        this.luongcoban = luongcoban;
     }
 
-    public Date getNgayLamViec() {
-        return ngayLamViec;
+    public Date getNgaylamviec() {
+        return ngaylamviec;
     }
 
-    public void setNgayLamViec(Date ngayLamViec) {
-        this.ngayLamViec = ngayLamViec;
+    public void setNgaylamviec(Date ngaylamviec) {
+        this.ngaylamviec = ngaylamviec;
     }
 
-    public Date getNgayKetThuc() {
-        return ngayKetThuc;
+    public Date getNgayketthuc() {
+        return ngayketthuc;
     }
 
-    public void setNgayKetThuc(Date ngayKetThuc) {
-        this.ngayKetThuc = ngayKetThuc;
+    public void setNgayketthuc(Date ngayketthuc) {
+        this.ngayketthuc = ngayketthuc;
     }
+
     @Override
     public String toString() {
-        return "dtonhanvien{" + "maNhanVien=" + maNhanVien + ", tenNhanVien=" + tenNhanVien + ", maChucVu=" + maChucVu + ", gioiTinh=" + gioiTinh + ", ngaySinh=" + ngaySinh + ", diaChi=" + diaChi + ", Email=" + Email + ", SDT=" + SDT + ", isdelete=" + isdelete + ", ngayTao=" + ngayTao + ", img=" + img + ", maHopDong=" + maHopDong + ", luongCoBan=" + luongCoBan + ", ngayLamViec=" + ngayLamViec + ", ngayKetThuc=" + ngayKetThuc + '}';
+        return "dtonhanvien{" + "manhanvien=" + manhanvien + ", tennhanvien=" + tennhanvien + ", machucvu=" + machucvu + ", gioitinh=" + gioitinh + ", ngaysinh=" + ngaysinh + ", diachi=" + diachi + ", email=" + email + ", sdt=" + sdt + ", isdelete=" + isdelete + ", ngaytao=" + ngaytao + ", img=" + img + ", mahopdong=" + mahopdong + ", luongcoban=" + luongcoban + ", ngaylamviec=" + ngaylamviec + ", ngayketthuc=" + ngayketthuc + '}';
     }
 }

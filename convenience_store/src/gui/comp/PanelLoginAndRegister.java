@@ -179,35 +179,13 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
     
     public void dangNhap() {
         bustk = new bustaikhoan();
-        String tenDangNhap = txtUsername.getText();
-        String matKhau = String.valueOf(txtPass.getPassword());
-        if (tenDangNhap.equals("") || matKhau.equals("")) {
+        String tendangnhap = txtUsername.getText();
+        String matkhau = String.valueOf(txtPass.getPassword());
+        if (tendangnhap.equals("") || matkhau.equals("")) {
             JOptionPane.showMessageDialog(null, "Tên đăng hoặc mật khẩu không được để trống!");
             return;
         }
-        dtotaikhoan DTOtk = bustk.kiemTraTaiKhoan(tenDangNhap, matKhau);
-        if (DTOtk != null) {
-            // Kiểm tra xem tên đăng nhập có tồn tại không
-            if (!bustk.checkTenDangNhap(tenDangNhap)) {
-                JOptionPane.showMessageDialog(null, "Tên đăng nhập không tồn tại!");
-            } else {
-                // Kiểm tra xem mật khẩu có đúng không
-                if (!bustk.checkMatKhau(tenDangNhap, matKhau)) {
-                    JOptionPane.showMessageDialog(null, "Sai mật khẩu. Xin hãy thử lại!");
-                } else {
-                    // Kiểm tra xem tài khoản có bị khóa không
-                    if (bustk.checkKhoaTaiKhoan(tenDangNhap)) {
-                        JOptionPane.showMessageDialog(null, "Tài khoản của bạn đã bị khóa!");
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Đăng nhập thành công");
-                        //this.dispose();
-                        //new Main(maNhanVien).setVisible(true);
-                    }
-                }
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Đăng nhập thất bại");
-        }
+        
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
