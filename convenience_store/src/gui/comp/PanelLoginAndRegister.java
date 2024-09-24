@@ -1,10 +1,12 @@
 package gui.comp;
 
 import bus.bustaikhoan;
+import gui.form.frmresetpwd;
 import gui.swing.login.Button;
 import gui.swing.login.MyPasswordField;
 import gui.swing.login.MyTextField;
-
+import helper.SendEmailSMTP;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -12,19 +14,33 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import net.miginfocom.swing.MigLayout;
 
 public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
     private MyTextField txtUsername;
+    private MyTextField txtUser;
+    private MyTextField txtEmail;
     private MyPasswordField txtPass;
     private bustaikhoan bustk;
-
+    private MyPasswordField txtCode;
+    private String OTP;
+    private String tenNV;
+    private boolean isValidEmail(String email) {
+    String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    return email != null && email.matches(emailRegex); // Kiểm tra khớp với biểu thức chính quy
+}
     public PanelLoginAndRegister() {
         initComponents();
         initRegister();
@@ -43,10 +59,10 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         userPanel.setLayout(null);
         userPanel.setPreferredSize(new Dimension(500, 40)); // Đặt kích thước ưa thích
         userPanel.setBackground(new Color(255,255,255));
-        MyTextField txtUser = new MyTextField();
+        txtUser = new MyTextField();
         txtUser.setPrefixIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/user.png")), 20, 20));
         txtUser.setHint("Username");
-        txtUser.setBounds(55, 0, 336, 35); // Xác định vị trí và kích thước cho txtPass
+        txtUser.setBounds(55, 0, 336, 40); // Xác định vị trí và kích thước cho txtPass
         userPanel.add(txtUser, "w 100%");
         JButton btnSearchEmail = new JButton();
         btnSearchEmail.setBackground(new Color(255,255,255));
@@ -63,16 +79,24 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
             }
 
             private void btnSearchEmailActionPerformed(ActionEvent evt) {
-//                hàm search email
-            }
+          String user = txtUser.getText();
+          bustk = new bustaikhoan();
+          String email = bustk.getemail(user);
+                if (user.equals("")) {
+                      JOptionPane.showMessageDialog(null, "Hãy nhập tên đăng nhập để tìm email!");
+                }
+                else if(email.equals("")) {
+                    JOptionPane.showMessageDialog(null, "Không tìm thấy email!");
+               }
+                else txtEmail.setText(email);
+                      
+          }            
         });
-        MyTextField txtEmail = new MyTextField();
+        txtEmail = new MyTextField();
         txtEmail.setPrefixIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/mail.png")), 20, 20));
         txtEmail.setHint("Email");
-        txtEmail.setEditable(false);
-        txtEmail.setFocusable(false);
         fgpwd.add(txtEmail, "w 60%");
-        MyPasswordField txtCode = new MyPasswordField();
+        txtCode = new MyPasswordField();
         txtCode.setEchoChar('●');
         txtCode.setPrefixIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/verify.png")), 20, 20));
         txtCode.setHint("Verify Code");
@@ -87,6 +111,72 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         verify.setText("VERIFY CODE");
         fgpwd.add(sendCode, "w 30%, h 40,split 2");
         fgpwd.add(verify, "w 30%, h 40");
+        sendCode.addActionListener(new ActionListener() {
+        private Timer timer;
+        private int countdown;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            bustaikhoan bustk = new bustaikhoan();            
+            String email = txtEmail.getText();
+             tenNV = bustk.getTenNV(email);
+            if (email.equals("")) {
+                JOptionPane.showMessageDialog(null, "Hãy nhập email!");
+            }
+            else if(!isValidEmail(email)) {
+                JOptionPane.showMessageDialog(null, "Email không hợp lệ!");
+            }
+            else if (!bustk.emailExist(email)) {
+            JOptionPane.showMessageDialog(null, "Email không tồn tại trong hệ thống!");
+             }
+            else {
+            OTP = SendEmailSMTP.getOTP();
+                try {
+                    SendEmailSMTP.sendOTP(tenNV, email, OTP);
+                } catch (UnsupportedEncodingException ex) {
+                    JOptionPane.showMessageDialog(null, "Có lỗi trong quá trình gửi mã xác nhận lên email!");;
+                }
+            sendCode.setEnabled(false);
+            countdown = 30;
+            timer = new Timer(1000, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent evt) {
+                    countdown--;
+                    if (countdown <= 0) {
+                        sendCode.setEnabled(true); 
+                        sendCode.setText("SEND CODE"); 
+                        timer.stop(); // Dừng bộ đếm
+                    } else {
+                        sendCode.setText("Resend Code (" + countdown + "s)");      
+                    }
+                }
+            });
+            timer.start(); // Bắt đầu đếm ngược
+            JOptionPane.showMessageDialog(null, "Gửi mã xác nhận thành công!");
+        }
+        }
+    });
+        verify.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String enteredCode = txtCode.getText();
+        String expectedCode = OTP;
+        if (txtUser.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Hãy nhập tên đăng nhập!");
+        }
+        else if (enteredCode.equals("")) {
+            JOptionPane.showMessageDialog(null, "Hãy nhập mã xác minh!");
+        } else if (!enteredCode.equals(expectedCode)) {
+            JOptionPane.showMessageDialog(null, "Mã xác minh không chính xác!");
+        } else {
+            // Nếu mã xác minh đúng
+            JOptionPane.showMessageDialog(null, "Xác minh thành công!");
+            OTP = SendEmailSMTP.getOTP();
+            frmresetpwd resetDialog = new frmresetpwd(null,txtUser.getText());
+            resetDialog.setVisible(true);
+        }
+    }
+});
     }
 
     private void initLogin() {
@@ -109,7 +199,14 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         txtPass.setEchoChar('●');
         txtPass.setBounds(55, 0, 336, 35); 
         passwordPanel.add(txtPass, "w 100%");
-
+        txtPass.addKeyListener(new KeyAdapter() {
+         @Override
+         public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            dangNhap(); // Gọi hàm đăng nhập khi nhấn Enter
+        }
+    }
+});
         // Thêm nút Show Password
         JButton btnShow = new JButton();
         btnShow.setForeground(new Color(100, 100, 100));
@@ -118,12 +215,12 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         btnShow.setFont(new Font("sansserif", 1, 12));
         btnShow.setContentAreaFilled(false);
         btnShow.setCursor(new Cursor(Cursor.HAND_CURSOR));
-         btnShow.setBounds(405, 0, 30, 30); 
+        btnShow.setBounds(405, 0, 30, 30); 
         passwordPanel.add(btnShow, "w 20%, h 40!");
         passwordPanel.setBackground(new Color(255,255,255));
         login.add(passwordPanel, "w 80%"); 
 
-         btnShow.addActionListener(new ActionListener() {
+        btnShow.addActionListener(new ActionListener() {
         boolean isPasswordVisible = false;
 
         @Override
@@ -139,8 +236,8 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
             isPasswordVisible = !isPasswordVisible;
         }
     });
-          // Thêm checkbox "Remember Password" và căn trái
         JCheckBox btnReme = new JCheckBox("Stay Logged In");
+        btnReme.setBackground(new Color(255,255,255));
         login.add(btnReme, " wrap, w 60%"); 
 
         Button cmd = new Button();
@@ -183,7 +280,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
             return;
         }
         if(matkhau.length() < 8){
-            JOptionPane.showMessageDialog(null, "Tên đăng nhập tối thiểu 8 kí tự!");
+            JOptionPane.showMessageDialog(null, "Mật khẩu tối thiểu 8 kí tự!");
             return;
         }
         if(!bustk.checktendangnhap(tendangnhap)){

@@ -80,4 +80,49 @@ public class daonhanvien {
         }
         return Email;
     }
+    public boolean emailExist(String mail){
+        Connection con = conn.connection();
+        String sql = "SELECT * FROM nhanvien where isDelete= 0 and email = ?";
+        boolean flag = false;
+        try{
+            PreparedStatement pst =  con.prepareStatement(sql);
+            pst.setString(1, mail);
+        
+
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+              flag = true;
+            }
+        } catch (SQLException e) {
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daonhanvien.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return flag;
+    }
+    public String getTenNV(String email){
+        Connection con = conn.connection();
+        String sql = "SELECT * FROM nhanvien where isDelete= 0 and email = ?";
+        String tenNV = "";
+        try{
+            PreparedStatement pst =  con.prepareStatement(sql);
+            pst.setString(1, email);
+        
+
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                tenNV = rs.getString("tenNhanVien");
+            }
+        } catch (SQLException e) {
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daonhanvien.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return tenNV;
+    }
+    
 }
