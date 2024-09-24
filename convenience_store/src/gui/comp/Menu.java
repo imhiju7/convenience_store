@@ -1,26 +1,27 @@
 package gui.comp;
 
-import bus.buschucvu;
-import bus.busdanhmuc;
-import bus.buschucnang;
 
+import bus.buschucnang;
+import bus.busdanhmuc;
+import bus.busphanquyen;
+import dto.dtochucnang;
+import dto.dtodanhmuc;
 import gui.event.EventMenu;
 import gui.event.EventMenuSelected;
 import gui.event.EventShowPopupMenu;
 import gui.model.ModelMenu;
+
 import gui.swing.dashboard.MenuAnimation;
 import gui.swing.dashboard.MenuItem;
 import gui.swing.scrollbar.ScrollBarCustom;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
-
 import net.miginfocom.swing.MigLayout;
 
 public class Menu extends javax.swing.JPanel {
@@ -50,35 +51,38 @@ public class Menu extends javax.swing.JPanel {
     private EventShowPopupMenu eventShowPopup;
     private boolean enableMenu = true;
     private boolean showMenu = true;
-    int macv;
-
-    public Menu(int ma) {
+    
+    public Menu() {
         initComponents();
         setOpaque(false);
         sp.getViewport().setOpaque(false);
         sp.setVerticalScrollBar(new ScrollBarCustom());
         layout = new MigLayout("wrap, fillx, insets 0", "[fill]", "[]0[]");
         panel.setLayout(layout);
-        macv = ma;
     }
 
-    public void initMenuItem() {
+    public void initMenuItem(int macv) {
         busdanhmuc busdm = new busdanhmuc();
         buschucnang buscn = new buschucnang();
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/source/image/icon/1.png")), "Dashboard", "Home", "Buttons", "Cards", "Tabs", "Accordions", "Modals"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/source/image/icon/2.png")), "Charts", "Morris", "Flot", "Line"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/source/image/icon/3.png")), "Report", "Income", "Expense", "Profit"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/source/image/icon/4.png")), "Message", "Sender", "Inbox", "User"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/source/image/icon/5.png")), "Staff", "Sender", "Inbox", "User"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/source/image/icon/6.png")), "Student", "Menu 001", "Menu 002", "Menu 003"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/source/image/icon/7.png")), "Library", "Menu 001", "Menu 002", "Menu 003"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/source/image/icon/8.png")), "Holiday", "Menu 001", "Menu 002", "Menu 003"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/source/image/icon/9.png")), "Calendar", "Menu 001", "Menu 002", "Menu 003"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/source/image/icon/10.png")), "Chat App", "Menu 001", "Menu 002", "Menu 003"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/source/image/icon/11.png")), "Contace", "Menu 001", "Menu 002", "Menu 003"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/source/image/icon/12.png")), "File Manager", "Menu 001", "Menu 002", "Menu 003"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/source/image/icon/13.png")), "Our Centres"));
-        addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/source/image/icon/14.png")), "Gallery"));
+        busphanquyen buspq = new busphanquyen();
+        
+        ArrayList<dtodanhmuc> listdm = busdm.getlist();
+        for(dtodanhmuc dm : listdm){
+            ArrayList<String> submenu = new ArrayList<>();
+            
+            int madanhmuc = dm.getMadanhmuc();
+            ArrayList<dtochucnang> listcn = buscn.getlistchucnangbydanhmuc(madanhmuc);
+            
+            for(dtochucnang cn: listcn){
+                if(buspq.checkphanquyen(macv, cn.getMachucnang())){
+                    submenu.add(cn.getTenchucnang());
+                }
+            }
+            
+            if(!submenu.isEmpty()){
+                addMenu(new ModelMenu(new ImageIcon(getClass().getResource(dm.getIcon())), dm.getTendanhmuc(),  submenu.toArray(String[]::new)));
+            }
+        }
     }
 
     private void addMenu(ModelMenu menu) {
@@ -126,7 +130,7 @@ public class Menu extends javax.swing.JPanel {
 
         sp.setBorder(null);
         sp.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        sp.setViewportBorder(null);
+        sp.setOpaque(false);
 
         panel.setOpaque(false);
 
@@ -134,7 +138,7 @@ public class Menu extends javax.swing.JPanel {
         panel.setLayout(panelLayout);
         panelLayout.setHorizontalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 312, Short.MAX_VALUE)
+            .addGap(0, 360, Short.MAX_VALUE)
         );
         panelLayout.setVerticalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -155,7 +159,7 @@ public class Menu extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(profile1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE))
+                .addComponent(sp, javax.swing.GroupLayout.DEFAULT_SIZE, 431, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

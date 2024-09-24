@@ -22,7 +22,6 @@ import java.util.logging.Logger;
  * @author Hieu PC
  */
 public class daonhanvien {
-    private connect conn = new connect();
     
     
     // add
@@ -35,7 +34,7 @@ public class daonhanvien {
     
     // get
     public int getmachucvu(int manv){
-        Connection con = conn.connection();
+        Connection con = connect.connection();
         String sql = "SELECT * FROM nhanvien where isDelete= 0 and maNhanVien = ?";
         int macv = 0;
         try{
@@ -59,7 +58,7 @@ public class daonhanvien {
     }
     
     public String getemail(int manv){
-        Connection con = conn.connection();
+        Connection con = connect.connection();
         String sql = "SELECT * FROM nhanvien where isDelete= 0 and maNhanVien = ?";
         String Email = "";
         try{

@@ -48,34 +48,25 @@ public class guimain extends javax.swing.JFrame {
     
         int macv = busnv.getmachucvu(manv);
         
-        menu = new Menu(macv);
+        menu = new Menu();
         header = new Header();
+        
         main = new MainForm();
-        menu.addEvent(new EventMenuSelected() {
-            @Override
-            public void menuSelected(int menuIndex, int subMenuIndex) {
-                System.out.println("Menu Index : " + menuIndex + " SubMenu Index " + subMenuIndex);
-                if (menuIndex == 0) {
-                    if (subMenuIndex == 0) {
-                        main.showForm(new Form_Home());
-                    } else if (subMenuIndex == 1) {
-                        main.showForm(new Form1());
-                    }
-                }
-            }
+        
+        menu.addEvent((int menuIndex, int subMenuIndex) -> {
+            
         });
-        menu.addEventShowPopup(new EventShowPopupMenu() {
-            @Override
-            public void showPopup(Component com) {
-                MenuItem item = (MenuItem) com;
-                PopupMenu popup = new PopupMenu(guimain.this, item.getIndex(), item.getEventSelected(), item.getMenu().getSubMenu());
-                int x = guimain.this.getX() + 52;
-                int y = guimain.this.getY() + com.getY() + 86;
-                popup.setLocation(x, y);
-                popup.setVisible(true);
-            }
+        menu.addEventShowPopup((Component com) -> {
+            MenuItem item = (MenuItem) com;
+            PopupMenu popup = new PopupMenu(guimain.this, item.getIndex(), item.getEventSelected(), item.getMenu().getSubMenu());
+            int x1 = guimain.this.getX() + 52;
+            int y1 = guimain.this.getY() + com.getY() + 86;
+            popup.setLocation(x1, y1);
+            popup.setVisible(true);
         });
-        menu.initMenuItem();
+        
+        menu.initMenuItem(macv);
+        
         bg.add(menu, "w 230!, spany 2");    // Span Y 2cell
         bg.add(header, "h 50!, wrap");
         bg.add(main, "w 100%, h 100%");
@@ -99,6 +90,7 @@ public class guimain extends javax.swing.JFrame {
             }
 
         };
+        
         animator = new Animator(500, target);
         animator.setResolution(0);
         animator.setDeceleration(0.5f);
@@ -115,10 +107,8 @@ public class guimain extends javax.swing.JFrame {
                 }
             }
         });
-        //  Init google icon font
+        
         IconFontSwing.register(GoogleMaterialDesignIcons.getIconFont());
-        //  Start with this form
-        main.showForm(new Form_Home());
     }
 
     @SuppressWarnings("unchecked")
