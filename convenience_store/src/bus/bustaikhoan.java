@@ -15,8 +15,11 @@ import java.util.ArrayList;
 public class bustaikhoan {
     daotaikhoan daotk = new daotaikhoan();
     daonhanvien daonv = new daonhanvien();
-    // get
     
+    public boolean updatematkhau(String tendangnhap, String matkhau){
+        return daotk.updatematkhau(tendangnhap, matkhau);
+    }
+
     // check
 
     public boolean checktendangnhap(String tendangnhap) {
@@ -39,5 +42,8 @@ public class bustaikhoan {
     
     public String getemail(String tendangnhap) {
         return daonv.getemail(daotk.getmanhanvien(tendangnhap));
+    }
+    public int getmanhanvien(String tendangnhap) {
+        return daotk.getmanhanvien(tendangnhap);
     }
 }

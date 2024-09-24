@@ -9,34 +9,36 @@ package dto;
  * @author Hieu PC
  */
 public class dtochucvu {
-    private int maChucVu;
-    private String tenChucVu;
 
-    public dtochucvu() {}
+    private int machucvu;
+    private String tenchucvu;
     
-    public dtochucvu(int maChucVu, String tenChucVu) {
-        this.maChucVu = maChucVu;
-        this.tenChucVu = tenChucVu;
-    }
-    
-    public int getMaChucVu() {
-        return maChucVu;
+    public dtochucvu() {
     }
 
-    public void setMaChucVu(int maChucVu) {
-        this.maChucVu = maChucVu;
+    public dtochucvu(int machucvu, String tenchucvu) {
+        this.machucvu = machucvu;
+        this.tenchucvu = tenchucvu;
     }
 
-    public String getTenChucVu() {
-        return tenChucVu;
+    public int getMachucvu() {
+        return machucvu;
     }
 
-    public void setTenChucVu(String tenChucVu) {
-        this.tenChucVu = tenChucVu;
+    public void setMachucvu(int machucvu) {
+        this.machucvu = machucvu;
     }
-    
+
+    public String getTenchucvu() {
+        return tenchucvu;
+    }
+
+    public void setTenchucvu(String tenchucvu) {
+        this.tenchucvu = tenchucvu;
+    }
+
     @Override
     public String toString() {
-        return "dtochucvu{" + "maChucVu=" + maChucVu + ", tenChucVu=" + tenChucVu + '}';
-    }
+        return "dtochucvu{" + "machucvu=" + machucvu + ", tenchucvu=" + tenchucvu + '}';
+    }    
 }

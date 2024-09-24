@@ -1,10 +1,12 @@
 package gui.comp;
 
 import bus.bustaikhoan;
+import dto.dtotaikhoan;
+import gui.guimain;
 import gui.swing.login.Button;
 import gui.swing.login.MyPasswordField;
 import gui.swing.login.MyTextField;
-import dto.dtotaikhoan;
+
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -23,7 +25,7 @@ import net.miginfocom.swing.MigLayout;
 public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
     private MyTextField txtUsername;
     private MyPasswordField txtPass;
-    private bustaikhoan bustk;
+    private bustaikhoan bustk = new bustaikhoan();
 
     public PanelLoginAndRegister() {
         initComponents();
@@ -44,7 +46,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         userPanel.setPreferredSize(new Dimension(500, 40)); // Đặt kích thước ưa thích
         userPanel.setBackground(new Color(255,255,255));
         MyTextField txtUser = new MyTextField();
-        //txtUser.setPrefixIcon(new ImageIcon(getClass().getResource("/com/raven/icon/user.png")));
+        //txtUser.setPrefixIcon(new ImageIcon(getClass().getResource("/src/source/image/icon/user.png")));
         txtUser.setPrefixIcon(new ImageIcon(System.getProperty("user.dir")+"/src/source/image/icon/user.png"));
         txtUser.setHint("Username");
         txtUser.setBounds(55, 0, 336, 35); // Xác định vị trí và kích thước cho txtPass
@@ -52,7 +54,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         JButton btnSearchEmail = new JButton();
         btnSearchEmail.setBackground(new Color(0.0f,0.0f,0.0f,0.0f));
         btnSearchEmail.setForeground(new java.awt.Color(255, 255, 255));
-        //btnSearchEmail.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/raven/icon/mail.png")));
+        //btnSearchEmail.setIcon(new javax.swing.ImageIcon(getClass().getResource("/src/source/image/icon/mail.png")));
         btnSearchEmail.setIcon(new javax.swing.ImageIcon(System.getProperty("user.dir")+"/src/source/image/icon/mail.png")); // NOI18N
         btnSearchEmail.setToolTipText("Check&Find Email");
         btnSearchEmail.setBorder(null);
@@ -70,7 +72,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
 //            }
 //        });
 //        MyTextField txtEmail = new MyTextField();
-//        txtEmail.setPrefixIcon(new ImageIcon(System.getProperty("user.dir")+"/src/com/raven/icon/mail.png"));
+//        txtEmail.setPrefixIcon(new ImageIcon(System.getProperty("user.dir")+"/src/source/image/icon/mail.png"));
 //        txtEmail.setHint("Email");
 //        txtEmail.setEditable(false);
 //        txtEmail.setFocusable(false);
@@ -178,14 +180,37 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
     }
     
     public void dangNhap() {
-        bustk = new bustaikhoan();
         String tendangnhap = txtUsername.getText();
         String matkhau = String.valueOf(txtPass.getPassword());
         if (tendangnhap.equals("") || matkhau.equals("")) {
-            JOptionPane.showMessageDialog(null, "Tên đăng hoặc mật khẩu không được để trống!");
+            JOptionPane.showMessageDialog(null, "Tên đăng nhập hoặc mật khẩu không được để trống!");
             return;
         }
-        
+        if (tendangnhap.length() < 6 ) {
+            JOptionPane.showMessageDialog(null, "Tên đăng nhập tối thiểu 6 kí tự!");
+            return;
+        }
+        if(matkhau.length() < 8){
+            JOptionPane.showMessageDialog(null, "Tên đăng nhập tối thiểu 8 kí tự!");
+            return;
+        }
+        if(!bustk.checktendangnhap(tendangnhap)){
+            JOptionPane.showMessageDialog(null, "Không tìm thấy tên đăng nhập!");
+            return;
+        }
+        if(!bustk.checkmatkhau(tendangnhap, matkhau)){
+            JOptionPane.showMessageDialog(null, "Sai mật khẩu!");
+            return;
+        }
+        if(!bustk.checktaikhoanbikhoa(tendangnhap)){
+            JOptionPane.showMessageDialog(null, "Tài khoản của bạn bị khóa!");
+            return;
+        }
+        int manv = bustk.getmanhanvien(tendangnhap);
+        /*
+        new guimain().setVisible(true);
+        this.setVisible(false);
+        */
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

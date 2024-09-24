@@ -34,6 +34,30 @@ public class daonhanvien {
     // check
     
     // get
+    public int getmachucvu(int manv){
+        Connection con = conn.connection();
+        String sql = "SELECT * FROM nhanvien where isDelete= 0 and maNhanVien = ?";
+        int macv = 0;
+        try{
+            PreparedStatement pst =  con.prepareStatement(sql);
+            pst.setInt(1, manv);
+        
+
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                macv = rs.getInt("maChucVu");
+            }
+        } catch (SQLException e) {
+            
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daonhanvien.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return macv;
+    }
+    
     public String getemail(int manv){
         Connection con = conn.connection();
         String sql = "SELECT * FROM nhanvien where isDelete= 0 and maNhanVien = ?";
