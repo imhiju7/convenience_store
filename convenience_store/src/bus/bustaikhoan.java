@@ -43,6 +43,12 @@ public class bustaikhoan {
     public String getemail(String tendangnhap) {
         return daonv.getemail(daotk.getmanhanvien(tendangnhap));
     }
+    public boolean emailExist (String email) {
+        return daonv.emailExist(email);
+    }
+    public String getTenNV(String email) {
+        return daonv.getTenNV(email);
+    }
     public int getmanhanvien(String tendangnhap) {
         return daotk.getmanhanvien(tendangnhap);
     }
