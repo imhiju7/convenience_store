@@ -1,41 +1,54 @@
 package gui;
 
-import gui.comp.Header;
-import gui.comp.Menu;
-import gui.event.EventMenuSelected;
-import gui.event.EventShowPopupMenu;
+import bus.busnhanvien;
+
 import gui.form.Form1;
 import gui.form.Form_Home;
 import gui.form.MainForm;
+
+import gui.comp.Header;
+import gui.comp.Menu;
+
+import gui.event.EventMenuSelected;
+import gui.event.EventShowPopupMenu;
+
 import gui.swing.dashboard.MenuItem;
 import gui.swing.dashboard.PopupMenu;
 import gui.swing.icon.GoogleMaterialDesignIcons;
 import gui.swing.icon.IconFontSwing;
+
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import net.miginfocom.swing.MigLayout;
+
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
-public class gui_main extends javax.swing.JFrame {
+public class guimain extends javax.swing.JFrame {
 
     private MigLayout layout;
     private Menu menu;
     private Header header;
     private MainForm main;
     private Animator animator;
-
-    public gui_main() {
+    
+    public guimain(int manv) {
         initComponents();
-        init();
+        init(manv);
     }
 
-    private void init() {
+    private void init(int manv) {
         layout = new MigLayout("fill", "0[]0[100%, fill]0", "0[fill, top]0");
         bg.setLayout(layout);
-        menu = new Menu();
+        
+        busnhanvien busnv = new busnhanvien();
+    
+        int macv = busnv.getmachucvu(manv);
+        
+        menu = new Menu(macv);
         header = new Header();
         main = new MainForm();
         menu.addEvent(new EventMenuSelected() {
@@ -55,9 +68,9 @@ public class gui_main extends javax.swing.JFrame {
             @Override
             public void showPopup(Component com) {
                 MenuItem item = (MenuItem) com;
-                PopupMenu popup = new PopupMenu(gui_main.this, item.getIndex(), item.getEventSelected(), item.getMenu().getSubMenu());
-                int x = gui_main.this.getX() + 52;
-                int y = gui_main.this.getY() + com.getY() + 86;
+                PopupMenu popup = new PopupMenu(guimain.this, item.getIndex(), item.getEventSelected(), item.getMenu().getSubMenu());
+                int x = guimain.this.getX() + 52;
+                int y = guimain.this.getY() + com.getY() + 86;
                 popup.setLocation(x, y);
                 popup.setVisible(true);
             }
@@ -146,39 +159,6 @@ public class gui_main extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(gui_main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(gui_main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(gui_main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(gui_main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new gui_main().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLayeredPane bg;

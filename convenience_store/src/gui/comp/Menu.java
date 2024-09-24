@@ -1,5 +1,9 @@
 package gui.comp;
 
+import bus.buschucvu;
+import bus.busdanhmuc;
+import bus.buschucnang;
+
 import gui.event.EventMenu;
 import gui.event.EventMenuSelected;
 import gui.event.EventShowPopupMenu;
@@ -7,13 +11,16 @@ import gui.model.ModelMenu;
 import gui.swing.dashboard.MenuAnimation;
 import gui.swing.dashboard.MenuItem;
 import gui.swing.scrollbar.ScrollBarCustom;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+
 import javax.swing.ImageIcon;
+
 import net.miginfocom.swing.MigLayout;
 
 public class Menu extends javax.swing.JPanel {
@@ -43,17 +50,21 @@ public class Menu extends javax.swing.JPanel {
     private EventShowPopupMenu eventShowPopup;
     private boolean enableMenu = true;
     private boolean showMenu = true;
+    int macv;
 
-    public Menu() {
+    public Menu(int ma) {
         initComponents();
         setOpaque(false);
         sp.getViewport().setOpaque(false);
         sp.setVerticalScrollBar(new ScrollBarCustom());
         layout = new MigLayout("wrap, fillx, insets 0", "[fill]", "[]0[]");
         panel.setLayout(layout);
+        macv = ma;
     }
 
     public void initMenuItem() {
+        busdanhmuc busdm = new busdanhmuc();
+        buschucnang buscn = new buschucnang();
         addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/source/image/icon/1.png")), "Dashboard", "Home", "Buttons", "Cards", "Tabs", "Accordions", "Modals"));
         addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/source/image/icon/2.png")), "Charts", "Morris", "Flot", "Line"));
         addMenu(new ModelMenu(new ImageIcon(getClass().getResource("/source/image/icon/3.png")), "Report", "Income", "Expense", "Profit"));

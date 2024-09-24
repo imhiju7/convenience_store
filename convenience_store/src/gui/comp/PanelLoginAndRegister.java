@@ -172,14 +172,37 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
     }
     
     public void dangNhap() {
-        bustk = new bustaikhoan();
         String tendangnhap = txtUsername.getText();
         String matkhau = String.valueOf(txtPass.getPassword());
         if (tendangnhap.equals("") || matkhau.equals("")) {
-            JOptionPane.showMessageDialog(null, "Tên đăng hoặc mật khẩu không được để trống!");
+            JOptionPane.showMessageDialog(null, "Tên đăng nhập hoặc mật khẩu không được để trống!");
             return;
         }
-        
+        if (tendangnhap.length() < 6 ) {
+            JOptionPane.showMessageDialog(null, "Tên đăng nhập tối thiểu 6 kí tự!");
+            return;
+        }
+        if(matkhau.length() < 8){
+            JOptionPane.showMessageDialog(null, "Tên đăng nhập tối thiểu 8 kí tự!");
+            return;
+        }
+        if(!bustk.checktendangnhap(tendangnhap)){
+            JOptionPane.showMessageDialog(null, "Không tìm thấy tên đăng nhập!");
+            return;
+        }
+        if(!bustk.checkmatkhau(tendangnhap, matkhau)){
+            JOptionPane.showMessageDialog(null, "Sai mật khẩu!");
+            return;
+        }
+        if(!bustk.checktaikhoanbikhoa(tendangnhap)){
+            JOptionPane.showMessageDialog(null, "Tài khoản của bạn bị khóa!");
+            return;
+        }
+        int manv = bustk.getmanhanvien(tendangnhap);
+        /*
+        new guimain().setVisible(true);
+        this.setVisible(false);
+        */
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

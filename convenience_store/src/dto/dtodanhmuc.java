@@ -9,32 +9,34 @@ package dto;
  * @author Hieu PC
  */
 public class dtodanhmuc {
-    private int maGroup;
-    private String tenGroup;
+
+    private int madanhmuc;
+    private String tendanhmuc;
     private String icon;
     
-    public dtodanhmuc() {}
-    
-    public dtodanhmuc(int maGroup, String tenGroup, String icon) {
-        this.maGroup = maGroup;
-        this.tenGroup = tenGroup;
+    public dtodanhmuc() {
+    }
+
+    public dtodanhmuc(int madanhmuc, String tendanhmuc, String icon) {
+        this.madanhmuc = madanhmuc;
+        this.tendanhmuc = tendanhmuc;
         this.icon = icon;
     }
 
-    public int getMaGroup() {
-        return maGroup;
+    public int getMadanhmuc() {
+        return madanhmuc;
     }
 
-    public void setMaGroup(int maGroup) {
-        this.maGroup = maGroup;
+    public void setMadanhmuc(int madanhmuc) {
+        this.madanhmuc = madanhmuc;
     }
 
-    public String getTenGroup() {
-        return tenGroup;
+    public String getTendanhmuc() {
+        return tendanhmuc;
     }
 
-    public void setTenGroup(String tenGroup) {
-        this.tenGroup = tenGroup;
+    public void setTendanhmuc(String tendanhmuc) {
+        this.tendanhmuc = tendanhmuc;
     }
 
     public String getIcon() {
@@ -47,7 +49,6 @@ public class dtodanhmuc {
 
     @Override
     public String toString() {
-        return "dtodanhmuc{" + "maGroup=" + maGroup + ", tenGroup=" + tenGroup + ", icon=" + icon + '}';
+        return "dtodanhmuc{" + "madanhmuc=" + madanhmuc + ", tendanhmuc=" + tendanhmuc + ", icon=" + icon + '}';
     }
-    
 }

@@ -10,44 +10,45 @@ package dto;
  */
 public class dtochucnang {
 
-    private int maChucNang;
-    private String tenChucNang;
-    private int maGroup;
+    private int machucnang;
+    private String tenchucnang;
+    private int madanhmuc;
     
-    public dtochucnang() {}
-
-    public dtochucnang(int maChucNang, String tenChucNang, int maGroup) {
-        this.maChucNang = maChucNang;
-        this.tenChucNang = tenChucNang;
-        this.maGroup = maGroup;
-    }
-    
-    public int getMaChucNang() {
-        return maChucNang;
+    public dtochucnang() {
     }
 
-    public void setMaChucNang(int maChucNang) {
-        this.maChucNang = maChucNang;
+    public dtochucnang(int machucnang, String tenchucnang, int madanhmuc) {
+        this.machucnang = machucnang;
+        this.tenchucnang = tenchucnang;
+        this.madanhmuc = madanhmuc;
     }
 
-    public String getTenChucNang() {
-        return tenChucNang;
+    public int getMachucnang() {
+        return machucnang;
     }
 
-    public void setTenChucNang(String tenChucNang) {
-        this.tenChucNang = tenChucNang;
+    public void setMachucnang(int machucnang) {
+        this.machucnang = machucnang;
     }
 
-    public int getMaGroup() {
-        return maGroup;
+    public String getTenchucnang() {
+        return tenchucnang;
     }
 
-    public void setMaGroup(int maGroup) {
-        this.maGroup = maGroup;
+    public void setTenchucnang(String tenchucnang) {
+        this.tenchucnang = tenchucnang;
+    }
+
+    public int getMadanhmuc() {
+        return madanhmuc;
+    }
+
+    public void setMadanhmuc(int madanhmuc) {
+        this.madanhmuc = madanhmuc;
     }
 
     @Override
     public String toString() {
-        return "dtochucnang{" + "maChucNang=" + maChucNang + ", tenChucNang=" + tenChucNang + ", maGroup=" + maGroup + '}';
-    }
+        return "dtochucnang{" + "machucnang=" + machucnang + ", tenchucnang=" + tenchucnang + ", madanhmuc=" + madanhmuc + '}';
+    }  
 }

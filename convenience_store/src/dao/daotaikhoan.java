@@ -26,6 +26,182 @@ public class daotaikhoan {
    
     private connect conn = new connect();
     
+    public boolean addtaikhoan(dtotaikhoan tk){
+        Connection con = conn.connection();
+        String sql = "INSERT INTO taikhoan(tenDangNhap,matKhau,ngayTao,isBlock,maNhanVien) VALUES(?,?,?,?,?)";
+        try{
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, tk.getTendangnhap());
+            pst.setString(2, tk.getMatkhau());
+            pst.setTimestamp(3, new java.sql.Timestamp(tk.getNgaytao().getTime()));
+            pst.setInt(4, tk.getIsblock());
+            pst.setInt(5, tk.getManhanvien());
+        } catch (SQLException e) {
+            return false;
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean updatematkhau(String tendangnhap, String matkhau){
+        Connection con = conn.connection();
+        String sql = "UPDATE taikhoan set matKhau= ? WHERE tenDangNhap = ?";
+        try{
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, matkhau);
+            pst.setString(2, tendangnhap);
+            pst.executeUpdate();
+        } catch (SQLException e) {
+            return false;
+        } 
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean updateblock(dtotaikhoan tk){
+        Connection con = conn.connection();
+        String sql = "UPDATE taikhoan set isBlock = ? WHERE tenDangNhap = ?";
+        try{
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, tk.getIsblock());
+            pst.setString(2, tk.getTendangnhap());
+            pst.executeUpdate();
+        } catch (SQLException e) {
+            return false;
+        } 
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean deletetaikhoan(dtotaikhoan tk){
+        Connection con = conn.connection();
+        String sql = "DELETE FROM taikhoan  WHERE tenDangNhap= ?";
+        try{
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1,tk.getTendangnhap());
+            pst.executeUpdate();
+        } catch (SQLException e) {
+            return false;
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        return true;
+    }
+    
+    // check
+    
+    public boolean checktendangnhap(String tendangnhap) {
+        Connection con = conn.connection();
+        String sql = "select * from taikhoan where tenDangNhap = ? ";
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+
+            pst.setString(1, tendangnhap);
+            ResultSet rs = pst.executeQuery();
+            return rs.next();
+
+        } catch (SQLException e) {
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public boolean checkmatkhau(String tendangnhap, String matkhau) {
+        Connection con = conn.connection();
+        String sql = "select * from taikhoan where tenDangNhap = ? and matKhau = ? ";
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+
+            pst.setString(1, tendangnhap);
+            pst.setString(2, matkhau);
+            ResultSet rs = pst.executeQuery();
+            return rs.next();
+
+        } catch (SQLException e) {
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+
+    public boolean checktaikhoanbikhoa(String tendangnhap) {
+        Connection con = conn.connection();
+        String sql = "select * from taikhoan where tenDangNhap = ? and isBlock = 0 ";
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+
+            pst.setString(1, tendangnhap);
+            ResultSet rs = pst.executeQuery();
+            return rs.next();
+
+        } catch (SQLException e) {
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    // get
+    
+    public dtotaikhoan gettaikhoan(String tendangnhap, String matkhau) {
+        Connection con = conn.connection();
+        String sql = "select * from taikhoan where tenDangNhap = ? and matKhau = ? and isBlock = 0 ";
+        dtotaikhoan tk = new dtotaikhoan();
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, tendangnhap);
+            pst.setString(2, matkhau);
+
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    tk.setTendangnhap(rs.getString("tenDangNhap"));
+                    tk.setMatkhau(rs.getString("matKhau"));
+                    tk.setNgaytao(rs.getTimestamp("ngayTao"));
+                    tk.setIsblock(rs.getInt("isBlock"));
+                    tk.setManhanvien(rs.getInt("maNhanVien"));
+                }
+            }
+        } catch (SQLException e) {
+            return null;
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return tk;
+    }
+    
     public ArrayList<dtotaikhoan> getdstk() {
         Connection con = conn.connection();
         String sql = "SELECT * FROM taikhoan";
@@ -59,98 +235,6 @@ public class daotaikhoan {
         return dstk;
     }
     
-    public dtotaikhoan checktaikhoan(String tendangnhap, String matkhau) {
-        Connection con = conn.connection();
-        String sql = "select * from taikhoan where tenDangNhap = ? and matKhau = ? and isBlock = 0 ";
-        dtotaikhoan tk = new dtotaikhoan();
-        try {
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, tendangnhap);
-            pst.setString(2, matkhau);
-
-            try (ResultSet rs = pst.executeQuery()) {
-                while (rs.next()) {
-                    tk.setTendangnhap(rs.getString("tenDangNhap"));
-                    tk.setMatkhau(rs.getString("matKhau"));
-                    tk.setNgaytao(rs.getTimestamp("ngayTao"));
-                    tk.setIsblock(rs.getInt("isBlock"));
-                    tk.setManhanvien(rs.getInt("maNhanVien"));
-                }
-            }
-        } catch (SQLException e) {
-            return null;
-        }
-        try {
-            con.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return tk;
-    }
-    
-    public boolean checktendangnhap(String tendangnhap) {
-        Connection con = conn.connection();
-        String sql = "select * from taikhoan where tenDangNhap = ? ";
-        try {
-            PreparedStatement pst = con.prepareStatement(sql);
-
-            pst.setString(1, tendangnhap);
-            ResultSet rs = pst.executeQuery();
-            return rs.next();
-
-        } catch (SQLException e) {
-        }
-        try {
-            con.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
-    }
-
-    //Kiểm tra mật khẩu
-    public boolean checkmatkhau(String tendangnhap, String matkhau) {
-        Connection con = conn.connection();
-        String sql = "select * from taikhoan where tenDangNhap = ? and matKhau = ? ";
-        try {
-            PreparedStatement pst = con.prepareStatement(sql);
-
-            pst.setString(1, tendangnhap);
-            pst.setString(2, matkhau);
-            ResultSet rs = pst.executeQuery();
-            return rs.next();
-
-        } catch (SQLException e) {
-        }
-        try {
-            con.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
-    }
-
-
-    public boolean checktaikhoanbikhoa(String tendangnhap) {
-        Connection con = conn.connection();
-        String sql = "select * from taikhoan where tenDangNhap = ? and isBlock = 1 ";
-        try {
-            PreparedStatement pst = con.prepareStatement(sql);
-
-            pst.setString(1, tendangnhap);
-            ResultSet rs = pst.executeQuery();
-            return rs.next();
-
-        } catch (SQLException e) {
-        }
-        try {
-            con.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
-    }
-    // get
     public int getmanhanvien(String tendangnhap){
         Connection con = conn.connection();
         String sql = "select * from taikhoan where tenDangNhap = ? and isBlock = 0";
