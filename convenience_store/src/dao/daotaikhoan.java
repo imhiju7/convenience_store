@@ -27,7 +27,7 @@ public class daotaikhoan {
     private connect conn = new connect();
     
     public boolean addtaikhoan(dtotaikhoan tk){
-        Connection con = conn.connection();
+        Connection con = connect.connection();
         String sql = "INSERT INTO taikhoan(tenDangNhap,matKhau,ngayTao,isBlock,maNhanVien) VALUES(?,?,?,?,?)";
         try{
             PreparedStatement pst = con.prepareStatement(sql);
@@ -49,7 +49,7 @@ public class daotaikhoan {
     }
     
     public boolean updatematkhau(String tendangnhap, String matkhau){
-        Connection con = conn.connection();
+        Connection con = connect.connection();
         String sql = "UPDATE taikhoan set matKhau= ? WHERE tenDangNhap = ?";
         try{
             PreparedStatement pst = con.prepareStatement(sql);
@@ -69,7 +69,7 @@ public class daotaikhoan {
     }
     
     public boolean updateblock(dtotaikhoan tk){
-        Connection con = conn.connection();
+        Connection con = connect.connection();
         String sql = "UPDATE taikhoan set isBlock = ? WHERE tenDangNhap = ?";
         try{
             PreparedStatement pst = con.prepareStatement(sql);
@@ -89,7 +89,7 @@ public class daotaikhoan {
     }
     
     public boolean deletetaikhoan(dtotaikhoan tk){
-        Connection con = conn.connection();
+        Connection con = connect.connection();
         String sql = "DELETE FROM taikhoan  WHERE tenDangNhap= ?";
         try{
             PreparedStatement pst = con.prepareStatement(sql);
@@ -110,7 +110,7 @@ public class daotaikhoan {
     // check
     
     public boolean checktendangnhap(String tendangnhap) {
-        Connection con = conn.connection();
+        Connection con = connect.connection();
         String sql = "select * from taikhoan where tenDangNhap = ? ";
         try {
             PreparedStatement pst = con.prepareStatement(sql);
@@ -130,7 +130,7 @@ public class daotaikhoan {
     }
 
     public boolean checkmatkhau(String tendangnhap, String matkhau) {
-        Connection con = conn.connection();
+        Connection con = connect.connection();
         String sql = "select * from taikhoan where tenDangNhap = ? and matKhau = ? ";
         try {
             PreparedStatement pst = con.prepareStatement(sql);
@@ -152,7 +152,7 @@ public class daotaikhoan {
 
 
     public boolean checktaikhoanbikhoa(String tendangnhap) {
-        Connection con = conn.connection();
+        Connection con = connect.connection();
         String sql = "select * from taikhoan where tenDangNhap = ? and isBlock = 0 ";
         try {
             PreparedStatement pst = con.prepareStatement(sql);
@@ -174,7 +174,7 @@ public class daotaikhoan {
     // get
     
     public dtotaikhoan gettaikhoan(String tendangnhap, String matkhau) {
-        Connection con = conn.connection();
+        Connection con = connect.connection();
         String sql = "select * from taikhoan where tenDangNhap = ? and matKhau = ? and isBlock = 0 ";
         dtotaikhoan tk = new dtotaikhoan();
         try {
@@ -203,7 +203,7 @@ public class daotaikhoan {
     }
     
     public ArrayList<dtotaikhoan> getdstk() {
-        Connection con = conn.connection();
+        Connection con = connect.connection();
         String sql = "SELECT * FROM taikhoan";
         ArrayList<dtotaikhoan> dstk = new ArrayList<>();
         try {
@@ -219,14 +219,8 @@ public class daotaikhoan {
                 dstk.add(tk);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
         }
-        Collections.sort(dstk, new Comparator<dtotaikhoan>() {
-            @Override
-            public int compare(dtotaikhoan person1, dtotaikhoan person2) {
-                return person2.getNgaytao().compareTo(person1.getNgaytao());
-            }
-        });
+        Collections.sort(dstk, (dtotaikhoan person1, dtotaikhoan person2) -> person2.getNgaytao().compareTo(person1.getNgaytao()));
         try {
             con.close();
         } catch (SQLException ex) {
@@ -236,7 +230,7 @@ public class daotaikhoan {
     }
     
     public int getmanhanvien(String tendangnhap){
-        Connection con = conn.connection();
+        Connection con = connect.connection();
         String sql = "select * from taikhoan where tenDangNhap = ? and isBlock = 0";
         int manv = 0;
         try {

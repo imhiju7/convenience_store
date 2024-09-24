@@ -4,20 +4,20 @@
  */
 package bus;
 
-import dao.daodanhmuc;
-import dto.dtodanhmuc;
+import dao.daophanquyen;
+import dto.dtophanquyen;
 
 import java.util.ArrayList;
-
 /**
  *
  * @author Hieu PC
  */
-public class busdanhmuc {
-    daodanhmuc daodm = new daodanhmuc();
+public class busphanquyen {
+    daophanquyen daopq = new daophanquyen();
+    
     // get
     
-    public ArrayList<dtodanhmuc> getlist(){
-        return daodm.getlist();
+    public boolean checkphanquyen(int macv,int macn){
+        return daopq.checkphanquyen(macv, macn);
     }
 }
