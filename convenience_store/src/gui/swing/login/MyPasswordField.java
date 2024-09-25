@@ -1,12 +1,15 @@
 package gui.swing.login;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPasswordField;
@@ -49,6 +52,54 @@ public class MyPasswordField extends JPasswordField {
         setForeground(Color.decode("#7A8C8D"));
         setFont(new java.awt.Font("sansserif", 0, 13));
         setSelectionColor(new Color(75, 175, 152));
+        
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+                if (suffixIcon != null) {
+                    int suffixX = getWidth() - suffixIcon.getIconWidth() - 10;
+                    int suffixY = (getHeight() - suffixIcon.getIconHeight()) / 2;
+                    if (x >= suffixX && x <= suffixX + suffixIcon.getIconWidth() &&
+                        y >= suffixY && y <= suffixY + suffixIcon.getIconHeight()) {
+                        togglePasswordVisibility();
+                    }
+                }
+            }
+        });
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int x = e.getX();
+                if (suffixIcon != null) {
+                    int suffixX = getWidth() - suffixIcon.getIconWidth() - 10;
+                    int suffixY = (getHeight() - suffixIcon.getIconHeight()) / 2;
+                    if (x >= suffixX && x <= suffixX + suffixIcon.getIconWidth()) {
+                        setCursor(new Cursor(Cursor.HAND_CURSOR));  
+                    } else {
+                        setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); 
+                    }
+                }
+            }
+        });
+    }
+    private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
+    Image img = icon.getImage();
+    Image newImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    return new ImageIcon(newImg);
+}
+    private void togglePasswordVisibility() {
+        char currentEchoChar = getEchoChar();
+        if (currentEchoChar == '●') {
+            setEchoChar((char) 0);
+            setSuffixIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/hidden.png")), 20, 20));
+            
+        } else {
+            setEchoChar('●');
+            setSuffixIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/eye.png")), 20, 20));
+        }
+        repaint();  // Vẽ lại để cập nhật icon
     }
 
     @Override

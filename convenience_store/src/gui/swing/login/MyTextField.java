@@ -1,12 +1,15 @@
 package gui.swing.login;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTextField;
@@ -42,15 +45,49 @@ public class MyTextField extends JTextField {
     private Icon prefixIcon;
     private Icon suffixIcon;
     private String hint = "";
-
+    private Runnable suffixAction;
     public MyTextField() {
         setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(new Color(0, 0, 0, 0));
         setForeground(Color.decode("#7A8C8D"));
         setFont(new java.awt.Font("sansserif", 0, 13));
         setSelectionColor(new Color(75, 175, 152));
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+                if (suffixIcon != null) {
+                    int suffixX = getWidth() - suffixIcon.getIconWidth() - 10;
+                    int suffixY = (getHeight() - suffixIcon.getIconHeight()) / 2;
+                    if (x >= suffixX && x <= suffixX + suffixIcon.getIconWidth() &&
+                        y >= suffixY && y <= suffixY + suffixIcon.getIconHeight()) {
+                        if (suffixAction != null) {
+                            suffixAction.run();
+                        }
+                    }
+                }
+            }           
+        });
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int x = e.getX();
+                if (suffixIcon != null) {
+                    int suffixX = getWidth() - suffixIcon.getIconWidth() - 10;
+                    int suffixY = (getHeight() - suffixIcon.getIconHeight()) / 2;
+                    if (x >= suffixX && x <= suffixX + suffixIcon.getIconWidth()) {
+                        setCursor(new Cursor(Cursor.HAND_CURSOR));  
+                    } else {
+                        setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); 
+                    }
+                }
+            }
+        });
     }
-
+    public void setSuffixActionListener(Runnable action) {
+        this.suffixAction = action;
+    }
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;

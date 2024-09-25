@@ -3,6 +3,8 @@ package gui.dialog;
 import gui.swing.icon.GoogleMaterialDesignIcons;
 import gui.swing.icon.IconFontSwing;
 import java.awt.Color;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
@@ -20,11 +22,15 @@ public class Message extends javax.swing.JDialog {
     private boolean ok;
     private final Animator animator;
     private boolean show = true;
-
+    private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
+    Image img = icon.getImage();
+    Image newImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    return new ImageIcon(newImg);
+    };
     public Message(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        lbIcon.setIcon(IconFontSwing.buildIcon(GoogleMaterialDesignIcons.REPORT_PROBLEM, 60, new Color(254, 86, 96), new Color(113, 74, 67)));
+        lbIcon.setIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/problem-report.png")), 24, 24));
         setOpacity(0f);
         getContentPane().setBackground(Color.WHITE);
         TimingTarget target = new TimingTargetAdapter() {
@@ -69,23 +75,27 @@ public class Message extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(75, 134, 253)));
+        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel1.setToolTipText("");
 
         lbMessage.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
-        lbMessage.setForeground(new java.awt.Color(82, 82, 82));
         lbMessage.setText("Message");
 
+        button2.setBackground(new java.awt.Color(0, 153, 102));
         button2.setForeground(new java.awt.Color(66, 66, 66));
         button2.setText("OK");
+        button2.setFocusable(false);
         button2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 button2ActionPerformed(evt);
             }
         });
 
+        button1.setBackground(new java.awt.Color(204, 51, 0));
+        button1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         button1.setForeground(new java.awt.Color(66, 66, 66));
         button1.setText("Cancel");
+        button1.setFocusable(false);
         button1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 button1ActionPerformed(evt);
@@ -107,8 +117,9 @@ public class Message extends javax.swing.JDialog {
                         .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(lbIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lbMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lbMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(6, 6, 6)))
                 .addGap(20, 20, 20))
         );
         jPanel1Layout.setVerticalGroup(

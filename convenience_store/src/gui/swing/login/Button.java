@@ -35,6 +35,7 @@ public class Button extends JButton {
 
     public Button() {
         setContentAreaFilled(false);
+        setFocusable(false);
         setBorder(new EmptyBorder(5, 0, 5, 0));
         setBackground(Color.WHITE);
         setCursor(new Cursor(Cursor.HAND_CURSOR));

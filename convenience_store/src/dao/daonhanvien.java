@@ -80,7 +80,7 @@ public class daonhanvien {
         return Email;
     }
     public boolean emailExist(String mail){
-        Connection con = conn.connection();
+        Connection con = connect.connection();
         String sql = "SELECT * FROM nhanvien where isDelete= 0 and email = ?";
         boolean flag = false;
         try{
@@ -102,7 +102,7 @@ public class daonhanvien {
         return flag;
     }
     public String getTenNV(String email){
-        Connection con = conn.connection();
+        Connection con = connect.connection();
         String sql = "SELECT * FROM nhanvien where isDelete= 0 and email = ?";
         String tenNV = "";
         try{

@@ -2,6 +2,8 @@ package gui.comp;
 
 import bus.bustaikhoan;
 import gui.form.frmresetpwd;
+import gui.guimain;
+import gui.dialog.*;
 import gui.swing.login.Button;
 import gui.swing.login.MyPasswordField;
 import gui.swing.login.MyTextField;
@@ -37,6 +39,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
     private MyPasswordField txtCode;
     private String OTP;
     private String tenNV;
+    private Message msg;
     private boolean isValidEmail(String email) {
     String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
     return email != null && email.matches(emailRegex); // Kiểm tra khớp với biểu thức chính quy
@@ -55,33 +58,14 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         label.setFont(new Font("sansserif", 1, 30));
         label.setForeground(new Color(7, 164, 121));
         fgpwd.add(label);
-        JPanel userPanel = new JPanel();
-        userPanel.setLayout(null);
-        userPanel.setPreferredSize(new Dimension(500, 40)); // Đặt kích thước ưa thích
-        userPanel.setBackground(new Color(255,255,255));
         txtUser = new MyTextField();
         txtUser.setPrefixIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/user.png")), 20, 20));
         txtUser.setHint("Username");
-        txtUser.setBounds(55, 0, 336, 40); // Xác định vị trí và kích thước cho txtPass
-        userPanel.add(txtUser, "w 100%");
-        JButton btnSearchEmail = new JButton();
-        btnSearchEmail.setBackground(new Color(255,255,255));
-        btnSearchEmail.setIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/find.png")), 20, 20)); // NOI18N
-        btnSearchEmail.setToolTipText("Check&Find Email");
-        btnSearchEmail.setBorder(null);
-        btnSearchEmail.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnSearchEmail.setBounds(405, 0, 30, 30); // Xác định vị trí và kích thước cho btnShow
-        userPanel.add(btnSearchEmail, "w 20%, h 40!");
-        fgpwd.add(userPanel,"w 80%");
-        btnSearchEmail.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSearchEmailActionPerformed(evt);
-            }
-
-            private void btnSearchEmailActionPerformed(ActionEvent evt) {
-          String user = txtUser.getText();
-          bustk = new bustaikhoan();
-          String email = bustk.getemail(user);
+        txtUser.setSuffixIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/find.png")), 20, 20));
+        txtUser.setSuffixActionListener(() -> {
+            String user = txtUser.getText();
+            bustk = new bustaikhoan();
+            String email = bustk.getemail(user);
                 if (user.equals("")) {
                       JOptionPane.showMessageDialog(null, "Hãy nhập tên đăng nhập để tìm email!");
                 }
@@ -89,9 +73,8 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
                     JOptionPane.showMessageDialog(null, "Không tìm thấy email!");
                }
                 else txtEmail.setText(email);
-                      
-          }            
-        });
+            });
+        fgpwd.add(txtUser,"w 60%");
         txtEmail = new MyTextField();
         txtEmail.setPrefixIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/mail.png")), 20, 20));
         txtEmail.setHint("Email");
@@ -185,58 +168,27 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         label.setFont(new Font("sansserif", 1, 30));
         label.setForeground(new Color(7, 164, 121));
         login.add(label);
-
         txtUsername = new MyTextField();
         txtUsername.setPrefixIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/user.png")), 20, 20));
         txtUsername.setHint("Username");
-        login.add(txtUsername, "w 60%");
-        JPanel passwordPanel = new JPanel();
-        passwordPanel.setLayout(null); 
-        passwordPanel.setPreferredSize(new Dimension(500, 40)); 
+        login.add(txtUsername, "w 60%"); 
         txtPass = new MyPasswordField();
-        txtPass.setPrefixIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/pass.png")), 20, 20));
         txtPass.setHint("Password");
         txtPass.setEchoChar('●');
-        txtPass.setBounds(55, 0, 336, 35); 
-        passwordPanel.add(txtPass, "w 100%");
+        txtPass.setPrefixIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/pass.png")), 20, 20));
         txtPass.addKeyListener(new KeyAdapter() {
          @Override
          public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            dangNhap(); // Gọi hàm đăng nhập khi nhấn Enter
-        }
-    }
-});
-        // Thêm nút Show Password
-        JButton btnShow = new JButton();
-        btnShow.setForeground(new Color(100, 100, 100));
-        btnShow.setBorder(null);
-        btnShow.setIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/eye.png")), 20, 20));
-        btnShow.setFont(new Font("sansserif", 1, 12));
-        btnShow.setContentAreaFilled(false);
-        btnShow.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnShow.setBounds(405, 0, 30, 30); 
-        passwordPanel.add(btnShow, "w 20%, h 40!");
-        passwordPanel.setBackground(new Color(255,255,255));
-        login.add(passwordPanel, "w 80%"); 
-
-        btnShow.addActionListener(new ActionListener() {
-        boolean isPasswordVisible = false;
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (isPasswordVisible) {
-                txtPass.setEchoChar('●'); 
-                btnShow.setIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/eye.png")), 20, 20));
-            } else {
-                txtPass.setEchoChar((char) 0); 
-                btnShow.setIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/hidden.png")), 20, 20));
-
+            dangNhap(); 
+                }
             }
-            isPasswordVisible = !isPasswordVisible;
-        }
-    });
+        });
+
+        txtPass.setSuffixIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/eye.png")), 20, 20));
+        login.add(txtPass, "w 60%"); 
         JCheckBox btnReme = new JCheckBox("Stay Logged In");
+        btnReme.setFocusable(false);
         btnReme.setBackground(new Color(255,255,255));
         login.add(btnReme, " wrap, w 60%"); 
 
@@ -269,37 +221,51 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
     }
     
     public void dangNhap() {
+        bustaikhoan bustk = new bustaikhoan();
         String tendangnhap = txtUsername.getText();
         String matkhau = String.valueOf(txtPass.getPassword());
         if (tendangnhap.equals("") || matkhau.equals("")) {
             JOptionPane.showMessageDialog(null, "Tên đăng nhập hoặc mật khẩu không được để trống!");
+            txtUsername.requestFocus();
             return;
         }
         if (tendangnhap.length() < 6 ) {
             JOptionPane.showMessageDialog(null, "Tên đăng nhập tối thiểu 6 kí tự!");
+            txtUsername.setText("");
+            txtPass.setText("");
+            txtUsername.requestFocus();
             return;
         }
         if(matkhau.length() < 8){
             JOptionPane.showMessageDialog(null, "Mật khẩu tối thiểu 8 kí tự!");
+            txtUsername.setText("");
+            txtPass.setText("");
+            txtUsername.requestFocus();
             return;
         }
         if(!bustk.checktendangnhap(tendangnhap)){
             JOptionPane.showMessageDialog(null, "Không tìm thấy tên đăng nhập!");
+            txtUsername.setText("");
+            txtPass.setText("");
+            txtUsername.requestFocus();
             return;
         }
         if(!bustk.checkmatkhau(tendangnhap, matkhau)){
             JOptionPane.showMessageDialog(null, "Sai mật khẩu!");
+            txtUsername.setText("");
+            txtPass.setText("");
+            txtUsername.requestFocus();
             return;
         }
         if(!bustk.checktaikhoanbikhoa(tendangnhap)){
             JOptionPane.showMessageDialog(null, "Tài khoản của bạn bị khóa!");
+            txtUsername.setText("");
+            txtPass.setText("");
+            txtUsername.requestFocus();
             return;
         }
         int manv = bustk.getmanhanvien(tendangnhap);
-        /*
-        new guimain().setVisible(true);
-        this.setVisible(false);
-        */
+        new guimain(manv).setVisible(true);
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
