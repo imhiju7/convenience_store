@@ -36,18 +36,18 @@ public class bustaikhoan {
 
     // get
     
-    public ArrayList<dtotaikhoan> getdstk(){
-        return daotk.getdstk();
+    public ArrayList<dtotaikhoan> getlist(){
+        return daotk.getlist();
     }
     
     public String getemail(String tendangnhap) {
         return daonv.getemail(daotk.getmanhanvien(tendangnhap));
     }
-    public boolean emailExist (String email) {
-        return daonv.emailExist(email);
+    public boolean checkemailexist (String email) {
+        return daonv.checkemailexist(email);
     }
-    public String getTenNV(String email) {
-        return daonv.getTenNV(email);
+    public String gettennv(String email) {
+        return daonv.gettennv(email);
     }
     public int getmanhanvien(String tendangnhap) {
         return daotk.getmanhanvien(tendangnhap);

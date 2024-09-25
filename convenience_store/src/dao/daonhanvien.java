@@ -32,6 +32,28 @@ public class daonhanvien {
     
     // check
     
+    public boolean checkemailexist(String mail){
+        Connection con = connect.connection();
+        String sql = "SELECT * FROM nhanvien where isDelete= 0 and email = ?";
+        boolean flag = false;
+        try{
+            PreparedStatement pst =  con.prepareStatement(sql);
+            pst.setString(1, mail);
+        
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+              flag = true;
+            }
+        } catch (SQLException e) {
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daonhanvien.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return flag;
+    }
+    
     // get
     public int getmachucvu(int manv){
         Connection con = connect.connection();
@@ -60,7 +82,7 @@ public class daonhanvien {
     public String getemail(int manv){
         Connection con = connect.connection();
         String sql = "SELECT * FROM nhanvien where isDelete= 0 and maNhanVien = ?";
-        String Email = "";
+        String email = "";
         try{
             PreparedStatement pst =  con.prepareStatement(sql);
             pst.setInt(1, manv);
@@ -68,7 +90,7 @@ public class daonhanvien {
 
             ResultSet rs = pst.executeQuery();
             while(rs.next()){
-                Email = rs.getString("Email");
+                email = rs.getString("Email");
             }
         } catch (SQLException e) {
         }
@@ -77,34 +99,12 @@ public class daonhanvien {
         } catch (SQLException ex) {
             Logger.getLogger(daonhanvien.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return Email;
+        return email;
     }
-    public boolean emailExist(String mail){
-        Connection con = conn.connection();
+    public String gettennv(String email){
+        Connection con = connect.connection();
         String sql = "SELECT * FROM nhanvien where isDelete= 0 and email = ?";
-        boolean flag = false;
-        try{
-            PreparedStatement pst =  con.prepareStatement(sql);
-            pst.setString(1, mail);
-        
-
-            ResultSet rs = pst.executeQuery();
-            while(rs.next()){
-              flag = true;
-            }
-        } catch (SQLException e) {
-        }
-        try {
-            con.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(daonhanvien.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return flag;
-    }
-    public String getTenNV(String email){
-        Connection con = conn.connection();
-        String sql = "SELECT * FROM nhanvien where isDelete= 0 and email = ?";
-        String tenNV = "";
+        String tennv = "";
         try{
             PreparedStatement pst =  con.prepareStatement(sql);
             pst.setString(1, email);
@@ -112,7 +112,7 @@ public class daonhanvien {
 
             ResultSet rs = pst.executeQuery();
             while(rs.next()){
-                tenNV = rs.getString("tenNhanVien");
+                tennv = rs.getString("tenNhanVien");
             }
         } catch (SQLException e) {
         }
@@ -121,7 +121,7 @@ public class daonhanvien {
         } catch (SQLException ex) {
             Logger.getLogger(daonhanvien.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return tenNV;
+        return tennv;
     }
     
 }
