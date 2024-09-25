@@ -72,7 +72,9 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
                 else if(email.equals("")) {
                     JOptionPane.showMessageDialog(null, "Không tìm thấy email!");
                }
-                else txtEmail.setText(email);
+                else  {txtEmail.setText(email);
+                txtCode.requestFocus();
+                }
             });
         fgpwd.add(txtUser,"w 60%");
         txtEmail = new MyTextField();
@@ -147,6 +149,9 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         if (txtUser.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Hãy nhập tên đăng nhập!");
         }
+        else if (txtEmail.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Hãy nhập email để lấy mã xác nhận!");
+        }
         else if (enteredCode.equals("")) {
             JOptionPane.showMessageDialog(null, "Hãy nhập mã xác minh!");
         } else if (!enteredCode.equals(expectedCode)) {
@@ -155,6 +160,9 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
             // Nếu mã xác minh đúng
             JOptionPane.showMessageDialog(null, "Xác minh thành công!");
             OTP = SendEmailSMTP.getOTP();
+            txtUser.setText("");
+            txtEmail.setText("");
+            txtCode.setText("");
             frmresetpwd resetDialog = new frmresetpwd(null,txtUser.getText());
             resetDialog.setVisible(true);
         }
