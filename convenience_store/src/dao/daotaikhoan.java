@@ -23,8 +23,6 @@ import java.util.logging.Logger;
  * @author giavi
  */
 public class daotaikhoan {
-   
-    private connect conn = new connect();
     
     public boolean addtaikhoan(dtotaikhoan tk){
         Connection con = connect.connection();
@@ -202,10 +200,10 @@ public class daotaikhoan {
         return tk;
     }
     
-    public ArrayList<dtotaikhoan> getdstk() {
+    public ArrayList<dtotaikhoan> getlist() {
         Connection con = connect.connection();
         String sql = "SELECT * FROM taikhoan";
-        ArrayList<dtotaikhoan> dstk = new ArrayList<>();
+        ArrayList<dtotaikhoan> list = new ArrayList<>();
         try {
             PreparedStatement pst = con.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
@@ -216,17 +214,17 @@ public class daotaikhoan {
                 tk.setNgaytao(rs.getTimestamp("ngayTao"));
                 tk.setIsblock(rs.getInt("isBlock"));
                 tk.setManhanvien(rs.getInt("maNhanVien"));
-                dstk.add(tk);
+                list.add(tk);
             }
         } catch (SQLException e) {
         }
-        Collections.sort(dstk, (dtotaikhoan person1, dtotaikhoan person2) -> person2.getNgaytao().compareTo(person1.getNgaytao()));
+        Collections.sort(list, (dtotaikhoan person1, dtotaikhoan person2) -> person2.getNgaytao().compareTo(person1.getNgaytao()));
         try {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return dstk;
+        return list;
     }
     
     public int getmanhanvien(String tendangnhap){
