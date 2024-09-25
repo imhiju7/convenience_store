@@ -102,14 +102,14 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         public void actionPerformed(ActionEvent e) {
             bustaikhoan bustk = new bustaikhoan();            
             String email = txtEmail.getText();
-             tenNV = bustk.getTenNV(email);
+             tenNV = bustk.gettennv(email);
             if (email.equals("")) {
                 JOptionPane.showMessageDialog(null, "Hãy nhập email!");
             }
             else if(!isValidEmail(email)) {
                 JOptionPane.showMessageDialog(null, "Email không hợp lệ!");
             }
-            else if (!bustk.emailExist(email)) {
+            else if (!bustk.checkemailexist(email)) {
             JOptionPane.showMessageDialog(null, "Email không tồn tại trong hệ thống!");
              }
             else {
