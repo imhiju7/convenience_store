@@ -63,7 +63,6 @@ public class daonhanvien {
             PreparedStatement pst =  con.prepareStatement(sql);
             pst.setInt(1, manv);
         
-
             ResultSet rs = pst.executeQuery();
             while(rs.next()){
                 macv = rs.getInt("maChucVu");
