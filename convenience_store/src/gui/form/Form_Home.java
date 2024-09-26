@@ -1,7 +1,7 @@
 package gui.form;
 
 import gui.dialog.Message;
-import gui.guimain;
+import gui.main.Guimain;
 import gui.model.ModelCard;
 import gui.model.ModelStudent;
 import gui.swing.icon.GoogleMaterialDesignIcons;
@@ -86,7 +86,7 @@ public class Form_Home extends javax.swing.JPanel {
     }
 
     private boolean showMessage(String message) {
-        Message obj = new Message(guimain.getFrames()[0], true);
+        Message obj = new Message(Guimain.getFrames()[0], true);
         obj.showMessage(message);
         return obj.isOk();
     }

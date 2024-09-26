@@ -1,7 +1,7 @@
 package gui.form;
 
 import gui.comp.PanelCover;
-import gui.comp.PanelLoginAndRegister;
+import gui.login.PanelLoginAndRegister;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;

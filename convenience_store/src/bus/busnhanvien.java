@@ -17,4 +17,9 @@ public class busnhanvien {
     public int getmachucvu(int manv){
         return daonv.getmachucvu(manv);
     }
+    
+    public String gettennvbymanv(int manv){
+        return daonv.gettennvbymanv(manv);
+    }
+    
 }
