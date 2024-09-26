@@ -1,4 +1,4 @@
-package gui.form;
+package gui.main;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
