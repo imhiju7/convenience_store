@@ -1,4 +1,4 @@
-package gui;
+package gui.main;
 
 import bus.busnhanvien;
 
@@ -27,7 +27,7 @@ import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
-public class guimain extends javax.swing.JFrame {
+public class Guimain extends javax.swing.JFrame {
 
     private MigLayout layout;
     private Menu menu;
@@ -35,7 +35,7 @@ public class guimain extends javax.swing.JFrame {
     private MainForm main;
     private Animator animator;
     
-    public guimain(int manv) {
+    public Guimain(int manv) {
         initComponents();
         init(manv);
     }
@@ -49,7 +49,7 @@ public class guimain extends javax.swing.JFrame {
         int macv = busnv.getmachucvu(manv);
         
         menu = new Menu();
-        header = new Header();
+        header = new Header(manv, macv);
         
         main = new MainForm();
         
@@ -58,9 +58,9 @@ public class guimain extends javax.swing.JFrame {
         });
         menu.addEventShowPopup((Component com) -> {
             MenuItem item = (MenuItem) com;
-            PopupMenu popup = new PopupMenu(guimain.this, item.getIndex(), item.getEventSelected(), item.getMenu().getSubMenu());
-            int x1 = guimain.this.getX() + 52;
-            int y1 = guimain.this.getY() + com.getY() + 86;
+            PopupMenu popup = new PopupMenu(Guimain.this, item.getIndex(), item.getEventSelected(), item.getMenu().getSubMenu());
+            int x1 = Guimain.this.getX() + 52;
+            int y1 = Guimain.this.getY() + com.getY() + 86;
             popup.setLocation(x1, y1);
             popup.setVisible(true);
         });

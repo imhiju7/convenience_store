@@ -100,7 +100,29 @@ public class daonhanvien {
         }
         return email;
     }
-    public String gettennv(String email){
+    public String gettennvbymanv(int manv){
+        Connection con = connect.connection();
+        String sql = "SELECT * FROM nhanvien where isDelete= 0 and maNhanVien = ?";
+        String tennv = "";
+        try{
+            PreparedStatement pst =  con.prepareStatement(sql);
+            pst.setInt(1, manv);
+        
+
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                tennv = rs.getString("tenNhanVien");
+            }
+        } catch (SQLException e) {
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daonhanvien.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return tennv;
+    }
+    public String gettennvbyemail(String email){
         Connection con = connect.connection();
         String sql = "SELECT * FROM nhanvien where isDelete= 0 and email = ?";
         String tennv = "";

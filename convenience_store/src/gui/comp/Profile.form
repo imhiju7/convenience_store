@@ -45,7 +45,10 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/source/image/icon/logo.png"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="   ABC mart"/>
+        <Property name="text" type="java.lang.String" value=" ABC mart"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[163, 40]"/>
+        </Property>
       </Properties>
     </Component>
   </SubComponents>

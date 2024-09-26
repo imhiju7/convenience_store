@@ -1,8 +1,8 @@
-package gui.comp;
+package gui.login;
 
 import bus.bustaikhoan;
 import gui.form.frmresetpwd;
-import gui.guimain;
+import gui.main.Guimain;
 import gui.dialog.*;
 import gui.swing.login.Button;
 import gui.swing.login.MyPasswordField;
@@ -273,7 +273,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
             return;
         }
         int manv = bustk.getmanhanvien(tendangnhap);
-        new guimain(manv).setVisible(true);
+        new Guimain(manv).setVisible(true);
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
