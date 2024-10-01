@@ -2,8 +2,6 @@ package gui.main;
 
 import bus.busnhanvien;
 
-import gui.form.Form1;
-import gui.form.Form_Home;
 
 import gui.comp.Header;
 import gui.comp.Menu;
