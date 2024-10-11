@@ -32,11 +32,4 @@ public class connect {
         
     }
     
-    public static void main(String[] args) {
-        Connection c = connect.connection();
-        if(c!=null)
-        {
-            System.out.println("nammmmm");
-        }
-    }
 }
