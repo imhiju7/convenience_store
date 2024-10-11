@@ -8,6 +8,7 @@ import gui.modal.component.SimpleModalBorder;
 import gui.modal.listener.ModalCallback;
 import gui.modal.toast.ToastPanel;
 
+
 import javax.swing.*;
 import java.awt.*;
 

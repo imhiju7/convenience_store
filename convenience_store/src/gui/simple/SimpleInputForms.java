@@ -5,6 +5,7 @@ import net.miginfocom.swing.MigLayout;
 import gui.modal.component.ModalBorderAction;
 import gui.modal.component.SimpleModalBorder;
 
+
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

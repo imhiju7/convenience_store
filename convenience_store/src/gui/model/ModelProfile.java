@@ -1,3 +1,4 @@
+
 package gui.model;
 
 import javax.swing.*;
@@ -38,3 +39,4 @@ public class ModelProfile {
     private String name;
     private String location;
 }
+
