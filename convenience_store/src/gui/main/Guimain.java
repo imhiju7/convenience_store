@@ -5,9 +5,10 @@ import bus.busnhanvien;
 
 import gui.comp.Header;
 import gui.comp.Menu;
-
 import gui.event.EventMenuSelected;
 import gui.event.EventShowPopupMenu;
+import gui.form.formnhanvien;
+import gui.form.formsanpham;
 
 import gui.swing.dashboard.MenuItem;
 import gui.swing.dashboard.PopupMenu;
@@ -17,6 +18,7 @@ import gui.swing.icon.IconFontSwing;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.UIManager;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -51,7 +53,27 @@ public class Guimain extends javax.swing.JFrame {
         main = new MainForm();
         
         menu.addEvent((int menuIndex, int subMenuIndex) -> {
-            
+             if (subMenuIndex == -1) {
+            main.setVisible(true);
+        } else {
+                 if ((menuIndex==0)&&(subMenuIndex==0)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     main.showForm(new formsanpham());
+                 }
+                 if ((menuIndex==2)&&(subMenuIndex==0)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     main.showForm(new formnhanvien());
+                 }
+  
+    }
         });
         menu.addEventShowPopup((Component com) -> {
             MenuItem item = (MenuItem) com;

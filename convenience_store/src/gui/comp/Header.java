@@ -65,7 +65,7 @@ public class Header extends javax.swing.JPanel {
             }
         });
 
-        cmdExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/source/image/icon/pass.png"))); // NOI18N
+        cmdExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/source/image/icon/logout.png"))); // NOI18N
         cmdExit.setFocusable(false);
         cmdExit.setMargin(new java.awt.Insets(0, 14, 0, 14));
         cmdExit.setMaximumSize(new java.awt.Dimension(34, 34));
@@ -82,7 +82,6 @@ public class Header extends javax.swing.JPanel {
         lbname.setText("user name");
         lbname.setToolTipText("");
 
-        lbrole.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lbrole.setText("user role");
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
