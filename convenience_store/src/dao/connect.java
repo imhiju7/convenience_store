@@ -20,7 +20,7 @@ public class connect {
         String url = "jdbc:mysql://localhost:3306/qlcuahangtienloi"; // tao database trong mysql ten qlcuahangtienloi
         String username = "root";
 
-        String password = "ToilaHieuday7"; // password tuy moi nguoi dat cho cai connect trong mysql
+        String password = "HoaiNam3001"; // password tuy moi nguoi dat cho cai connect trong mysql
 
         Connection con = null;
         try{
@@ -29,5 +29,14 @@ public class connect {
         }catch(ClassNotFoundException | SQLException e){
         }
         return con;
+        
+    }
+    
+    public static void main(String[] args) {
+        Connection c = connect.connection();
+        if(c!=null)
+        {
+            System.out.println("nammmmm");
+        }
     }
 }
