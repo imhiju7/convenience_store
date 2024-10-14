@@ -38,9 +38,7 @@ import net.miginfocom.swing.MigLayout;
  */
 public class formchucvu extends javax.swing.JPanel {
 
-    /**
-     * Creates new form formchucvu
-     */
+   
     private JTabbedPane tabchucvu;
     public formchucvu() {
         initComponents();
@@ -338,7 +336,7 @@ public class formchucvu extends javax.swing.JPanel {
 
       
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         panelchucvu = new javax.swing.JPanel();
@@ -470,23 +468,23 @@ public class formchucvu extends javax.swing.JPanel {
                 .addComponent(panelchucvu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(55, Short.MAX_VALUE))
         );
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
-    private void buttonAction1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAction1ActionPerformed
+    private void buttonAction1ActionPerformed(java.awt.event.ActionEvent evt) {                                              
         // TODO add your handling code here:
-    }//GEN-LAST:event_buttonAction1ActionPerformed
+    }                                             
 
-    private void txtsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtsearchActionPerformed
+    private void txtsearchActionPerformed(java.awt.event.ActionEvent evt) {                                          
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtsearchActionPerformed
+    }                                         
 
-    private void buttonAction3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAction3ActionPerformed
+    private void buttonAction3ActionPerformed(java.awt.event.ActionEvent evt) {                                              
         // TODO add your handling code here:
-    }//GEN-LAST:event_buttonAction3ActionPerformed
+    }                                             
 
-    private void buttonAction4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAction4ActionPerformed
+    private void buttonAction4ActionPerformed(java.awt.event.ActionEvent evt) {                                              
         // TODO add your handling code here:
-    }//GEN-LAST:event_buttonAction4ActionPerformed
+    }                                             
     public static void createAndShowGUI() {
         // Tạo JFrame
         JFrame frame = new JFrame("Chức vụ Management");
@@ -537,7 +535,7 @@ public class formchucvu extends javax.swing.JPanel {
 //            }
 //        });
 //    }
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private gui.comp.ButtonAction buttonAction1;
     private gui.comp.ButtonAction buttonAction3;
     private gui.comp.ButtonAction buttonAction4;
@@ -547,5 +545,5 @@ public class formchucvu extends javax.swing.JPanel {
     private javax.swing.JScrollPane scrollchucvu;
     private javax.swing.JTable tablechucvu;
     private javax.swing.JTextField txtsearch;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 }
