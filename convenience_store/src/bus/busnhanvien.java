@@ -10,6 +10,9 @@ import dao.daonhanvien;
  */
 public class busnhanvien {
     daonhanvien daonv = new daonhanvien();
+
+    public busnhanvien() {
+    }
     
     
     // get
