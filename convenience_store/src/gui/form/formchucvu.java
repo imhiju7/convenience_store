@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -30,6 +31,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -65,149 +67,55 @@ public class formchucvu extends javax.swing.JPanel {
     }
    
     
-    private JPanel createChucVuTable() {
-    JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
-
-    // create table model
-    Object columns[] = new Object[]{"CHỌN", "MÃ CHỨC VỤ", "TÊN CHỨC VỤ", "TÊN CHỨC NĂNG"};
-    DefaultTableModel model = new DefaultTableModel(columns, 0) {
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            // allow cell editable at column 0 for checkbox
-            return column == 0;
-        }
-
-        @Override
-        public Class<?> getColumnClass(int columnIndex) {
-            // use boolean type at column 0 for checkbox
-            if (columnIndex == 0) {
-                return Boolean.class;
-            }
-            return super.getColumnClass(columnIndex);
-        }
-    };
-
-    // Sample data for the Chức vụ table
-    model.addRow(new Object[]{false, "CV01", "Quản trị viên", "Quản lý hệ thống"});
-    model.addRow(new Object[]{false, "CV02", "Nhân viên", "Thực hiện công việc hàng ngày"});
-    model.addRow(new Object[]{false, "CV03", "Giám đốc", "Quản lý nhân sự và chiến lược"});
-    model.addRow(new Object[]{false, "CV04", "Kế toán", "Quản lý tài chính và chi tiêu"});
-    model.addRow(new Object[]{false, "CV05", "Thủ quỹ", "Quản lý tiền mặt và giao dịch"});
-
-    // create table
-    JTable table = new JTable(model);
-
-    // table scroll
-    JScrollPane scrollPane = new JScrollPane(table);
-    scrollPane.setBorder(BorderFactory.createEmptyBorder());
-
-    // table option
-    table.getColumnModel().getColumn(0).setMaxWidth(50);  // Cột checkbox
-    table.getColumnModel().getColumn(1).setMaxWidth(100); // Cột Mã chức vụ
-    table.getColumnModel().getColumn(2).setPreferredWidth(150); // Tên chức vụ
-    table.getColumnModel().getColumn(3).setPreferredWidth(250); // Tên chức năng
-
-    // disable reordering table column
-    table.getTableHeader().setReorderingAllowed(false);
-
-    // apply checkbox custom to table header
-    table.getColumnModel().getColumn(0).setHeaderRenderer(new CheckBoxTableHeaderRenderer(table, 0));
-
-    // alignment table header
-    table.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(table) {
-        @Override
-        protected int getAlignment(int column) {
-            if (column == 1) {
-                return SwingConstants.CENTER;
-            }
-            return SwingConstants.LEADING;
-        }
-    });
-
-    // style
-    panel.putClientProperty(FlatClientProperties.STYLE, "" +
-            "arc:20;" +
-            "background:$Table.background;");
-    table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
-            "height:30;" +
-            "hoverBackground:null;" +
-            "pressedBackground:null;" +
-            "separatorColor:$TableHeader.background;");
-    table.putClientProperty(FlatClientProperties.STYLE, "" +
-            "rowHeight:70;" +
-            "showHorizontalLines:true;" +
-            "intercellSpacing:0,1;" +
-            "cellFocusColor:$TableHeader.hoverBackground;" +
-            "selectionBackground:$TableHeader.hoverBackground;" +
-            "selectionInactiveBackground:$TableHeader.hoverBackground;" +
-            "selectionForeground:$Table.foreground;");
-    scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
-            "trackArc:$ScrollBar.thumbArc;" +
-            "trackInsets:3,3,3,3;" +
-            "thumbInsets:3,3,3,3;" +
-            "background:$Table.background;");
-
-    // create title
-    JLabel title = new JLabel("Bảng Chức Vụ");
-    title.putClientProperty(FlatClientProperties.STYLE, "" +
-            "font:bold +2");
-    panel.add(title, "gapx 20");
-
-    // create header
-//    panel.add(createHeaderAction());
-
-    JSeparator separator = new JSeparator();
-    separator.putClientProperty(FlatClientProperties.STYLE, "" +
-            "foreground:$Table.gridColor;");
-    panel.add(separator, "height 2");
-    panel.add(scrollPane, "span, grow");
-    panel.add(new JScrollPane(table), java.awt.BorderLayout.CENTER);
-    return panel;
-}
-
-//    private JPanel createPhanQuyenTable() {
+//    private JPanel createChucVuTable() {
 //    JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
 //
-//    // Khởi tạo model cho bảng
-//    Object columns[] = new Object[]{"CHỌN", "MÃ QUYỀN", "TÊN QUYỀN", "MÔ TẢ QUYỀN"};
+//    // create table model
+//    Object columns[] = new Object[]{"CHỌN", "MÃ CHỨC VỤ", "TÊN CHỨC VỤ", "TÊN CHỨC NĂNG"};
 //    DefaultTableModel model = new DefaultTableModel(columns, 0) {
 //        @Override
 //        public boolean isCellEditable(int row, int column) {
-//            return column == 0; // Cho phép chỉnh sửa chỉ ở cột CheckBox
+//            // allow cell editable at column 0 for checkbox
+//            return column == 0;
 //        }
 //
 //        @Override
 //        public Class<?> getColumnClass(int columnIndex) {
+//            // use boolean type at column 0 for checkbox
 //            if (columnIndex == 0) {
-//                return Boolean.class; // Cột chọn sử dụng CheckBox
+//                return Boolean.class;
 //            }
 //            return super.getColumnClass(columnIndex);
 //        }
 //    };
 //
-//    // Thêm dữ liệu mẫu cho bảng phân quyền
-//    model.addRow(new Object[]{false, "Q01", "Admin", "Quản lý toàn bộ hệ thống"});
-//    model.addRow(new Object[]{false, "Q02", "Nhân viên", "Truy cập dữ liệu hạn chế"});
-//    model.addRow(new Object[]{false, "Q03", "Khách hàng", "Xem và mua sản phẩm"});
+//    // Sample data for the Chức vụ table
+//    model.addRow(new Object[]{false, "CV01", "Quản trị viên", "Quản lý hệ thống"});
+//    model.addRow(new Object[]{false, "CV02", "Nhân viên", "Thực hiện công việc hàng ngày"});
+//    model.addRow(new Object[]{false, "CV03", "Giám đốc", "Quản lý nhân sự và chiến lược"});
+//    model.addRow(new Object[]{false, "CV04", "Kế toán", "Quản lý tài chính và chi tiêu"});
+//    model.addRow(new Object[]{false, "CV05", "Thủ quỹ", "Quản lý tiền mặt và giao dịch"});
 //
-//    // Tạo bảng
+//    // create table
 //    JTable table = new JTable(model);
+//
+//    // table scroll
 //    JScrollPane scrollPane = new JScrollPane(table);
 //    scrollPane.setBorder(BorderFactory.createEmptyBorder());
 //
-//    // Tùy chỉnh cột trong bảng
-//    table.getColumnModel().getColumn(0).setMaxWidth(50);
-//    table.getColumnModel().getColumn(1).setMaxWidth(100);
-//    table.getColumnModel().getColumn(2).setPreferredWidth(150);
-//    table.getColumnModel().getColumn(3).setPreferredWidth(250);
+//    // table option
+//    table.getColumnModel().getColumn(0).setMaxWidth(50);  // Cột checkbox
+//    table.getColumnModel().getColumn(1).setMaxWidth(100); // Cột Mã chức vụ
+//    table.getColumnModel().getColumn(2).setPreferredWidth(150); // Tên chức vụ
+//    table.getColumnModel().getColumn(3).setPreferredWidth(250); // Tên chức năng
 //
-//    // Disable reordering table columns
+//    // disable reordering table column
 //    table.getTableHeader().setReorderingAllowed(false);
 //
-//    // Custom CheckBox renderer cho header cột "Chọn"
+//    // apply checkbox custom to table header
 //    table.getColumnModel().getColumn(0).setHeaderRenderer(new CheckBoxTableHeaderRenderer(table, 0));
 //
-//    // Căn chỉnh các cột khác
+//    // alignment table header
 //    table.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(table) {
 //        @Override
 //        protected int getAlignment(int column) {
@@ -218,22 +126,120 @@ public class formchucvu extends javax.swing.JPanel {
 //        }
 //    });
 //
-//    // Áp dụng các style tương tự như bảng chức vụ
-//    panel.putClientProperty(FlatClientProperties.STYLE, "arc:20; background:$Table.background;");
-//    table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "height:30;");
-//    table.putClientProperty(FlatClientProperties.STYLE, "rowHeight:70; showHorizontalLines:true; intercellSpacing:0,1;");
-//    scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "trackArc:$ScrollBar.thumbArc;");
+//    // style
+//    panel.putClientProperty(FlatClientProperties.STYLE, "" +
+//            "arc:20;" +
+//            "background:$Table.background;");
+//    table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
+//            "height:30;" +
+//            "hoverBackground:null;" +
+//            "pressedBackground:null;" +
+//            "separatorColor:$TableHeader.background;");
+//    table.putClientProperty(FlatClientProperties.STYLE, "" +
+//            "rowHeight:70;" +
+//            "showHorizontalLines:true;" +
+//            "intercellSpacing:0,1;" +
+//            "cellFocusColor:$TableHeader.hoverBackground;" +
+//            "selectionBackground:$TableHeader.hoverBackground;" +
+//            "selectionInactiveBackground:$TableHeader.hoverBackground;" +
+//            "selectionForeground:$Table.foreground;");
+//    scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
+//            "trackArc:$ScrollBar.thumbArc;" +
+//            "trackInsets:3,3,3,3;" +
+//            "thumbInsets:3,3,3,3;" +
+//            "background:$Table.background;");
 //
-//    // Tạo tiêu đề cho bảng phân quyền
-//    JLabel title = new JLabel("Bảng Phân Quyền");
-//    title.putClientProperty(FlatClientProperties.STYLE, "font:bold +2");
+//    // create title
+//    JLabel title = new JLabel("Bảng Chức Vụ");
+//    title.putClientProperty(FlatClientProperties.STYLE, "" +
+//            "font:bold +2");
 //    panel.add(title, "gapx 20");
 //
-//    // Thêm bảng vào panel
-//    panel.add(scrollPane, "span, grow");
+//    // create header
+//    panel.add(createHeaderAction());
 //
+//    JSeparator separator = new JSeparator();
+//    separator.putClientProperty(FlatClientProperties.STYLE, "" +
+//            "foreground:$Table.gridColor;");
+//    panel.add(separator, "height 2");
+//    panel.add(scrollPane, "span, grow");
+//    panel.add(new JScrollPane(table), java.awt.BorderLayout.CENTER);
 //    return panel;
 //}
+private JPanel createChucVuTable() {
+        JPanel panel = new JPanel(new MigLayout("fillx, wrap, insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
+
+        // create title
+        JLabel title = new JLabel("Bảng Chức Vụ");
+        title.putClientProperty(FlatClientProperties.STYLE, "font:bold +2");
+        panel.add(title, "gapx 20, wrap");
+
+        // create header action with search and buttons
+        panel.add(createHeaderAction(), "growx, wrap");
+
+        // create table model for Chức Vụ
+        Object columns[] = new Object[]{"CHỌN", "MÃ CHỨC VỤ", "TÊN CHỨC VỤ", "TÊN CHỨC NĂNG"};
+        DefaultTableModel model = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 0; // allow editing in the checkbox column
+            }
+
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 0) {
+                    return Boolean.class; // checkbox column
+                }
+                return super.getColumnClass(columnIndex);
+            }
+        };
+
+        // Sample data for the Chức Vụ table
+        model.addRow(new Object[]{false, "CV01", "Quản trị viên", "Quản lý hệ thống"});
+        model.addRow(new Object[]{false, "CV02", "Nhân viên", "Thực hiện công việc hàng ngày"});
+        model.addRow(new Object[]{false, "CV03", "Giám đốc", "Quản lý nhân sự và chiến lược"});
+        model.addRow(new Object[]{false, "CV04", "Kế toán", "Quản lý tài chính và chi tiêu"});
+        model.addRow(new Object[]{false, "CV05", "Thủ quỹ", "Quản lý tiền mặt và giao dịch"});
+
+        // create table
+        JTable table = new JTable(model);
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+
+        // table options
+        table.getColumnModel().getColumn(0).setMaxWidth(50);  // Cột checkbox
+        table.getColumnModel().getColumn(1).setMaxWidth(100); // Cột Mã chức vụ
+        table.getColumnModel().getColumn(2).setPreferredWidth(150); // Tên chức vụ
+        table.getColumnModel().getColumn(3).setPreferredWidth(250); // Tên chức năng
+
+        // disable reordering table column
+        table.getTableHeader().setReorderingAllowed(false);
+        table.getColumnModel().getColumn(0).setHeaderRenderer(new CheckBoxTableHeaderRenderer(table, 0));
+
+        // alignment table header
+        table.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(table) {
+            @Override
+            protected int getAlignment(int column) {
+                return column == 1 ? SwingConstants.CENTER : SwingConstants.LEADING;
+            }
+        });
+
+        // style
+        panel.putClientProperty(FlatClientProperties.STYLE, "arc:20; background:$Table.background;");
+        table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "height:30; hoverBackground:null; pressedBackground:null; separatorColor:$TableHeader.background;");
+        table.putClientProperty(FlatClientProperties.STYLE, "rowHeight:70; showHorizontalLines:true; intercellSpacing:0,1; cellFocusColor:$TableHeader.hoverBackground; selectionBackground:$TableHeader.hoverBackground; selectionForeground:$Table.foreground;");
+        scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "trackArc:$ScrollBar.thumbArc; trackInsets:3,3,3,3; thumbInsets:3,3,3,3; background:$Table.background;");
+
+        // separator
+        JSeparator separator = new JSeparator();
+        separator.putClientProperty(FlatClientProperties.STYLE, "foreground:$Table.gridColor;");
+        panel.add(separator, "height 2");
+
+        panel.add(scrollPane, "span, grow");
+
+        return panel;
+    }
+
     private JPanel createPhanQuyenTable() {
     JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
 
@@ -321,7 +327,8 @@ public class formchucvu extends javax.swing.JPanel {
     title.putClientProperty(FlatClientProperties.STYLE, "" +
             "font:bold +2");
     panel.add(title, "gapx 20");
-
+  // create header
+        panel.add(createHeaderAction());
     // add separator and scrollpane to panel
     JSeparator separator = new JSeparator();
     separator.putClientProperty(FlatClientProperties.STYLE, "" +
@@ -331,7 +338,26 @@ public class formchucvu extends javax.swing.JPanel {
 
     return panel;
 }
+ private Component createHeaderAction() {
+        JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,230]push[][]"));
 
+        JTextField txtSearch = new JTextField();
+        txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Search...");
+        txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("raven/modal/demo/icons/search.svg", 0.4f));
+        JButton cmdCreate = new JButton("Create");
+        JButton cmdEdit = new JButton("Edit");
+        JButton cmdDelete = new JButton("Delete");
+
+        cmdCreate.addActionListener(e -> showModal());
+        panel.add(txtSearch);
+        panel.add(cmdCreate);
+        panel.add(cmdEdit);
+        panel.add(cmdDelete);
+
+        panel.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:null;");
+        return panel;
+    }
     
 
       
@@ -546,4 +572,8 @@ public class formchucvu extends javax.swing.JPanel {
     private javax.swing.JTable tablechucvu;
     private javax.swing.JTextField txtsearch;
     // End of variables declaration                   
+
+    private void showModal() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
