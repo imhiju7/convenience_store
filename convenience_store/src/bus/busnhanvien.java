@@ -14,6 +14,9 @@ import java.util.ArrayList;
 public class busnhanvien {
     daonhanvien daonv = new daonhanvien();
     private ArrayList<dtonhanvien> list_nv;
+
+    public busnhanvien() {
+    }
     
     // get
     

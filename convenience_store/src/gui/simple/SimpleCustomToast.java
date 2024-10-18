@@ -3,8 +3,8 @@ package gui.simple;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import net.miginfocom.swing.MigLayout;
-import raven.extras.AvatarIcon;
-import raven.modal.toast.ToastCustomPanel;
+import gui.extras.AvatarIcon;
+import gui.modal.toast.ToastCustomPanel;
 
 import javax.swing.*;
 

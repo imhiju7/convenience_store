@@ -2,8 +2,9 @@ package gui.simple;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
-import raven.modal.component.ModalBorderAction;
-import raven.modal.component.SimpleModalBorder;
+import gui.modal.component.ModalBorderAction;
+import gui.modal.component.SimpleModalBorder;
+
 
 import javax.swing.*;
 import java.awt.event.KeyAdapter;

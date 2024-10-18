@@ -1,4 +1,5 @@
 
+
 package gui.model;
 
 import java.text.DecimalFormat;
@@ -70,3 +71,4 @@ public class ModelEmployee {
         return new Object[]{false, row, profile, date, nf.format(salary), position, description, profile};
     }
 }
+
