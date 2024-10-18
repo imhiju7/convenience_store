@@ -24,6 +24,38 @@ import java.util.logging.Logger;
 public class daonhanvien {
     
     
+    private ArrayList<dtonhanvien> list_nv;
+    
+    
+    public ArrayList<dtonhanvien> list() throws SQLException{
+        Connection con = connect.connection();
+        String sql = "SELECT * FROM nhanvien where isDelete= 0";
+        PreparedStatement pst =  con.prepareStatement(sql);
+        ResultSet rs = pst.executeQuery();
+        ArrayList<dtonhanvien> list = new ArrayList<>();
+        while(rs.next()){
+            dtonhanvien nv = new dtonhanvien();
+            nv.setManhanvien(rs.getInt("maNhanVien"));
+            nv.setTennhanvien(rs.getString("tenNhanVien"));
+            nv.setNgaysinh(rs.getDate("ngaySinh"));
+            nv.setEmail(rs.getString("Email"));
+            nv.setSdt(rs.getString("soDienThoai"));
+            nv.setDiachi(rs.getString("diaChi"));
+            nv.setGioitinh(rs.getInt("gioiTinh"));
+            nv.setMachucvu(rs.getInt("maChucVu"));
+            nv.setIsdelete(rs.getInt("isDelete"));
+            nv.setLuongcoban(rs.getFloat("luongCoBan"));
+            nv.setImg(rs.getString("img"));
+            list_nv.add(nv);
+        }
+        con.close();
+        return list_nv;
+    }
+    
+    public ArrayList<dtonhanvien> getlist(){
+        return list_nv;
+    }
+    
     // add
     
     // update

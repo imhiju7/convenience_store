@@ -64,4 +64,13 @@ public class SampleData {
             return avatarIcon;
         }
     }
+    private static Icon getProfileIcon1(String name, boolean defaultIcon) {
+        if (defaultIcon) {
+            return new ImageIcon(SampleData.class.getResource("/source/image/test/images/" + name));
+        } else {
+            AvatarIcon avatarIcon = new AvatarIcon(SampleData.class.getResource("/source/image/test/images/" + name), 55, 55, 3f);
+            avatarIcon.setType(AvatarIcon.Type.MASK_SQUIRCLE);
+            return avatarIcon;
+        }
+    }
 }
