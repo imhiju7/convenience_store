@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * @author PHUONG ANH
  */
 public class buschamcong {
-    private daochamcong daoChamCong= new daochamcong();
+    private daochamcong dao= new daochamcong();
     public ArrayList <dtochamcong> dscc;
     public buschamcong() {
         getlist() ;
@@ -21,11 +21,11 @@ public class buschamcong {
 
     // Get list of all cham cong records
     public void getlist() {
-        this.dscc =  daoChamCong.getlist();
+        this.dscc =  dao.getlist();
     }
 
     public void create(dtochamcong cc){
-        daoChamCong.create(cc);
+        dao.create(cc);
     }
     public dtochamcong get(int machamcong){
         for (dtochamcong cc: dscc){
@@ -35,10 +35,24 @@ public class buschamcong {
         }
         return null;
     }
+    
+    public int countchamcong(){
+        return dao.countchamcong();
+    }
+    
+    public boolean isexist(int currmonth, int curryear){
+        for (dtochamcong cc: dscc){
+            if(cc.getThangchamcong() == currmonth && cc.getNamchamcong() == curryear){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     // Example of a method to calculate total work hours for an employee
     public int calculateTotalHours(int maNhanVien) {
         int totalHours = 0;
-        ArrayList<dtochamcong> list = daoChamCong.getlist();
+        ArrayList<dtochamcong> list = dao.getlist();
         for (dtochamcong chamCong : list) {
             if (chamCong.getManhanvien() == maNhanVien) {
                 totalHours += chamCong.getSogiolamviec();

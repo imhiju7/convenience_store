@@ -87,6 +87,29 @@ public class daochamcong {
             }
         }
     }
+    public int countchamcong() {
+    int count = 0;
+    java.sql.Connection con = connect.connection();
+    String sql = "SELECT COUNT(*) FROM chamcong ";
+    
+    try {
+        PreparedStatement pst = con.prepareStatement(sql);
+        ResultSet rs = pst.executeQuery();
+        if (rs.next()) {
+            count = rs.getInt(1); // Get the count from the first column
+        }
+    } catch (SQLException e) {
+        Logger.getLogger(daochamcong.class.getName()).log(Level.SEVERE, null, e);
+    } finally {
+        try {
+            con.close();
+        } catch (SQLException e) {
+            Logger.getLogger(daochamcong.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+    return count;
+}
+
     public static void main(String[] args) {
         // Create an instance of the DAO class
         daochamcong dao = new daochamcong();
@@ -94,9 +117,6 @@ public class daochamcong {
         // Retrieve the list of details
         ArrayList<dtochamcong> list = dao.getlist();
 
-        // Print each daochamcong object in the list
-        for (dtochamcong detail : list) {
-            System.out.println(detail);
-        }
+        System.out.print(dao.countchamcong());
     }
 }

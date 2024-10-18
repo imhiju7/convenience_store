@@ -7,6 +7,7 @@ import gui.comp.Header;
 import gui.comp.Menu;
 import gui.event.EventMenuSelected;
 import gui.event.EventShowPopupMenu;
+import gui.form.formchamcong;
 import gui.form.formnhanvien;
 import gui.form.formsanpham;
 
@@ -72,7 +73,15 @@ public class Guimain extends javax.swing.JFrame {
                     }
                      main.showForm(new formnhanvien());
                  }
-  
+                 if ((menuIndex==3)&&(subMenuIndex==0)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     main.showForm(new formchamcong());
+                 }
+                 
     }
         });
         menu.addEventShowPopup((Component com) -> {

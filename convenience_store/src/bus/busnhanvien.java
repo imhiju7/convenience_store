@@ -13,9 +13,10 @@ import java.util.ArrayList;
  */
 public class busnhanvien {
     daonhanvien daonv = new daonhanvien();
-    private ArrayList<dtonhanvien> list_nv;
+    public ArrayList<dtonhanvien> list_nv;
 
     public busnhanvien() {
+        getlist();
     }
     
     // get
@@ -28,17 +29,14 @@ public class busnhanvien {
         return daonv.gettennvbymanv(manv);
     }
     
-    
-    
-    public void list() throws SQLException{
-        daonhanvien daonv = new daonhanvien();
-        daonv.list();
-        list_nv = daonv.getlist();
+    public void getlist() {
+        this.list_nv = daonv.getlist();
     }
-    
-    public ArrayList<dtonhanvien> getList(){
-        return list_nv;
+
+    public static void main(String args[]) {
+        busnhanvien bus = new busnhanvien();
+        for(dtonhanvien nv:bus.list_nv){
+            System.out.print(nv);
+        }
     }
-    
-    
 }
