@@ -8,8 +8,10 @@ import gui.comp.Menu;
 import gui.event.EventMenuSelected;
 import gui.event.EventShowPopupMenu;
 import gui.form.formchamcong;
+import gui.form.formchucvu;
 import gui.form.formnhanvien;
 import gui.form.formsanpham;
+import gui.form.frmlogin;
 
 import gui.swing.dashboard.MenuItem;
 import gui.swing.dashboard.PopupMenu;
@@ -57,6 +59,7 @@ public class Guimain extends javax.swing.JFrame {
              if (subMenuIndex == -1) {
             main.setVisible(true);
         } else {
+//                 Danh mục Order
                  if ((menuIndex==0)&&(subMenuIndex==0)) {
                      try {
                        UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
@@ -65,6 +68,7 @@ public class Guimain extends javax.swing.JFrame {
                     }
                      main.showForm(new formsanpham());
                  }
+//                 Danh mục Nhân viên
                  if ((menuIndex==2)&&(subMenuIndex==0)) {
                      try {
                        UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
@@ -73,13 +77,26 @@ public class Guimain extends javax.swing.JFrame {
                     }
                      main.showForm(new formnhanvien());
                  }
-                 if ((menuIndex==3)&&(subMenuIndex==0)) {
+                 if ((menuIndex==2)&&(subMenuIndex==2)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     main.showForm(new formchucvu());
+                 }
+                 if ((menuIndex==2)&&(subMenuIndex==3)) {
                      try {
                        UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                      main.showForm(new formchamcong());
+                 }
+//                 Danh mục Cài đặt
+                 if ((menuIndex==5)&&(subMenuIndex==0)) {
+                    dispose();
+                    new frmlogin().setVisible(true);
                  }
                  
     }
