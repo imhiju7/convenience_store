@@ -7,10 +7,8 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import bus.buschamcong;
 import bus.buschitietchamcong;
-import bus.busnhanvien;
 import dto.dtochamcong;
 import dto.dtochitietchamcong;
-import dto.dtonhanvien;
 import gui.modal.ModalDialog;
 import gui.modal.component.SimpleModalBorder;
 import gui.model.ModelEmployee;
@@ -20,19 +18,15 @@ import gui.table.CheckBoxTableHeaderRenderer;
 import gui.table.TableHeaderAlignment;
 import gui.modal.option.*;
 import gui.simple.SimpleInputForms;
-import java.time.Year;
-import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  *
  * @author PHUONG ANH
  */
 public class formchamcong extends javax.swing.JPanel {
-    private JTable generalTable;
     private buschamcong buscc = new buschamcong();
     private buschitietchamcong busctcc = new buschitietchamcong();
-    private busnhanvien busnv = new busnhanvien();
+
     /**
      * Creates new form formchamcong
      */
@@ -52,7 +46,7 @@ public class formchamcong extends javax.swing.JPanel {
      */
     private void init() {
         setLayout(new MigLayout("fillx,wrap,insets 7 15 7 15", "[fill]", "[][fill,grow]"));
-        add(createInfo("Bảng chấm công", "Chi tiết chấm công của toàn bộ nhân viên cửa hàng.", 1));
+        add(createInfo("Custom Table", "Chi tiết chấm công của toàn bộ nhân viên cửa hàng.", 1));
         add(createTab(), "gapx 7 7");
     }
 
@@ -86,10 +80,89 @@ public class formchamcong extends javax.swing.JPanel {
     }
 
     private Component createDetailTable() {
+    JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
+
+    // create table model
+    Object columns[] = new Object[]{"Mã nhân viên", "Tên", "Ngày", "Loại hình làm việc", "Check-in", "Check-out", "Số giờ làm"};
+    DefaultTableModel model = new DefaultTableModel(columns, 0) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
+
+    // create table
+    JTable table = new JTable(model);
+
+    // table scroll
+    JScrollPane scrollPane = new JScrollPane(table);
+    scrollPane.setBorder(BorderFactory.createEmptyBorder());
+
+    // alignment table header
+    table.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(table) {
+        @Override
+        protected int getAlignment(int column) {
+            if (column == 0) {
+                return SwingConstants.CENTER;
+            }
+            return SwingConstants.LEADING;
+        }
+    });
+    
+    
+    // Khóa vị trí cột
+    table.getTableHeader().setReorderingAllowed(false); // Khóa thay đổi vị trí cột
+
+    // style
+    table.putClientProperty(FlatClientProperties.STYLE, ""
+            + "arc:20;"
+            + "background:$Table.background;");
+    table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, ""
+            + "height:30;"
+            + "hoverBackground:null;"
+            + "pressedBackground:null;"
+            + "separatorColor:$TableHeader.background;");
+    table.putClientProperty(FlatClientProperties.STYLE, ""
+            + "rowHeight:30;"
+            + "showHorizontalLines:true;"
+            + "intercellSpacing:0,1;"
+            + "cellFocusColor:$TableHeader.hoverBackground;"
+            + "selectionBackground:$TableHeader.hoverBackground;"
+            + "selectionInactiveBackground:$TableHeader.hoverBackground;"
+            + "selectionForeground:$Table.foreground;");
+    scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, ""
+            + "trackArc:$ScrollBar.thumbArc;"
+            + "trackInsets:3,3,3,3;"
+            + "thumbInsets:3,3,3,3;"
+            + "background:$Table.background;");
+
+    // create title
+    JLabel title = new JLabel("Bảng chấm công theo ngày");
+    title.putClientProperty(FlatClientProperties.STYLE, ""
+            + "font:bold +2");
+    panel.add(title, "gapx 20");
+
+    // create header
+    panel.add(createHeaderDetailTable());
+
+    JSeparator separator = new JSeparator();
+    separator.putClientProperty(FlatClientProperties.STYLE, ""
+            + "foreground:$Table.gridColor;");
+    panel.add(separator, "height 2");
+    panel.add(scrollPane);
+
+    busctcc.getlist();
+    for (dtochitietchamcong cc : busctcc.dsctcc) {
+        model.addRow(cc.toTableRowDetail());
+    }
+    return panel;
+}
+
+    private Component createGeneralTable() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
 
         // create table model
-        Object columns[] = new Object[]{"Mã nhân viên", "Tên", "Ngày", "Loại hình làm việc", "Check-in", "Check-out", "Số giờ làm"};
+        Object columns[] = new Object[]{"Mã nhân viên", "Tên nhân viên", "Tháng", "Năm", "Số ngày nghỉ", "Số ngày trễ", "Giờ làm thêm", "Tổng giờ làm", "Tổng ngày làm", "Chi tiết"};
         DefaultTableModel model = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -100,18 +173,23 @@ public class formchamcong extends javax.swing.JPanel {
         // create table
         JTable table = new JTable(model);
 
+        
         // table scroll
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         // alignment table header
         table.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(table) {
-            protected int getAlignment() {
-                return SwingConstants.CENTER;
-
+            @Override
+            protected int getAlignment(int column) {
+                if (column == 0) {
+                    return SwingConstants.CENTER;
+                }
+                return SwingConstants.LEADING;
             }
         });
-
+        // Khóa thay đổi vị trí cột
+        table.getTableHeader().setReorderingAllowed(false);
         // style
         table.putClientProperty(FlatClientProperties.STYLE, ""
                 + "arc:20;"
@@ -136,13 +214,12 @@ public class formchamcong extends javax.swing.JPanel {
                 + "background:$Table.background;");
 
         // create title
-        JLabel title = new JLabel("Bảng chấm công theo ngày");
+        JLabel title = new JLabel("Bảng chấm công theo tháng");
         title.putClientProperty(FlatClientProperties.STYLE, ""
                 + "font:bold +2");
         panel.add(title, "gapx 20");
-
         // create header
-        panel.add(createHeaderDetailTable());
+        panel.add(createHeaderGeneralTable());
 
         JSeparator separator = new JSeparator();
         separator.putClientProperty(FlatClientProperties.STYLE, ""
@@ -150,67 +227,12 @@ public class formchamcong extends javax.swing.JPanel {
         panel.add(separator, "height 2");
         panel.add(scrollPane);
 
-        busctcc.getlist();
-        for (dtochitietchamcong cc: busctcc.dsctcc){
-            model.addRow(cc.toTableRowDetail());
-        }
-        return panel;
-    }
-
-    private Component createGeneralTable() {
-        JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
-
-        // create table model
-        Object columns[] = new Object[]{"Mã nhân viên", "Tên nhân viên", "Tháng", "Năm", "Số ngày nghỉ", "Số ngày trễ", "Giờ làm thêm", "Tổng giờ làm", "Tổng ngày làm", "Chi tiết"};
-        DefaultTableModel model = new DefaultTableModel(columns, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-
-        // create table and assign to generalTable
-        generalTable = new JTable(model);
-
-        // table scroll
-        JScrollPane scrollPane = new JScrollPane(generalTable);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-
-        // alignment table header
-        generalTable.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(generalTable) {
-            protected int getAlignment() {
-                return SwingConstants.CENTER;
-            }
-        });
-
-        // style
-        generalTable.putClientProperty(FlatClientProperties.STYLE, "" + "arc:20;" + "background:$Table.background;");
-        generalTable.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" + "height:30;" + "hoverBackground:null;" + "pressedBackground:null;" + "separatorColor:$TableHeader.background;");
-        generalTable.putClientProperty(FlatClientProperties.STYLE, "" + "rowHeight:30;" + "showHorizontalLines:true;" + "intercellSpacing:0,1;" + "cellFocusColor:$TableHeader.hoverBackground;" + "selectionBackground:$TableHeader.hoverBackground;" + "selectionInactiveBackground:$TableHeader.hoverBackground;" + "selectionForeground:$Table.foreground;");
-        scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" + "trackArc:$ScrollBar.thumbArc;" + "trackInsets:3,3,3,3;" + "thumbInsets:3,3,3,3;" + "background:$Table.background;");
-
-        // create title
-        JLabel title = new JLabel("Bảng chấm công theo tháng");
-        title.putClientProperty(FlatClientProperties.STYLE, "" + "font:bold +2");
-        panel.add(title, "gapx 20");
-
-        // create header
-        panel.add(createHeaderGeneralTable());
-
-        JSeparator separator = new JSeparator();
-        separator.putClientProperty(FlatClientProperties.STYLE, "" + "foreground:$Table.gridColor;");
-        panel.add(separator, "height 2");
-
-        panel.add(scrollPane);
-
         buscc.getlist();
-        for (dtochamcong cc : buscc.dscc) {
+        for (dtochamcong cc: buscc.dscc){
             model.addRow(cc.toTableRowGeneral());
         }
-
         return panel;
     }
-
 
     private Component createHeaderGeneralTable() {
         JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,230]push[][]"));
@@ -241,38 +263,17 @@ public class formchamcong extends javax.swing.JPanel {
     }
 
     private void showModal() {
-        int currYear = Year.now().getValue();
-        Calendar calendar = Calendar.getInstance();
-        int currMonth = calendar.get(Calendar.MONTH) + 1;
+        Option option = ModalDialog.createOption();
+        option.getLayoutOption().setSize(-1, 1f)
+                .setLocation(Location.TRAILING, Location.TOP)
+                .setAnimateDistance(0.7f, 0);
+        ModalDialog.showModal(this, new SimpleModalBorder(
+                new SimpleInputForms(), "Create", SimpleModalBorder.YES_NO_OPTION,
+                (controller, action) -> {
+                    controller.close();
+                }), option);
+    }
 
-        if (buscc.isexist(currMonth, currYear)) {
-            JOptionPane.showMessageDialog(null, "Bảng chấm công tháng này đã tồn tại");
-            return;
-        }
-        int count = buscc.countchamcong();
-
-        busnv.getlist();
-        for (dtonhanvien nhanvien : busnv.list_nv) {
-            dtochamcong cc = new dtochamcong(++count, nhanvien.getManhanvien(), 0, 0, 0, 0, 0, "", currMonth, currYear);
-            buscc.create(cc);
-        }
-
-        // Instead of calling init(), refresh the table
-        refreshGeneralTable((DefaultTableModel) generalTable.getModel());
-
-        JOptionPane.showMessageDialog(null, "Tạo thành công bảng chấm công bảng chấm công mới");
-}
-
-    private void refreshGeneralTable(DefaultTableModel model) {
-        // Clear existing rows
-        model.setRowCount(0);
-
-        // Repopulate with new data
-        buscc.getlist();
-        for (dtochamcong cc : buscc.dscc) {
-            model.addRow(cc.toTableRowGeneral());
-        }
-    }   
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -315,29 +316,4 @@ public class formchamcong extends javax.swing.JPanel {
             }
         });
     }
-
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
-    }// </editor-fold>//GEN-END:initComponents
-
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    // End of variables declaration//GEN-END:variables
 }
