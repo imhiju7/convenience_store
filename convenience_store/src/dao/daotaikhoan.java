@@ -6,7 +6,8 @@ package dao;
 
 import dto.dtotaikhoan;
 import dao.connect;
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,6 +47,23 @@ public class daotaikhoan {
         return true;
     }
     
+        public boolean update(int manhanvien, String tendangnhap, String matkhau, int isblock) {
+                    Connection con = connect.connection();
+        try {
+            String sql = "UPDATE taikhoan SET tendangnhap = ?, matkhau = ?, isblock = ? WHERE manhanvien = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, tendangnhap); // Cập nhật tên đăng nhập
+            ps.setString(2, matkhau);     // Cập nhật mật khẩu
+            ps.setInt(3, isblock);        // Cập nhật trạng thái (1: Đã khóa, 0: Hoạt động)
+            ps.setInt(4, manhanvien);     // Xác định mã nhân viên
+            int rowsAffected = ps.executeUpdate(); // Thực hiện cập nhật
+            return rowsAffected > 0;  // Trả về true nếu cập nhật thành công
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean updatematkhau(String tendangnhap, String matkhau){
         Connection con = connect.connection();
         String sql = "UPDATE taikhoan set matKhau= ? WHERE tenDangNhap = ?";

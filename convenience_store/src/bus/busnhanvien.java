@@ -20,6 +20,9 @@ public class busnhanvien {
     }
     
     // get
+    public ArrayList<dtonhanvien> getNhanVienList() {
+        return daonv.getNhanVienList();
+    }
     
     public int getmachucvu(int manv){
         return daonv.getmachucvu(manv);
