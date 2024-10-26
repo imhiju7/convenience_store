@@ -88,9 +88,9 @@ public class daochamcong {
         }
     }
     public int countchamcong() {
-    int count = 0;
-    java.sql.Connection con = connect.connection();
-    String sql = "SELECT COUNT(*) FROM chamcong ";
+        int count = 0;
+        java.sql.Connection con = connect.connection();
+        String sql = "SELECT COUNT(*) FROM chamcong ";
     
     try {
         PreparedStatement pst = con.prepareStatement(sql);
@@ -117,6 +117,8 @@ public class daochamcong {
         // Retrieve the list of details
         ArrayList<dtochamcong> list = dao.getlist();
 
-        System.out.print(dao.countchamcong());
+        for (dtochamcong detail : list) {
+            System.out.println(detail);
+        }
     }
 }
