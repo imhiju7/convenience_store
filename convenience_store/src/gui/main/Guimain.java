@@ -12,7 +12,7 @@ import gui.form.formchucvu;
 import gui.form.formnhanvien;
 import gui.form.formsanpham;
 import gui.form.frmlogin;
-import gui.form.Taikhoan;
+import gui.form.formtaikhoan;
 import gui.swing.dashboard.MenuItem;
 import gui.swing.dashboard.PopupMenu;
 import gui.swing.icon.GoogleMaterialDesignIcons;
@@ -83,7 +83,7 @@ public class Guimain extends javax.swing.JFrame {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                     main.showForm(new Taikhoan());
+                     main.showForm(new formtaikhoan());
                  }
                  if ((menuIndex==2)&&(subMenuIndex==2)) {
                      try {

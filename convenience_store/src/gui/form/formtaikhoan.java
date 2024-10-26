@@ -15,7 +15,7 @@
     import java.util.ArrayList;
     import java.text.SimpleDateFormat;
     import java.util.Date;
-    public class Taikhoan extends JPanel {
+    public class formtaikhoan extends JPanel {
     private JPanel mainPanel;
     private JPanel detailPanel;
     private JPanel searchPanel; // Thêm panel tìm kiếm
@@ -27,7 +27,7 @@
     private JTextField searchField; // Trường tìm kiếm
     private JComboBox<String> searchComboBox; // ComboBox tìm kiếm
 
-    public Taikhoan() {
+    public formtaikhoan() {
         busnv = new busnhanvien();  // Khởi tạo BUS để lấy dữ liệu từ DAO
         busChucVu = new bus.buschucvu();  // Khởi tạo BUS chức vụ
         setLayout(new BorderLayout());
@@ -548,7 +548,7 @@ private String getPositionName(int positionId) {
 
         public static void main(String[] args) {
             SwingUtilities.invokeLater(() -> {
-                Taikhoan frame = new Taikhoan();
+                formtaikhoan frame = new formtaikhoan();
                 frame.setVisible(true);
             });
         }
