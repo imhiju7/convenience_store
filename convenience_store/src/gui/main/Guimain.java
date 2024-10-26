@@ -12,7 +12,7 @@ import gui.form.formchucvu;
 import gui.form.formnhanvien;
 import gui.form.formsanpham;
 import gui.form.frmlogin;
-
+import gui.form.Taikhoan;
 import gui.swing.dashboard.MenuItem;
 import gui.swing.dashboard.PopupMenu;
 import gui.swing.icon.GoogleMaterialDesignIcons;
@@ -76,6 +76,14 @@ public class Guimain extends javax.swing.JFrame {
                         e.printStackTrace();
                     }
                      main.showForm(new formnhanvien());
+                 }
+                 if ((menuIndex==2)&&(subMenuIndex==1)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     main.showForm(new Taikhoan());
                  }
                  if ((menuIndex==2)&&(subMenuIndex==2)) {
                      try {
