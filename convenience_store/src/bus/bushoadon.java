@@ -1,13 +1,21 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package bus;
 import dao.daohoadon;
+import dto.dtohoadon;
+import java.util.ArrayList;
+import java.util.List;
 /**
  *
- * @author giavi
+ * @author AD
  */
 public class bushoadon {
     private daohoadon daoHD = new daohoadon();
+    public List<dtohoadon> hd;
+    
+    public void gethd() {
+        this.hd = daoHD.getAll();
+    }
+    public double getTongDoanhThu(){
+        return daoHD.getTongDoanhThu();
+    }
 }

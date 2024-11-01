@@ -11,6 +11,7 @@ import gui.form.formchamcong;
 import gui.form.formchucvu;
 import gui.form.formnhanvien;
 import gui.form.formsanpham;
+import gui.form.formthongke;
 import gui.form.frmlogin;
 
 import gui.swing.dashboard.MenuItem;
@@ -68,6 +69,7 @@ public class Guimain extends javax.swing.JFrame {
                     }
                      main.showForm(new formsanpham());
                  }
+//                 Danh mục Kho
 //                 Danh mục Nhân viên
                  if ((menuIndex==2)&&(subMenuIndex==0)) {
                      try {
@@ -93,6 +95,16 @@ public class Guimain extends javax.swing.JFrame {
                     }
                      main.showForm(new formchamcong());
                  }
+//                 Danh mục Khách hàng
+//                 Danh mục Thống kê
+                  if ((menuIndex==4)&&(subMenuIndex==0)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     main.showForm(new formthongke());
+                 }   
 //                 Danh mục Cài đặt
                  if ((menuIndex==5)&&(subMenuIndex==0)) {
                     dispose();

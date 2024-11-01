@@ -10,4 +10,7 @@ import dao.daophieunhap;
  */
 public class busphieunhap {
     private daophieunhap daoPhieuNhap = new daophieunhap();
+    public double getTongChiPhi(){
+        return daoPhieuNhap.getTongChiPhi();
+    }
 }
