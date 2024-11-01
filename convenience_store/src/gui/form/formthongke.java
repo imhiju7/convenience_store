@@ -4,6 +4,7 @@ package gui.form;
 
 
 import bus.bushoadon;
+import bus.buskhachhang;
 import bus.busphieunhap;
 import bus.busthongke;
 import dto.thongke.ThongKeTungNgayTrongThangDTO;
@@ -46,19 +47,22 @@ public class formthongke extends javax.swing.JPanel {
     private DefaultTableModel tblModel;
     private double tongDoanhThu;
     private double tongChiphi;
-    private double tongLuongNV;
+    private double soLuongKhachHang;
     private double tongLoiNhuan;
     ArrayList<ThongKeTungNgayTrongThangDTO> dataset;
     bushoadon bushd;
     busthongke bustk;
     busphieunhap buspn;
+    buskhachhang buskh;
     public formthongke() {
         this.bustk = new busthongke();
         this.bushd = new bushoadon();
         this.buspn = new busphieunhap();
+        this.buskh = new buskhachhang();
         this.dataset = bustk.getThongKe8NgayGanNhat();
         this.tongDoanhThu = bushd.getTongDoanhThu();
         this.tongChiphi = buspn.getTongChiPhi();
+        this.soLuongKhachHang = buskh.getSoLuongKH();
         this.tongLoiNhuan = this.tongDoanhThu - this.tongChiphi;
         init();     
         setOpaque(false);
@@ -74,10 +78,10 @@ public class formthongke extends javax.swing.JPanel {
     return new ImageIcon(newImg);
     }
    private void initCardData() {
-        card1.setData(new ModelCard("Tổng Doanh Thu",this.tongDoanhThu, 20, resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/income.png")), 50, 50)));
-        card2.setData(new ModelCard("Tổng Chi Phí", this.tongChiphi, 60, resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/low-price.png")), 50, 50)));
-        card3.setData(new ModelCard("Lương Nhân Viên", this.tongLuongNV, 80, resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/pay.png")), 50, 50)));
-        card4.setData(new ModelCard("Tổng Lợi Nhuận", this.tongLoiNhuan, 95, resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/profit.png")), 50, 50)));
+        card1.setData(new ModelCard("Tổng Doanh Thu",this.tongDoanhThu, resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/income.png")), 50, 50)));
+        card2.setData(new ModelCard("Tổng Chi Phí", this.tongChiphi, resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/pay.png")), 50, 50)));
+        card3.setData(new ModelCard("Khách Hàng", this.soLuongKhachHang, resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/rating.png")), 50, 50)));
+        card4.setData(new ModelCard("Tổng Lợi Nhuận", this.tongLoiNhuan, resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/profit.png")), 50, 50)));
     }
    private void loadDataChart(){
        for (ThongKeTungNgayTrongThangDTO i : dataset) {
