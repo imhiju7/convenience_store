@@ -40,7 +40,7 @@
 
         // Tìm kiếm
         JLabel searchLabel = new JLabel("Tìm kiếm:");
-        searchLabel.setForeground(Color.WHITE);
+        searchLabel.setForeground(Color.BLACK);
         searchPanel.add(searchLabel);
 
         // Trường tìm kiếm
@@ -86,7 +86,7 @@
         // Khởi tạo panel chi tiết, ẩn nó đi và không thêm vào layout ngay
         detailPanel = new JPanel();
         detailPanel.setPreferredSize(new Dimension(0, getHeight()));
-        detailPanel.setBackground(Color.LIGHT_GRAY);
+        detailPanel.setBackground(new Color(220, 220, 220));
         detailPanel.setLayout(null);
     }
 
@@ -160,12 +160,12 @@ private void resetSearch() {
 private JPanel createEmployeePanel(String name, int positionId, String imagePath, int manhanvien) {
     JPanel panel = new JPanel();
     panel.setLayout(new BorderLayout());
-    panel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+    panel.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220), 1));
     panel.setPreferredSize(new Dimension(0, 200));
-    panel.setBackground(Color.LIGHT_GRAY);
+    panel.setBackground(new Color(220, 220, 220));
 
     // Tạo đường dẫn cho ảnh
-    URL imageUrl = getClass().getResource("/source/image/test/images/" + imagePath);
+    URL imageUrl = getClass().getResource("/source/image/nhanvien/" + imagePath);
     ImageIcon imageIcon = null;
     if (imageUrl != null) {
         imageIcon = new ImageIcon(imageUrl);
@@ -179,12 +179,12 @@ private JPanel createEmployeePanel(String name, int positionId, String imagePath
 
     JPanel infoPanel = new JPanel();
     infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-    infoPanel.setBackground(Color.LIGHT_GRAY);
+    infoPanel.setBackground(new Color(220, 220, 220));
 
     // Sử dụng HTML để hiển thị tên nhân viên
     JLabel nameLabel = new JLabel("<html>" + name + "</html>");
     nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
-    nameLabel.setForeground(Color.WHITE);
+    nameLabel.setForeground(Color.BLACK);
     nameLabel.setMaximumSize(new Dimension(300, 80)); // Đặt chiều cao tối đa
     infoPanel.add(nameLabel);
 
@@ -192,7 +192,7 @@ private JPanel createEmployeePanel(String name, int positionId, String imagePath
     String position = getPositionName(positionId);
     JLabel positionLabel = new JLabel(position);
     positionLabel.setFont(new Font("Arial", Font.BOLD, 16));
-    positionLabel.setForeground(Color.WHITE);
+    positionLabel.setForeground(Color.BLACK);
     positionLabel.setMaximumSize(new Dimension(300, 60));
     infoPanel.add(positionLabel);
 
@@ -221,9 +221,9 @@ private String getPositionName(int positionId) {
         if (taikhoan != null) {
             if (!detailPanelVisible) {
                 detailPanelVisible = true;
-                getContentPane().add(detailPanel, BorderLayout.EAST); // Thêm panel chi tiết vào bên phải
+                this.add(detailPanel, BorderLayout.EAST); // Thêm panel chi tiết vào bên phải
                 mainPanel.setLayout(new GridLayout(0, 2, 10, 10));  // Chuyển thành 2 cột
-                getContentPane().revalidate();  // Cập nhật lại layout
+                this.revalidate();  // Cập nhật lại layout
                 slideInDetailPanel(); // Hiệu ứng trượt vào
             }
 
@@ -233,7 +233,7 @@ private String getPositionName(int positionId) {
             JLabel nameTitleLabel = new JLabel("Tên nhân viên:");
             nameTitleLabel.setBounds(10, 20, 280, 30);
             nameTitleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-            nameTitleLabel.setForeground(Color.WHITE);
+            nameTitleLabel.setForeground(Color.BLACK);
             detailPanel.add(nameTitleLabel);
 
             // Thông tin tên nhân viên
@@ -247,7 +247,7 @@ private String getPositionName(int positionId) {
             JLabel positionTitleLabel = new JLabel("Chức vụ:");
             positionTitleLabel.setBounds(10, 60, 280, 30);
             positionTitleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-            positionTitleLabel.setForeground(Color.WHITE);
+            positionTitleLabel.setForeground(Color.BLACK);
             detailPanel.add(positionTitleLabel);
 
             // Thông tin chức vụ
@@ -261,7 +261,7 @@ private String getPositionName(int positionId) {
             JLabel usernameTitleLabel = new JLabel("Tên đăng nhập:");
             usernameTitleLabel.setBounds(10, 100, 280, 30);
             usernameTitleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-            usernameTitleLabel.setForeground(Color.WHITE);
+            usernameTitleLabel.setForeground(Color.BLACK);
             detailPanel.add(usernameTitleLabel);
 
             // Thông tin tên đăng nhập
@@ -275,7 +275,7 @@ private String getPositionName(int positionId) {
             JLabel passwordTitleLabel = new JLabel("Mật khẩu:");
             passwordTitleLabel.setBounds(10, 140, 280, 30);
             passwordTitleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-            passwordTitleLabel.setForeground(Color.WHITE);
+            passwordTitleLabel.setForeground(Color.BLACK);
             detailPanel.add(passwordTitleLabel);
 
             // Thông tin mật khẩu
@@ -289,7 +289,7 @@ private String getPositionName(int positionId) {
             JLabel createdDateTitleLabel = new JLabel("Ngày tạo:");
             createdDateTitleLabel.setBounds(10, 180, 280, 30);
             createdDateTitleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-            createdDateTitleLabel.setForeground(Color.WHITE);
+            createdDateTitleLabel.setForeground(Color.BLACK);
             detailPanel.add(createdDateTitleLabel);
 
             // Thông tin ngày tạo
@@ -320,7 +320,7 @@ private String getPositionName(int positionId) {
             JLabel statusTitleLabel = new JLabel("Trạng thái:");
             statusTitleLabel.setBounds(10, 220, 280, 30);
             statusTitleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-            statusTitleLabel.setForeground(Color.WHITE);
+            statusTitleLabel.setForeground(Color.BLACK);
             detailPanel.add(statusTitleLabel);
 
             // Thông tin trạng thái
@@ -345,7 +345,7 @@ private String getPositionName(int positionId) {
                 JLabel newUsernameLabel = new JLabel("Tên ĐN mới:");
                 newUsernameLabel.setBounds(10, 320, 280, 30);
                 newUsernameLabel.setFont(new Font("Arial", Font.BOLD, 18));
-                newUsernameLabel.setForeground(Color.WHITE);
+                newUsernameLabel.setForeground(Color.BLACK);
                 detailPanel.add(newUsernameLabel);
 
                 // Trường để nhập tên đăng nhập mới
@@ -357,7 +357,7 @@ private String getPositionName(int positionId) {
                 JLabel confirmnewUsernameLabel = new JLabel("Xác nhận TĐN:");
                 confirmnewUsernameLabel.setBounds(10, 360, 280, 30);
                 confirmnewUsernameLabel.setFont(new Font("Arial", Font.BOLD, 18));
-                confirmnewUsernameLabel.setForeground(Color.WHITE);
+                confirmnewUsernameLabel.setForeground(Color.BLACK);
                 detailPanel.add(confirmnewUsernameLabel);
 
                 // Trường để nhập tên đăng nhập mới
@@ -369,7 +369,7 @@ private String getPositionName(int positionId) {
                 JLabel newPasswordLabel = new JLabel("Mật khẩu mới:");
                 newPasswordLabel.setBounds(10, 400, 280, 30);
                 newPasswordLabel.setFont(new Font("Arial", Font.BOLD, 18));
-                newPasswordLabel.setForeground(Color.WHITE);
+                newPasswordLabel.setForeground(Color.BLACK);
                 detailPanel.add(newPasswordLabel);
 
                 // Trường để nhập mật khẩu mới
@@ -381,7 +381,7 @@ private String getPositionName(int positionId) {
                 JLabel confirmPasswordLabel = new JLabel("Xác nhận MK:");
                 confirmPasswordLabel.setBounds(10, 440, 280, 30);
                 confirmPasswordLabel.setFont(new Font("Arial", Font.BOLD, 18));
-                confirmPasswordLabel.setForeground(Color.WHITE);
+                confirmPasswordLabel.setForeground(Color.BLACK);
                 detailPanel.add(confirmPasswordLabel);
 
                 // Trường để xác nhận mật khẩu mới
@@ -393,7 +393,7 @@ private String getPositionName(int positionId) {
                 JLabel newstatusLabel = new JLabel("Trạng thái mới:");
                 newstatusLabel.setBounds(10, 480, 280, 30);
                 newstatusLabel.setFont(new Font("Arial", Font.BOLD, 18));
-                newstatusLabel.setForeground(Color.WHITE);
+                newstatusLabel.setForeground(Color.BLACK);
                 detailPanel.add(newstatusLabel);
 
                 // Tạo JComboBox cho trạng thái mới
@@ -514,7 +514,7 @@ private String getPositionName(int positionId) {
                 public void actionPerformed(ActionEvent e) {
                     if (width < 300) {
                         detailPanel.setPreferredSize(new Dimension(width, getHeight()));
-                        getContentPane().revalidate();
+                        formtaikhoan.this.revalidate();
                         width += 5;
                     } else {
                         ((Timer) e.getSource()).stop();
@@ -525,26 +525,27 @@ private String getPositionName(int positionId) {
         }
 
         private void closeDetailPanel() {
-            slideOutTimer = new Timer(1, new ActionListener() {
-                int width = 300;
+    slideOutTimer = new Timer(1, new ActionListener() {
+        int width = 300;
 
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (width > 0) {
-                        detailPanel.setPreferredSize(new Dimension(width, getHeight()));
-                        getContentPane().revalidate();
-                        width -= 5;
-                    } else {
-                        ((Timer) e.getSource()).stop();
-                        getContentPane().remove(detailPanel); // Xóa panel chi tiết khi trượt ra
-                        mainPanel.setLayout(new GridLayout(0, 3, 10, 10));  // Trả về 3 cột
-                        getContentPane().revalidate();  // Cập nhật lại layout
-                        detailPanelVisible = false;
-                    }
-                }
-            });
-            slideOutTimer.start();
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (width > 0) {
+                detailPanel.setPreferredSize(new Dimension(width, getHeight()));
+                formtaikhoan.this.revalidate(); // Cập nhật lại layout của formtaikhoan
+                width -= 5;
+            } else {
+                ((Timer) e.getSource()).stop();
+                formtaikhoan.this.remove(detailPanel); // Xóa panel chi tiết khi trượt ra
+                mainPanel.setLayout(new GridLayout(0, 3, 10, 10));  // Trả về 3 cột
+                formtaikhoan.this.revalidate();  // Cập nhật lại layout của formtaikhoan
+                detailPanelVisible = false;
+            }
         }
+    });
+    slideOutTimer.start();
+}
+
 
         public static void main(String[] args) {
             SwingUtilities.invokeLater(() -> {
