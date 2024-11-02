@@ -7,7 +7,9 @@ import gui.comp.Header;
 import gui.comp.Menu;
 import gui.event.EventMenuSelected;
 import gui.event.EventShowPopupMenu;
+import gui.form.formchucvu;
 import gui.form.formnhanvien;
+import gui.form.formmenu;
 import gui.form.formsanpham;
 
 import gui.swing.dashboard.MenuItem;
@@ -62,6 +64,14 @@ public class Guimain extends javax.swing.JFrame {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                     main.showForm(new formmenu());
+                 }
+                 if ((menuIndex==1)&&(subMenuIndex==0)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                      main.showForm(new formsanpham());
                  }
                  if ((menuIndex==2)&&(subMenuIndex==0)) {
@@ -71,6 +81,14 @@ public class Guimain extends javax.swing.JFrame {
                         e.printStackTrace();
                     }
                      main.showForm(new formnhanvien());
+                 }
+                 if ((menuIndex==2)&&(subMenuIndex==2)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     main.showForm(new formchucvu());
                  }
   
     }

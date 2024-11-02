@@ -1,6 +1,7 @@
 package gui.comp;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import dto.dtosanpham;
 import net.miginfocom.swing.MigLayout;
 import helper.AvatarIcon;
 import gui.model.ModelEmployee;
@@ -10,12 +11,16 @@ import java.util.function.Consumer;
 
 public class SPCard extends JPanel {
 
-    private final ModelEmployee employee;
-    private final Consumer<ModelEmployee> event;
+    private dtosanpham sp;
+    private final Consumer<dtosanpham> event_sp;
     private boolean isSelected = false;
-    public SPCard(ModelEmployee employee, Consumer<ModelEmployee> event) {
-        this.employee = employee;
-        this.event = event;
+    private JPanel panelHeader;
+    private JPanel panelBody;
+    
+    
+    public SPCard(dtosanpham sp, Consumer<dtosanpham> event_sp) {
+        this.sp = sp;
+        this.event_sp = event_sp;
         init();
     }
 
@@ -56,11 +61,23 @@ public class SPCard extends JPanel {
         revalidate();
         repaint();
     }
+     
+     
+     
+     
+    private Icon getProfileIcon(String name) {
+        if(!name.equals("")){
+            System.out.println(name);
+            return new ImageIcon(getClass().getResource("/source/image/family_mart/" + name));
+        }else{
+            return new ImageIcon(getClass().getResource("/source/image/family_mart/Americano-nong-10oz-01-1-400x400.jpg"));
+        }
+    }
     private JPanel createHeader() {
         JPanel header = new JPanel(new MigLayout("fill,insets 0", "[fill]", "[top]"));
         header.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:null");
-        JLabel label = new JLabel(new AvatarIcon(employee.getProfile().getIcon(), 130, 130, 20));
+        JLabel label = new JLabel(new AvatarIcon(getProfileIcon(sp.getImg()), 130, 130, 20));
         header.add(label);
         return header;
     }
@@ -69,7 +86,7 @@ public class SPCard extends JPanel {
         JPanel body = new JPanel(new MigLayout("wrap", "[150]", "[][]push[]"));
         body.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:null");
-        JLabel title = new JLabel(employee.getProfile().getName());
+        JLabel title = new JLabel(sp.getTenSanPham());
         title.putClientProperty(FlatClientProperties.STYLE, "" +
                 "font:bold +1;");
         JTextPane description = new JTextPane();
@@ -79,13 +96,19 @@ public class SPCard extends JPanel {
                 "background:null;" +
                 "[light]foreground:tint($Label.foreground,30%);" +
                 "[dark]foreground:shade($Label.foreground,30%)");
-        description.setText(employee.getDescription());
-
-        
-        
+        JButton button = new JButton("View");
+        button.addActionListener(e -> event_sp.accept(sp));
+        button.putClientProperty(FlatClientProperties.STYLE, "" +
+                "arc:999;" +
+                "margin:3,25,3,25;" +
+                "borderWidth:1;" +
+                "focusWidth:0;" +
+                "innerFocusWidth:0;" +
+                "background:null;");
         
         body.add(title);
         body.add(description);
+        body.add(button);
         return body;
     }
     public void setSelected(boolean selected) {
@@ -95,9 +118,11 @@ public class SPCard extends JPanel {
     public boolean isSelected() {
         return this.isSelected;
     }
-    public String getEmployeeName() {
-    return employee.getProfile().getName();
-}
-    private JPanel panelHeader;
-    private JPanel panelBody;
+    public String getSanPhamName() {
+        return sp.getTenSanPham();
+    }
+    
+    public int getMaSanPham(){
+        return sp.getMaSanPham();
+    }
 }
