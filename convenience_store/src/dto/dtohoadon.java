@@ -4,6 +4,10 @@
  */
 package dto;
 
+import bus.buskhachhang;
+import bus.busnhanvien;
+
+import java.sql.SQLException;
 import java.util.Date;
 
 /**
@@ -74,8 +78,9 @@ public class dtohoadon {
     public void setMaTichDiem(int maTichDiem) {
         this.maTichDiem = maTichDiem;
     }
+    
     public dtohoadon(){}
-    public dtohoadon(int maHoaDon, int maNhanVien, double tongTien, int maKhachHang, int maKhuyenMai, Date ngayMua, String ghiChu, int maTichDiem,int isHidden) {
+    public dtohoadon(int maHoaDon, int maNhanVien, double tongTien, int maKhachHang, int maKhuyenMai, Date ngayMua, String ghiChu, int maTichDiem) throws SQLException {
         this.maHoaDon = maHoaDon;
         this.maNhanVien = maNhanVien;
         this.tongTien = tongTien;
@@ -84,7 +89,9 @@ public class dtohoadon {
         this.ngayMua = ngayMua;
         this.ghiChu = ghiChu;
         this.maTichDiem = maTichDiem;
-        this.isHidden = isHidden;
+        setTenkhachhang(this.maKhachHang);
+        setTennhanvien(this.maNhanVien);
+        
     }
     private int maHoaDon;
     private int maNhanVien;
@@ -94,14 +101,38 @@ public class dtohoadon {
     private Date ngayMua;
     private String ghiChu;
     private int maTichDiem;
-    private int isHidden;
-
-    public int getIsHidden() {
-        return isHidden;
+    private String tenkhachhang;
+    private String tennhanvien;
+    
+    @Override
+    public String toString() {
+        return "dtohoadon{" + "maHoaDon=" + maHoaDon + ", maNhanVien=" + maNhanVien + ", tongTien=" + tongTien + ", maKhachHang=" + maKhachHang + ", maKhuyenMai=" + maKhuyenMai + ", ngayMua=" + ngayMua + ", ghiChu=" + ghiChu + ", maTichDiem=" + maTichDiem + ", tenkhachhang=" + tenkhachhang + ", tennhanvien=" + tennhanvien + '}';
+    }
+    
+    public Object[] toTableRow() {
+        return new Object[]{maHoaDon , ngayMua, tenkhachhang, maKhuyenMai, tongTien, tennhanvien, ghiChu};
     }
 
-    public void setIsHidden(int isHidden) {
-        this.isHidden = isHidden;
+    public String getTenkhachhang() {
+        return tenkhachhang;
+    }
+
+    public String getTennhanvien() {
+        return tennhanvien;
+    }
+
+    public void setTenkhachhang(int ma) {
+        buskhachhang bus = new buskhachhang();
+        if(bus.getkhachhangbyid(ma) == null) {
+            this.tenkhachhang ="";
+            return;
+        }
+        this.tenkhachhang = bus.getkhachhangbyid(ma).getTenKhachHang();
+    }
+
+    public void setTennhanvien(int manhanvien) throws SQLException {
+        busnhanvien busnv = new busnhanvien();
+        this.tennhanvien = busnv.gettennvbymanv(manhanvien);
     }
     
 }

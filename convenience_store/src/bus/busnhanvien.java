@@ -15,13 +15,19 @@ import java.util.ArrayList;
  */
 public class busnhanvien {
     private daonhanvien daonv;
-    private ArrayList<dtonhanvien> list_nv;
+    public ArrayList<dtonhanvien> list_nv;
     private ArrayList<dtochucvu> list_cv;
+    // daonhanvien daonv = new daonhanvien();
+    // public ArrayList<dtonhanvien> list_nv;
 
-    public busnhanvien() {
+    public busnhanvien() throws SQLException {
+        getlist();
     }
     
     // get
+    public ArrayList<dtonhanvien> getNhanVienList() {
+        return daonv.getNhanVienList();
+    }
     
     public int getmachucvu(int manv){
         daonv = new daonhanvien();
@@ -38,7 +44,7 @@ public class busnhanvien {
     public void list() throws SQLException{
         daonv = new daonhanvien();
         daonv.list();
-        list_nv = daonv.getlist();
+        list_nv = daonv.list();
     }
     
     public void AddNhanVien(dtonhanvien nv) throws SQLException{
@@ -84,4 +90,15 @@ public class busnhanvien {
         return daonv.getMaChucVuByName(tencv);
     }
     
+    public void getlist() throws SQLException {
+        daonv = new daonhanvien();
+        this.list_nv = daonv.list();
+    }
+
+    public static void main(String args[]) throws SQLException {
+        busnhanvien bus = new busnhanvien();
+        for(dtonhanvien nv:bus.list_nv){
+            System.out.print(nv);
+        }
+    }
 }

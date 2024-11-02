@@ -10,12 +10,13 @@ package dto;
  */
 public class dtocthoadon {
     public dtocthoadon(){}
-    public dtocthoadon(int maCTHoaDon, int maSanPham, int maHoaDon, int soLuong, double donGia) {
+    public dtocthoadon(int maSanPham, int maHoaDon, int soLuong, double donGia, int maCTHoaDon) {
         this.maCTHoaDon = maCTHoaDon;
         this.maSanPham = maSanPham;
         this.maHoaDon = maHoaDon;
         this.soLuong = soLuong;
         this.donGia = donGia;
+        setTensanpham(this.maSanPham);
     }
 
     public int getMaCTHoaDon() {
@@ -67,5 +68,27 @@ public class dtocthoadon {
     private int maHoaDon;
     private int soLuong;
     private double donGia;
-    
+    private String tensanpham;
+
+    public String getTensanpham() {
+        return tensanpham;
+    }
+
+    public void setTensanpham(int masanpham) {
+        this.tensanpham = "ten SP";
+    }
+
+    @Override
+    public String toString() {
+        return "dtocthoadon{" + "maCTHoaDon=" + maCTHoaDon + ", maSanPham=" + maSanPham + ", maHoaDon=" + maHoaDon + ", soLuong=" + soLuong + ", donGia=" + donGia + ", tensanpham=" + tensanpham + '}';
+    }
+
+    public Object[] toTableRow() {
+        return new Object[]{maSanPham , tensanpham, donGia, soLuong, getthanhtien()};
+    }
+
 }
+    
+    
+
+

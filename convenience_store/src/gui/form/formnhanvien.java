@@ -47,7 +47,7 @@ import raven.modal.option.Option;
 public class formnhanvien extends Form {
     
     
-    private busnhanvien busNV = new busnhanvien();
+    private busnhanvien busNV;
     private ArrayList<dtonhanvien> list_NV;
     private ArrayList<dtochucvu> list_CV;
     private JLabel imageDisplayLabel;
@@ -77,6 +77,12 @@ public class formnhanvien extends Form {
     // Đây là chỗ để tạo các card nhân viên
     @Override
     public void formInit() {
+        try {
+            busNV = new busnhanvien();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         panelCard.removeAll();
         try {
             busNV.list();
@@ -434,7 +440,7 @@ public class formnhanvien extends Form {
 
         
         btnReset.addActionListener( e -> {
-            formInit();
+                formInit();
         });
         
         cmdDelete.addActionListener(e -> {
@@ -520,7 +526,12 @@ public class formnhanvien extends Form {
                             return;
                         }
                         dtonhanvien nv = new dtonhanvien();
-                        busNV = new busnhanvien();
+                        try {
+                            busNV = new busnhanvien();
+                        } catch (SQLException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
                         try {
                             nv = form.getNhanVien();
                             form.check_NV(nv);

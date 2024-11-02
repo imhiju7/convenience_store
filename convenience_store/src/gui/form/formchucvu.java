@@ -1,14 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
+
 package gui.form;
+
 import gui.comp.*;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import gui.modal.ModalDialog;
+import gui.modal.component.SimpleModalBorder;
+import gui.modal.option.Location;
+import gui.modal.option.Option;
+import gui.simple.SimpleInputPermissionForm;
 import gui.table.CheckBoxTableHeaderRenderer;
 import gui.table.TableHeaderAlignment;
 import java.awt.Component;
@@ -33,6 +36,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
+import gui.simple.SimpleInputPositionForm;
 
 /**
  *
@@ -40,16 +44,14 @@ import net.miginfocom.swing.MigLayout;
  */
 public class formchucvu extends javax.swing.JPanel {
 
-   
     private JTabbedPane tabchucvu;
+
     public formchucvu() {
         initComponents();
         init();
     }
-     public void createTab(String title, JPanel panel) {
-        tabchucvu.addTab("Chức vụ", createChucVuTable());
-    }
-    private void init(){
+
+    private void init() {
 
         tabchucvu = new JTabbedPane();
 
@@ -65,108 +67,8 @@ public class formchucvu extends javax.swing.JPanel {
         this.setLayout(new java.awt.BorderLayout());
         this.add(tabchucvu, java.awt.BorderLayout.CENTER);
     }
-   
-    
-//    private JPanel createChucVuTable() {
-//    JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
-//
-//    // create table model
-//    Object columns[] = new Object[]{"CHỌN", "MÃ CHỨC VỤ", "TÊN CHỨC VỤ", "TÊN CHỨC NĂNG"};
-//    DefaultTableModel model = new DefaultTableModel(columns, 0) {
-//        @Override
-//        public boolean isCellEditable(int row, int column) {
-//            // allow cell editable at column 0 for checkbox
-//            return column == 0;
-//        }
-//
-//        @Override
-//        public Class<?> getColumnClass(int columnIndex) {
-//            // use boolean type at column 0 for checkbox
-//            if (columnIndex == 0) {
-//                return Boolean.class;
-//            }
-//            return super.getColumnClass(columnIndex);
-//        }
-//    };
-//
-//    // Sample data for the Chức vụ table
-//    model.addRow(new Object[]{false, "CV01", "Quản trị viên", "Quản lý hệ thống"});
-//    model.addRow(new Object[]{false, "CV02", "Nhân viên", "Thực hiện công việc hàng ngày"});
-//    model.addRow(new Object[]{false, "CV03", "Giám đốc", "Quản lý nhân sự và chiến lược"});
-//    model.addRow(new Object[]{false, "CV04", "Kế toán", "Quản lý tài chính và chi tiêu"});
-//    model.addRow(new Object[]{false, "CV05", "Thủ quỹ", "Quản lý tiền mặt và giao dịch"});
-//
-//    // create table
-//    JTable table = new JTable(model);
-//
-//    // table scroll
-//    JScrollPane scrollPane = new JScrollPane(table);
-//    scrollPane.setBorder(BorderFactory.createEmptyBorder());
-//
-//    // table option
-//    table.getColumnModel().getColumn(0).setMaxWidth(50);  // Cột checkbox
-//    table.getColumnModel().getColumn(1).setMaxWidth(100); // Cột Mã chức vụ
-//    table.getColumnModel().getColumn(2).setPreferredWidth(150); // Tên chức vụ
-//    table.getColumnModel().getColumn(3).setPreferredWidth(250); // Tên chức năng
-//
-//    // disable reordering table column
-//    table.getTableHeader().setReorderingAllowed(false);
-//
-//    // apply checkbox custom to table header
-//    table.getColumnModel().getColumn(0).setHeaderRenderer(new CheckBoxTableHeaderRenderer(table, 0));
-//
-//    // alignment table header
-//    table.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(table) {
-//        @Override
-//        protected int getAlignment(int column) {
-//            if (column == 1) {
-//                return SwingConstants.CENTER;
-//            }
-//            return SwingConstants.LEADING;
-//        }
-//    });
-//
-//    // style
-//    panel.putClientProperty(FlatClientProperties.STYLE, "" +
-//            "arc:20;" +
-//            "background:$Table.background;");
-//    table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
-//            "height:30;" +
-//            "hoverBackground:null;" +
-//            "pressedBackground:null;" +
-//            "separatorColor:$TableHeader.background;");
-//    table.putClientProperty(FlatClientProperties.STYLE, "" +
-//            "rowHeight:70;" +
-//            "showHorizontalLines:true;" +
-//            "intercellSpacing:0,1;" +
-//            "cellFocusColor:$TableHeader.hoverBackground;" +
-//            "selectionBackground:$TableHeader.hoverBackground;" +
-//            "selectionInactiveBackground:$TableHeader.hoverBackground;" +
-//            "selectionForeground:$Table.foreground;");
-//    scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
-//            "trackArc:$ScrollBar.thumbArc;" +
-//            "trackInsets:3,3,3,3;" +
-//            "thumbInsets:3,3,3,3;" +
-//            "background:$Table.background;");
-//
-//    // create title
-//    JLabel title = new JLabel("Bảng Chức Vụ");
-//    title.putClientProperty(FlatClientProperties.STYLE, "" +
-//            "font:bold +2");
-//    panel.add(title, "gapx 20");
-//
-//    // create header
-//    panel.add(createHeaderAction());
-//
-//    JSeparator separator = new JSeparator();
-//    separator.putClientProperty(FlatClientProperties.STYLE, "" +
-//            "foreground:$Table.gridColor;");
-//    panel.add(separator, "height 2");
-//    panel.add(scrollPane, "span, grow");
-//    panel.add(new JScrollPane(table), java.awt.BorderLayout.CENTER);
-//    return panel;
-//}
-private JPanel createChucVuTable() {
+
+    private JPanel createChucVuTable() {
         JPanel panel = new JPanel(new MigLayout("fillx, wrap, insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
 
         // create title
@@ -175,7 +77,7 @@ private JPanel createChucVuTable() {
         panel.add(title, "gapx 20, wrap");
 
         // create header action with search and buttons
-        panel.add(createHeaderAction(), "growx, wrap");
+        panel.add(createPositionHeaderAction(), "growx, wrap");
 
         // create table model for Chức Vụ
         Object columns[] = new Object[]{"CHỌN", "MÃ CHỨC VỤ", "TÊN CHỨC VỤ", "TÊN CHỨC NĂNG"};
@@ -208,7 +110,7 @@ private JPanel createChucVuTable() {
 
         // table options
         table.getColumnModel().getColumn(0).setMaxWidth(50);  // Cột checkbox
-        table.getColumnModel().getColumn(1).setMaxWidth(100); // Cột Mã chức vụ
+        table.getColumnModel().getColumn(1).setMinWidth(100); // Cột Mã chức vụ
         table.getColumnModel().getColumn(2).setPreferredWidth(150); // Tên chức vụ
         table.getColumnModel().getColumn(3).setPreferredWidth(250); // Tên chức năng
 
@@ -241,126 +143,146 @@ private JPanel createChucVuTable() {
     }
 
     private JPanel createPhanQuyenTable() {
-    JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
+        JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
 
-    // create table model for Phân Quyền
-    Object columns[] = new Object[]{"CHỌN", "MÃ PHÂN QUYỀN", "TÊN PHÂN QUYỀN", "MÔ TẢ"};
-    DefaultTableModel model = new DefaultTableModel(columns, 0) {
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            // allow cell editable at column 0 for checkbox
-            return column == 0;
-        }
-
-        @Override
-        public Class<?> getColumnClass(int columnIndex) {
-            // use boolean type at column 0 for checkbox
-            if (columnIndex == 0) {
-                return Boolean.class;
+        // create table model for Phân Quyền
+        Object columns[] = new Object[]{"CHỌN", "MÃ PHÂN QUYỀN", "TÊN PHÂN QUYỀN", "MÔ TẢ"};
+        DefaultTableModel model = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // allow cell editable at column 0 for checkbox
+                return column == 0;
             }
-            return super.getColumnClass(columnIndex);
-        }
-    };
 
-    // Sample data for the Phân Quyền table
-    model.addRow(new Object[]{false, "PQ01", "Quản lý người dùng", "Quyền quản lý toàn bộ người dùng trong hệ thống"});
-    model.addRow(new Object[]{false, "PQ02", "Quản lý sản phẩm", "Quyền quản lý toàn bộ sản phẩm"});
-    model.addRow(new Object[]{false, "PQ03", "Xem báo cáo", "Quyền truy cập và xem báo cáo tài chính"});
-    model.addRow(new Object[]{false, "PQ04", "Cấp quyền", "Quyền cấp quyền cho người dùng khác"});
-    model.addRow(new Object[]{false, "PQ05", "Xóa dữ liệu", "Quyền xóa dữ liệu hệ thống"});
-
-    // create table
-    JTable table = new JTable(model);
-
-    // table scroll
-    JScrollPane scrollPane = new JScrollPane(table);
-    scrollPane.setBorder(BorderFactory.createEmptyBorder());
-
-    // table options
-    table.getColumnModel().getColumn(0).setMaxWidth(50);  // Cột checkbox
-    table.getColumnModel().getColumn(1).setMaxWidth(150); // Cột Mã phân quyền
-    table.getColumnModel().getColumn(2).setPreferredWidth(200); // Tên phân quyền
-    table.getColumnModel().getColumn(3).setPreferredWidth(300); // Mô tả
-
-    // disable reordering table column
-    table.getTableHeader().setReorderingAllowed(false);
-
-    // apply checkbox custom to table header
-    table.getColumnModel().getColumn(0).setHeaderRenderer(new CheckBoxTableHeaderRenderer(table, 0));
-
-    // alignment table header
-    table.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(table) {
-        @Override
-        protected int getAlignment(int column) {
-            if (column == 1) {
-                return SwingConstants.CENTER;
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                // use boolean type at column 0 for checkbox
+                if (columnIndex == 0) {
+                    return Boolean.class;
+                }
+                return super.getColumnClass(columnIndex);
             }
-            return SwingConstants.LEADING;
-        }
-    });
+        };
 
-    // style
-    panel.putClientProperty(FlatClientProperties.STYLE, "" +
-            "arc:20;" +
-            "background:$Table.background;");
-    table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
-            "height:30;" +
-            "hoverBackground:null;" +
-            "pressedBackground:null;" +
-            "separatorColor:$TableHeader.background;");
-    table.putClientProperty(FlatClientProperties.STYLE, "" +
-            "rowHeight:70;" +
-            "showHorizontalLines:true;" +
-            "intercellSpacing:0,1;" +
-            "cellFocusColor:$TableHeader.hoverBackground;" +
-            "selectionBackground:$TableHeader.hoverBackground;" +
-            "selectionInactiveBackground:$TableHeader.hoverBackground;" +
-            "selectionForeground:$Table.foreground;");
-    scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
-            "trackArc:$ScrollBar.thumbArc;" +
-            "trackInsets:3,3,3,3;" +
-            "thumbInsets:3,3,3,3;" +
-            "background:$Table.background;");
+        // Sample data for the Phân Quyền table
+        model.addRow(new Object[]{false, "PQ01", "Quản lý người dùng", "Quyền quản lý toàn bộ người dùng trong hệ thống"});
+        model.addRow(new Object[]{false, "PQ02", "Quản lý sản phẩm", "Quyền quản lý toàn bộ sản phẩm"});
+        model.addRow(new Object[]{false, "PQ03", "Xem báo cáo", "Quyền truy cập và xem báo cáo tài chính"});
+        model.addRow(new Object[]{false, "PQ04", "Cấp quyền", "Quyền cấp quyền cho người dùng khác"});
+        model.addRow(new Object[]{false, "PQ05", "Xóa dữ liệu", "Quyền xóa dữ liệu hệ thống"});
 
-    // create title
-    JLabel title = new JLabel("Bảng Phân Quyền");
-    title.putClientProperty(FlatClientProperties.STYLE, "" +
-            "font:bold +2");
-    panel.add(title, "gapx 20");
-  // create header
-        panel.add(createHeaderAction());
-    // add separator and scrollpane to panel
-    JSeparator separator = new JSeparator();
-    separator.putClientProperty(FlatClientProperties.STYLE, "" +
-            "foreground:$Table.gridColor;");
-    panel.add(separator, "height 2");
-    panel.add(scrollPane, "span, grow");
+        // create table
+        JTable table = new JTable(model);
 
-    return panel;
-}
- private Component createHeaderAction() {
+        // table scroll
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+
+        // table options
+        table.getColumnModel().getColumn(0).setMaxWidth(50);  // Cột checkbox
+        table.getColumnModel().getColumn(1).setMinWidth(100); // Cột Mã phân quyền
+        table.getColumnModel().getColumn(2).setPreferredWidth(200); // Tên phân quyền
+        table.getColumnModel().getColumn(3).setPreferredWidth(300); // Mô tả
+
+        // disable reordering table column
+        table.getTableHeader().setReorderingAllowed(false);
+
+        // apply checkbox custom to table header
+        table.getColumnModel().getColumn(0).setHeaderRenderer(new CheckBoxTableHeaderRenderer(table, 0));
+
+        // alignment table header
+        table.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(table) {
+            @Override
+            protected int getAlignment(int column) {
+                if (column == 1) {
+                    return SwingConstants.CENTER;
+                }
+                return SwingConstants.LEADING;
+            }
+        });
+
+        // style
+        panel.putClientProperty(FlatClientProperties.STYLE, ""
+                 + "arc:20;"
+                 + "background:$Table.background;");
+        table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, ""
+                 + "height:30;"
+                 + "hoverBackground:null;"
+                 + "pressedBackground:null;"
+                 + "separatorColor:$TableHeader.background;");
+        table.putClientProperty(FlatClientProperties.STYLE, ""
+                 + "rowHeight:70;"
+                 + "showHorizontalLines:true;"
+                 + "intercellSpacing:0,1;"
+                 + "cellFocusColor:$TableHeader.hoverBackground;"
+                 + "selectionBackground:$TableHeader.hoverBackground;"
+                 + "selectionInactiveBackground:$TableHeader.hoverBackground;"
+                 + "selectionForeground:$Table.foreground;");
+        scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, ""
+                 + "trackArc:$ScrollBar.thumbArc;"
+                 + "trackInsets:3,3,3,3;"
+                 + "thumbInsets:3,3,3,3;"
+                 + "background:$Table.background;");
+
+        // create title
+        JLabel title = new JLabel("Bảng Phân Quyền");
+        title.putClientProperty(FlatClientProperties.STYLE, ""
+                 + "font:bold +2");
+        panel.add(title, "gapx 20");
+        // create header
+        panel.add(createPermissionHeaderAction());
+        // add separator and scrollpane to panel
+        JSeparator separator = new JSeparator();
+        separator.putClientProperty(FlatClientProperties.STYLE, ""
+                 + "foreground:$Table.gridColor;");
+        panel.add(separator, "height 2");
+        panel.add(scrollPane, "span, grow");
+
+        return panel;
+    }
+
+    private Component createPositionHeaderAction() {
         JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,230]push[][]"));
 
         JTextField txtSearch = new JTextField();
         txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Search...");
-        txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("raven/modal/demo/icons/search.svg", 0.4f));
-        JButton cmdCreate = new JButton("Create");
-        JButton cmdEdit = new JButton("Edit");
-        JButton cmdDelete = new JButton("Delete");
+        txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("source/image/icon/search.svg", 0.4f));
+        JButton cmdCreate = new JButton("Thêm");
+        JButton cmdEdit = new JButton("Sửa");
+        JButton cmdDelete = new JButton("Xóa");
 
-        cmdCreate.addActionListener(e -> showModal());
+        cmdCreate.addActionListener(e -> showPositionModal());
         panel.add(txtSearch);
         panel.add(cmdCreate);
         panel.add(cmdEdit);
         panel.add(cmdDelete);
 
-        panel.putClientProperty(FlatClientProperties.STYLE, "" +
-                "background:null;");
+        panel.putClientProperty(FlatClientProperties.STYLE, ""
+                 + "background:null;");
         return panel;
     }
-    
 
-      
+    private Component createPermissionHeaderAction() {
+        JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,230]push[][]"));
+
+        JTextField txtSearch = new JTextField();
+        txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Search...");
+        txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("source/image/icon/search.svg", 0.4f));
+        JButton cmdCreate = new JButton("Thêm");
+        JButton cmdEdit = new JButton("Sửa");
+        JButton cmdDelete = new JButton("Xóa");
+
+        cmdCreate.addActionListener(e -> showPermissionModal());
+        panel.add(txtSearch);
+        panel.add(cmdCreate);
+        panel.add(cmdEdit);
+        panel.add(cmdDelete);
+
+        panel.putClientProperty(FlatClientProperties.STYLE, ""
+                 + "background:null;");
+        return panel;
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
@@ -380,26 +302,24 @@ private JPanel createChucVuTable() {
         scrollchucvu.setBorder(null);
 
         tablechucvu.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Chọn", "Mã chức vụ", "Tên chúc vụ", "Tên chức năng"
-            }
+                 new Object[][]{},
+                 new String[]{
+                     "Chọn", "Mã chức vụ", "Tên chúc vụ", "Tên chức năng"
+                 }
         ) {
-            Class[] types = new Class [] {
+            Class[] types = new Class[]{
                 java.lang.Boolean.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class
             };
-            boolean[] canEdit = new boolean [] {
+            boolean[] canEdit = new boolean[]{
                 false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+                return types[columnIndex];
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return canEdit[columnIndex];
             }
         });
         scrollchucvu.setViewportView(tablechucvu);
@@ -440,77 +360,78 @@ private JPanel createChucVuTable() {
         javax.swing.GroupLayout panelchucvuLayout = new javax.swing.GroupLayout(panelchucvu);
         panelchucvu.setLayout(panelchucvuLayout);
         panelchucvuLayout.setHorizontalGroup(
-            panelchucvuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelchucvuLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panelchucvuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator1)
-                    .addGroup(panelchucvuLayout.createSequentialGroup()
-                        .addGroup(panelchucvuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbchucvu)
-                            .addComponent(txtsearch, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buttonAction4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttonAction3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttonAction1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-            .addComponent(scrollchucvu, javax.swing.GroupLayout.DEFAULT_SIZE, 1045, Short.MAX_VALUE)
+                 panelchucvuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                          .addGroup(panelchucvuLayout.createSequentialGroup()
+                                   .addContainerGap()
+                                   .addGroup(panelchucvuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jSeparator1)
+                                            .addGroup(panelchucvuLayout.createSequentialGroup()
+                                                     .addGroup(panelchucvuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                              .addComponent(lbchucvu)
+                                                              .addComponent(txtsearch, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                     .addComponent(buttonAction4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                     .addComponent(buttonAction3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                     .addComponent(buttonAction1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                   .addContainerGap())
+                          .addComponent(scrollchucvu, javax.swing.GroupLayout.DEFAULT_SIZE, 1045, Short.MAX_VALUE)
         );
         panelchucvuLayout.setVerticalGroup(
-            panelchucvuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelchucvuLayout.createSequentialGroup()
-                .addComponent(lbchucvu)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(panelchucvuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelchucvuLayout.createSequentialGroup()
-                        .addGap(3, 3, 3)
-                        .addGroup(panelchucvuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(buttonAction1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(buttonAction3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(buttonAction4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(txtsearch, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scrollchucvu, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12))
+                 panelchucvuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelchucvuLayout.createSequentialGroup()
+                                   .addComponent(lbchucvu)
+                                   .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                   .addGroup(panelchucvuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(panelchucvuLayout.createSequentialGroup()
+                                                     .addGap(3, 3, 3)
+                                                     .addGroup(panelchucvuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                              .addComponent(buttonAction1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                              .addComponent(buttonAction3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                              .addComponent(buttonAction4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                            .addComponent(txtsearch, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                   .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                   .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                   .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                   .addComponent(scrollchucvu, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                   .addGap(12, 12, 12))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(panelchucvu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(8, Short.MAX_VALUE))
+                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                          .addGroup(layout.createSequentialGroup()
+                                   .addGap(17, 17, 17)
+                                   .addComponent(panelchucvu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                   .addContainerGap(8, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(64, 64, 64)
-                .addComponent(panelchucvu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(55, Short.MAX_VALUE))
+                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                          .addGroup(layout.createSequentialGroup()
+                                   .addGap(64, 64, 64)
+                                   .addComponent(panelchucvu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                   .addContainerGap(55, Short.MAX_VALUE))
         );
     }// </editor-fold>                        
 
-    private void buttonAction1ActionPerformed(java.awt.event.ActionEvent evt) {                                              
+    private void buttonAction1ActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-    }                                             
+    }
 
-    private void txtsearchActionPerformed(java.awt.event.ActionEvent evt) {                                          
+    private void txtsearchActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-    }                                         
+    }
 
-    private void buttonAction3ActionPerformed(java.awt.event.ActionEvent evt) {                                              
+    private void buttonAction3ActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-    }                                             
+    }
 
-    private void buttonAction4ActionPerformed(java.awt.event.ActionEvent evt) {                                              
+    private void buttonAction4ActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-    }                                             
+    }
+
     public static void createAndShowGUI() {
         // Tạo JFrame
         JFrame frame = new JFrame("Chức vụ Management");
@@ -530,6 +451,7 @@ private JPanel createChucVuTable() {
 //         JPanel newPanel = panel.createChucVuPanel();
 //        panel.createTab("Chức vụ Phòng Ban", newPanel);
     }
+
     public static void main(String[] args) {
         // Thiết lập FlatLaf trước khi khởi chạy GUI
         FlatRobotoFont.install();
@@ -573,7 +495,27 @@ private JPanel createChucVuTable() {
     private javax.swing.JTextField txtsearch;
     // End of variables declaration                   
 
-    private void showModal() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    private void showPositionModal() {
+        Option option = ModalDialog.createOption();
+        option.getLayoutOption().setSize(-1, 1f)
+                 .setLocation(Location.TRAILING, Location.TOP)
+                 .setAnimateDistance(0.7f, 0);
+        ModalDialog.showModal(this, new SimpleModalBorder(
+                 new SimpleInputPositionForm(), "Thêm chức vụ", SimpleModalBorder.YES_NO_OPTION,
+                 (controller, action) -> {
+                     controller.close();
+                 }), option);// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private void showPermissionModal() {
+        Option option = ModalDialog.createOption();
+        option.getLayoutOption().setSize(-1, 1f)
+                 .setLocation(Location.TRAILING, Location.TOP)
+                 .setAnimateDistance(0.7f, 0);
+        ModalDialog.showModal(this, new SimpleModalBorder(
+                 new SimpleInputPermissionForm(), "Thêm phân quyền", SimpleModalBorder.YES_NO_OPTION,
+                 (controller, action) -> {
+                     controller.close();
+                 }), option);// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

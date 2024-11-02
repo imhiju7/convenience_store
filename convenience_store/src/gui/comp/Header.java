@@ -4,12 +4,14 @@ import bus.buschucvu;
 import bus.busnhanvien;
 import gui.form.frmlogin;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 public class Header extends javax.swing.JPanel {
 
-    public Header(int manv,int macv) {
+    public Header(int manv,int macv) throws SQLException {
         initComponents();
         
         busnhanvien busnv = new busnhanvien();
@@ -21,7 +23,7 @@ public class Header extends javax.swing.JPanel {
         lbrole.setText(tencv);
         lbname.setText(tennv);
         
-        pic.setIcon(new javax.swing.ImageIcon(getClass().getResource("/source/image/icon/profile2.jpg")));
+        pic.setIcon(new javax.swing.ImageIcon(getClass().getResource("/source/image/nhanvien/nv1.png")));
     }
     private void closeCurrentFrame() {
         // Lấy frame chứa panel hiện tại
@@ -76,7 +78,7 @@ public class Header extends javax.swing.JPanel {
             }
         });
 
-        pic.setIcon(new javax.swing.ImageIcon(getClass().getResource("/source/image/icon/profile1.jpg"))); // NOI18N
+        pic.setIcon(new javax.swing.ImageIcon(getClass().getResource("/source/image/nhanvien/nv1.png"))); // NOI18N
 
         lbname.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         lbname.setText("user name");

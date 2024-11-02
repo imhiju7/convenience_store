@@ -19,6 +19,10 @@ public class bustaikhoan {
     public boolean updatematkhau(String tendangnhap, String matkhau){
         return daotk.updatematkhau(tendangnhap, matkhau);
     }
+    public boolean updateTaiKhoan(int manhanvien, String tendangnhap, String matkhau, int isblock) {
+        daotaikhoan dao = new daotaikhoan();
+        return dao.update(manhanvien, tendangnhap, matkhau, isblock);
+    }
 
     // check
 

@@ -46,18 +46,15 @@ public class daonhanvien {
             nv.setGioitinh(rs.getInt("gioiTinh"));
             nv.setMachucvu(rs.getInt("maChucVu"));
             nv.setIsdelete(rs.getInt("isDelete"));
-            nv.setLuongcoban(rs.getFloat("luongCoBan"));
             nv.setImg(rs.getString("img"));
             System.out.println("đã vào");
             list_nv.add(nv);
         }
         con.close();
-        return list_nv;
+        return list_nv; // Return the list
     }
-    
-    public ArrayList<dtonhanvien> getlist(){
-        return list_nv;
-    }
+
+
     
     // add
     public void AddNhanVien(dtonhanvien nv) throws SQLException {
@@ -302,11 +299,44 @@ public class daonhanvien {
     }
     
     
-    public static void main(String[] args) throws SQLException {
-        ArrayList<dtonhanvien> list = new ArrayList();
-        daonhanvien d = new daonhanvien();
-        list = d.list();
-        System.out.println(list);
+    public ArrayList<dtonhanvien> getNhanVienList() {
+        ArrayList<dtonhanvien> list_nv = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+
+        try {
+            con = connect.connection(); // Kết nối DB
+            String sql = "SELECT maNhanVien, tenNhanVien, maChucVu, img FROM nhanvien WHERE isDelete = 0";
+            pst = con.prepareStatement(sql);
+            rs = pst.executeQuery();
+
+            while (rs.next()) {
+                dtonhanvien nv = new dtonhanvien();
+                nv.setManhanvien(rs.getInt("maNhanVien"));
+                nv.setTennhanvien(rs.getString("tenNhanVien"));
+                nv.setMachucvu(rs.getInt("maChucVu"));
+                nv.setImg(rs.getString("img"));
+                list_nv.add(nv);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pst != null) pst.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return list_nv;
     }
-    
+    public static void main(String args[]) throws SQLException {
+        // daonhanvien bus = new daonhanvien();
+        // for(dtonhanvien nv:bus.getlist()){
+        //     System.out.print(nv);
+
+        // }
+    }
 }

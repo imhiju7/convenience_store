@@ -7,11 +7,14 @@ import gui.comp.Header;
 import gui.comp.Menu;
 import gui.event.EventMenuSelected;
 import gui.event.EventShowPopupMenu;
+import gui.form.formchamcong;
 import gui.form.formchucvu;
 import gui.form.formnhanvien;
 import gui.form.formmenu;
 import gui.form.formsanpham;
-
+import gui.form.formthongke;
+import gui.form.frmlogin;
+import gui.form.formtaikhoan;
 import gui.swing.dashboard.MenuItem;
 import gui.swing.dashboard.PopupMenu;
 import gui.swing.icon.GoogleMaterialDesignIcons;
@@ -20,6 +23,8 @@ import gui.swing.icon.IconFontSwing;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+
 import javax.swing.UIManager;
 
 import net.miginfocom.swing.MigLayout;
@@ -36,12 +41,12 @@ public class Guimain extends javax.swing.JFrame {
     private MainForm main;
     private Animator animator;
     
-    public Guimain(int manv) {
+    public Guimain(int manv) throws SQLException {
         initComponents();
         init(manv);
     }
 
-    private void init(int manv) {
+    private void init(int manv) throws SQLException {
         layout = new MigLayout("fill", "0[]0[100%, fill]0", "0[fill, top]0");
         bg.setLayout(layout);
         
@@ -58,6 +63,7 @@ public class Guimain extends javax.swing.JFrame {
              if (subMenuIndex == -1) {
             main.setVisible(true);
         } else {
+//                 Danh mục Order
                  if ((menuIndex==0)&&(subMenuIndex==0)) {
                      try {
                        UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
@@ -74,6 +80,9 @@ public class Guimain extends javax.swing.JFrame {
                     }
                      main.showForm(new formsanpham());
                  }
+//                 Danh mục Kho
+
+//                 Danh mục Nhân viên
                  if ((menuIndex==2)&&(subMenuIndex==0)) {
                      try {
                        UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
@@ -81,6 +90,19 @@ public class Guimain extends javax.swing.JFrame {
                         e.printStackTrace();
                     }
                      main.showForm(new formnhanvien());
+                 }
+                 if ((menuIndex==2)&&(subMenuIndex==1)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     try {
+                        main.showForm(new formtaikhoan());
+                    } catch (SQLException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                  }
                  if ((menuIndex==2)&&(subMenuIndex==2)) {
                      try {
@@ -91,6 +113,28 @@ public class Guimain extends javax.swing.JFrame {
                      main.showForm(new formchucvu());
                  }
   
+                 if ((menuIndex==2)&&(subMenuIndex==3)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     main.showForm(new formchamcong());
+                 }
+//                 Danh mục Khách hàng
+
+//                 Danh mục Thống kê
+                  if ((menuIndex==4)&&(subMenuIndex==0)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     main.showForm(new formthongke());
+                 }   
+//                 Danh mục Cài đặt
+                 
+                 
     }
         });
         menu.addEventShowPopup((Component com) -> {
