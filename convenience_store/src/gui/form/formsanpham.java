@@ -96,7 +96,6 @@ public class formsanpham extends Form {
         try {
             busSP.list();
             list_SP = busSP.getList();
-            System.out.println(list_SP);
             for(int i = 0 ; i < list_SP.size() ; i++){
                 dtosanpham sp = list_SP.get(i);
                 SPCard card1 = new SPCard(sp, createEventCard1());

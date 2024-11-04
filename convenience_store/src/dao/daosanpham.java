@@ -38,7 +38,7 @@ public class daosanpham {
             sp.setImg(rs.getString("img"));
             sp.setMaNCC(rs.getInt("maNhaCungCap"));
             sp.setHanSD(rs.getString("hanSuDung"));
-            System.out.println(sp.getTenSanPham());
+
             list_sp.add(sp);
         }
         con.close();

@@ -47,7 +47,7 @@ public class daonhanvien {
             nv.setMachucvu(rs.getInt("maChucVu"));
             nv.setIsdelete(rs.getInt("isDelete"));
             nv.setImg(rs.getString("img"));
-            System.out.println("đã vào");
+
             list_nv.add(nv);
         }
         con.close();

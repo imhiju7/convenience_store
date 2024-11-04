@@ -15,6 +15,7 @@ import gui.form.formsanpham;
 import gui.form.formthongke;
 import gui.form.frmlogin;
 import gui.form.formtaikhoan;
+import gui.form.formthanhtoan;
 import gui.swing.dashboard.MenuItem;
 import gui.swing.dashboard.PopupMenu;
 import gui.swing.icon.GoogleMaterialDesignIcons;
@@ -24,6 +25,8 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.UIManager;
 
@@ -78,7 +81,11 @@ public class Guimain extends javax.swing.JFrame {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                     main.showForm(new formsanpham());
+                     try {
+                         main.showForm(new formsanpham());
+                     } catch (SQLException ex) {
+                         Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
+                     }
                  }
 //                 Danh mục Kho
 
@@ -89,7 +96,11 @@ public class Guimain extends javax.swing.JFrame {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                     main.showForm(new formnhanvien());
+                     try {
+                         main.showForm(new formnhanvien());
+                     } catch (SQLException ex) {
+                         Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
+                     }
                  }
                  if ((menuIndex==2)&&(subMenuIndex==1)) {
                      try {
