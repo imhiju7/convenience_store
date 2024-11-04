@@ -1,10 +1,12 @@
 package gui.form;
 
+import bus.busnhanvien;
 import bus.bussanpham;
 import gui.comp.NVCard;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.toedter.calendar.JDateChooser;
+import dto.dtochucvu;
 import dto.dtonhacungcap;
 import net.miginfocom.swing.MigLayout;
 import gui.layout.ResponsiveLayout;
@@ -72,13 +74,13 @@ public class formsanpham extends Form {
     private JLabel imageDisplayLabel;
     private String tenspUpdate;
     
-    public formsanpham() {
+    public formsanpham() throws SQLException {
         init();
         formInit();
         
     }
 
-    private void init() {
+    private void init() throws SQLException {
         cards = new ArrayList<>();
         setLayout(new MigLayout("wrap,fill,insets 7 15 7 15", "[fill]", "[grow 0][fill]"));
         add(createHeaderAction());
@@ -94,6 +96,7 @@ public class formsanpham extends Form {
         try {
             busSP.list();
             list_SP = busSP.getList();
+            System.out.println(list_SP);
             for(int i = 0 ; i < list_SP.size() ; i++){
                 dtosanpham sp = list_SP.get(i);
                 SPCard card1 = new SPCard(sp, createEventCard1());
@@ -227,7 +230,7 @@ public class formsanpham extends Form {
                             
                             saveProductChanges(sp);
                             if(selectedFile != null) {
-                                String root_dir = System.getProperty("user.dir") +  "/src/source/image/family_mart/" ;
+                                String root_dir = System.getProperty("user.dir") +  "/src/source/image/sanpham/" ;
                                 saveImageToDirectory(root_dir);
                                 formInit();
                             }
@@ -272,7 +275,7 @@ public class formsanpham extends Form {
         imageDisplayLabel = new JLabel();
         imageDisplayLabel.setPreferredSize(new Dimension(170, 210));
         if(!imgPath.isEmpty()){
-            ImageIcon curImg = new ImageIcon(getClass().getResource("/source/image/family_mart/" + imgPath));
+            ImageIcon curImg = new ImageIcon(getClass().getResource("/source/image/sanpham/" + imgPath));
             Image scaledImg = curImg.getImage().getScaledInstance(170, 230, Image.SCALE_SMOOTH);
             ImageIcon editImg = new ImageIcon(scaledImg);
             imageDisplayLabel.setIcon(editImg);
@@ -426,17 +429,112 @@ public class formsanpham extends Form {
    
    
 
-     private Component createHeaderAction() {
-        JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,230]push[][]"));
+     private Component createHeaderAction() throws SQLException {
+        JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,230][fill,100][fill,100][fill,100]push[][]"));
 
         JTextField txtSearch = new JTextField();
         txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Tìm kiếm tên sản phẩm ...");
         txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/search.png")), 20, 20));
+        
+        
+        JButton btnSearch = new JButton("Tìm kiếm");
+        
+        JComboBox comboMaPL = new JComboBox();
+        comboMaPL.addItem("Mặc định");
+        ArrayList<dtophanloai> list_pl = new ArrayList<>();
+        list_pl = busSP.listPhanloai();
+        for(dtophanloai pl : list_pl){
+            comboMaPL.addItem(pl.getTenPhanLoai());
+        }
+        
+        JButton btnReset = new JButton("Reset");
+        
+        
+        
         JCheckBox selectAllCheckbox = new JCheckBox("Chọn tất cả");
         selectAllCheckbox.addActionListener(e -> selectAll(selectAllCheckbox.isSelected()));
         JButton cmdCreate = new JButton("Thêm");
 
         JButton cmdDelete = new JButton("Xoá");
+        
+        
+        
+        
+        
+        btnSearch.addActionListener(e -> {
+            panelCard.removeAll(); // Xóa các card cũ khỏi panelCard
+            String searchText = txtSearch.getText().toLowerCase().trim(); // Lấy chuỗi tìm kiếm và loại bỏ khoảng trắng thừa
+            String tenmpl = (String) comboMaPL.getSelectedItem();
+            try {
+                list_SP = busSP.list();
+            } catch (SQLException ex) {
+                Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if(!tenmpl.equals("Mặc định")){
+                ArrayList<dtosanpham> list_sp_tmp = new ArrayList<>();
+                for(dtosanpham sp : list_SP){
+                    if(sp.getMaPhanLoai()== busSP.getMaPL(tenmpl)){
+                        list_sp_tmp.add(sp);
+                    }
+                }
+                if(searchText.equals("")){
+                    for (dtosanpham sp : list_sp_tmp) {
+                        SPCard card = new SPCard(sp, createEventCard1());
+                        cards.add(card);
+                        panelCard.add(card);
+                    }
+                    panelCard.repaint();
+                    panelCard.revalidate();
+                }else{
+                    for (dtosanpham sp : list_sp_tmp) {
+                        String tenSanPham = sp.getTenSanPham().toLowerCase();
+                        if (tenSanPham.contains(searchText)) {
+                            SPCard card = new SPCard(sp, createEventCard1());
+                            cards.add(card);
+                            panelCard.add(card);
+                        }
+                    }
+                    panelCard.repaint();
+                    panelCard.revalidate();
+                }
+                
+            }else{
+                if (searchText.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Vui lòng nhập từ khóa để tìm kiếm.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+
+                boolean found = false; 
+
+                for (dtosanpham sp : list_SP) {
+                    String tenSanPham = sp.getTenSanPham().toLowerCase();
+                    if (tenSanPham.contains(searchText)) {
+                        SPCard card = new SPCard(sp, createEventCard1());
+                        cards.add(card);
+                        panelCard.add(card);
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    JOptionPane.showMessageDialog(null, "Không tìm thấy nhân viên tương ứng.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }
+                panelCard.repaint();
+                panelCard.revalidate();
+            }
+        });
+
+
+        
+        btnReset.addActionListener( e -> {
+            txtSearch.setText("");
+            comboMaPL.setSelectedIndex(0);
+            formInit();
+        });
+        
+        
+        
+        
+        
         cmdDelete.addActionListener(e -> {
              if (selectAllCheckbox.isSelected()) {
                 selectAllCheckbox.setSelected(false);
@@ -445,6 +543,9 @@ public class formsanpham extends Form {
                 });
         cmdCreate.addActionListener(e -> showModal());
         panel.add(txtSearch);
+        panel.add(comboMaPL);
+        panel.add(btnSearch);
+        panel.add(btnReset);
         panel.add(selectAllCheckbox);
         panel.add(cmdCreate);
         panel.add(cmdDelete);

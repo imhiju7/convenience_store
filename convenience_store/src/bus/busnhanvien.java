@@ -43,7 +43,6 @@ public class busnhanvien {
     
     public void list() throws SQLException{
         daonv = new daonhanvien();
-        daonv.list();
         list_nv = daonv.list();
     }
     

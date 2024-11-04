@@ -59,13 +59,13 @@ public class formnhanvien extends Form {
     private JDateChooser dateChooser;
     
     
-    public formnhanvien() {
+    public formnhanvien() throws SQLException {
         init();
         formInit();
         
     }
 
-    private void init() {
+    private void init() throws SQLException {
         cards = new ArrayList<>();
         setLayout(new MigLayout("wrap,fill,insets 7 15 7 15", "[fill]", "[grow 0][fill]"));
         add(createHeaderAction());
@@ -77,14 +77,9 @@ public class formnhanvien extends Form {
     // Đây là chỗ để tạo các card nhân viên
     @Override
     public void formInit() {
-        try {
-            busNV = new busnhanvien();
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         panelCard.removeAll();
         try {
+            busNV = new busnhanvien();
             busNV.list();
             list_NV = busNV.getList();
             for(int i = 0 ; i < list_NV.size() ; i++){
@@ -96,153 +91,149 @@ public class formnhanvien extends Form {
             
             panelCard.repaint();
             panelCard.revalidate();
-            
         } catch (SQLException ex) {
-//            Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
     private Consumer<dtonhanvien> createEventCard1() {
-    return e -> {
-        try {
-            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            int dialogWidth = (int) (screenSize.width * 0.7);
-            int dialogHeight = (int) (screenSize.height * 0.7);
-            
-            JDialog showDialog = new JDialog();
-            showDialog.setSize(dialogWidth, dialogHeight);
-            showDialog.setUndecorated(true); // Bỏ khung mặc định của JDialog
-            showDialog.setShape(new RoundRectangle2D.Double(0, 0, dialogWidth, dialogHeight, 30, 30)); // Bo góc
-            showDialog.setLayout(new BorderLayout());
-            showDialog.setModal(true);
-            
-            // Tạo thanh tiêu đề tùy chỉnh với nút đóng
-            JPanel titleBar = new JPanel();
-            titleBar.setLayout(new BorderLayout());
-            titleBar.setBackground(Color.LIGHT_GRAY);
-            
-            JLabel titleLabel = new JLabel("Thông tin nhân viên");
-            titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-            titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            titleLabel.setPreferredSize(new Dimension(dialogWidth, 50));
-            
-            JButton closeButton = new JButton("X");
-            closeButton.setFocusPainted(false);
-            closeButton.setBorderPainted(false);
-            closeButton.setBackground(Color.RED);
-            closeButton.setForeground(Color.WHITE);
-            closeButton.setPreferredSize(new Dimension(45, 30));
-            
-            // Sự kiện đóng cửa sổ khi nhấn nút X
-            closeButton.addActionListener(event -> showDialog.dispose());
-            
-            titleBar.add(titleLabel, BorderLayout.WEST);
-            titleBar.add(closeButton, BorderLayout.EAST);
-            
-            // Tạo JPanel chứa thông tin nhân viên và ảnh
-            JPanel contentPanel = new JPanel(new GridBagLayout());
-            contentPanel.setBackground(Color.WHITE);
-            
-            // Panel bên trái chứa thông tin nhân viên
-            
-            JPanel nv_panel = new JPanel(new GridBagLayout());
-            nv_panel.setBackground(Color.WHITE); // Đặt nền trắng cho panel
-            GridBagConstraints gbc = new GridBagConstraints();
-            gbc.insets = new Insets(5, 5, 5, 5); // Đặt khoảng cách giữa các thành phần
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            
-            //Tạo panel bên trái
-            addField(nv_panel, gbc, "Mã nhân viên:", 0, String.valueOf(e.getManhanvien()));
-            addField(nv_panel, gbc, "Tên nhân viên:", 1, String.valueOf(e.getTennhanvien()));
-            addField(nv_panel, gbc, "Giới tính:", 2, String.valueOf(e.getGioitinh())); 
-            addField(nv_panel, gbc, "Năm sinh:", 3, String.valueOf(e.getNgaysinh()));  
-            addField(nv_panel, gbc, "Số điện thoại:", 4, String.valueOf(e.getSdt()));
-            addField(nv_panel, gbc, "Địa chỉ:", 5,  String.valueOf(e.getDiachi()));
-            addField(nv_panel, gbc, "Email:", 6, String.valueOf(e.getEmail()));
-            addField(nv_panel, gbc, "Lương:", 7, String.valueOf(e.getLuongcoban()));
-            addField(nv_panel, gbc, "Tên chức vụ:", 8,busNV.getTenChucVu(e.getMachucvu()));
-            
-            
-            // Tạo JPanel bên phải cho hình ảnh
-            JPanel imagePanel = new JPanel(new GridBagLayout());
-            imagePanel.setBackground(Color.WHITE);
-            GridBagConstraints rightGbc = new GridBagConstraints();
-            rightGbc.insets = new Insets(5, 5, 5, 5);
-            addImageField(imagePanel,rightGbc, e.getImg(), showDialog);
-            
-            GridBagConstraints mainGbc = new GridBagConstraints();
-            mainGbc.insets = new Insets(10, 10, 10, 10);
-            mainGbc.fill = GridBagConstraints.BOTH;
-            mainGbc.gridx = 0;
-            mainGbc.gridy = 0;
-            mainGbc.weightx = 0.6;
-            contentPanel.add(nv_panel, mainGbc);
-            
-            mainGbc.gridx = 1;
-            mainGbc.weightx = 0.4;
-            contentPanel.add(imagePanel, mainGbc);
-            
-            
-            
-            JPanel buttonPanel = new JPanel();
-            buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER)); // Đặt vị trí nút về phía phải
-            buttonPanel.setBackground(Color.WHITE);
-            
-            JButton saveButton = new JButton("Lưu");
-            saveButton.setPreferredSize(new Dimension(100, 30));
-            saveButton.setBackground(Color.GREEN); // Đặt màu nền xanh lá
-            saveButton.setForeground(Color.WHITE); // Đặt màu chữ trắng
-            
-            saveButton.addActionListener(event -> {
-                try {
-                    dtonhanvien nv = new dtonhanvien();
-                    nv.setManhanvien(Integer.parseInt(textField[0].getText()));
-                    nv.setTennhanvien(textField[1].getText());
-                    nv.setGioitinh(genderComboBox.getSelectedIndex());
-                    nv.setNgaysinh(dateChooser.getDate());
-                    nv.setSdt(textField[4].getText()); // lưu ý vị trí trường sdt
-                    nv.setDiachi(textField[5].getText());
-                    nv.setEmail(textField[6].getText());
-    //                nv.setLuongcoban(Double.parseDouble(textField[7].getText()));
-                    nv.setMachucvu(busNV.getMaChucVuByName((String) comboxCV.getSelectedItem()));
+        return e -> {
+            try {
+                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                int dialogWidth = (int) (screenSize.width * 0.7);
+                int dialogHeight = (int) (screenSize.height * 0.7);
 
-                    // Nếu có ảnh mới, lưu ảnh vào thư mục
-                    if (selectedFile != null) {
-                        String destinationDir = "/source/image/NhanVien/";
-                        saveImageToDirectory(destinationDir);
-                        nv.setImg(selectedFile.getName()); // Cập nhật tên ảnh mới vào đối tượng
-                    }else{
-                        nv.setImg(e.getImg());
-                    }
-                    
-                    int result = JOptionPane.showConfirmDialog(null, "Bạn có chắc sửa thông tin nhân viên này không ?", "Xác nhận", JOptionPane.YES_NO_OPTION);
-                    if(result == JOptionPane.YES_OPTION){
-                        busNV.updateNhanVien(nv);
-                        formInit();
-                        JOptionPane.showMessageDialog(null, "Cập nhật thành công");
-                        showDialog.dispose();
-                    }
-                    
-                    
-                } catch (SQLException ex) {
-                    Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(null, "Có lỗi xảy ra trong quá trình cập nhật");
-                }
-            });
+                JDialog showDialog = new JDialog();
+                showDialog.setSize(dialogWidth, dialogHeight);
+                showDialog.setUndecorated(true); // Bỏ khung mặc định của JDialog
+                showDialog.setShape(new RoundRectangle2D.Double(0, 0, dialogWidth, dialogHeight, 30, 30)); // Bo góc
+                showDialog.setLayout(new BorderLayout());
+                showDialog.setModal(true);
 
-            
-            buttonPanel.add(saveButton);
-            
-            // Thêm các thành phần vào JDialog
-            showDialog.add(titleBar, BorderLayout.NORTH);
-            showDialog.add(contentPanel, BorderLayout.CENTER);
-            showDialog.add(buttonPanel, BorderLayout.SOUTH); // Thêm nút lưu vào phía dưới
-            showDialog.setLocationRelativeTo(null); // Đặt JDialog ở giữa màn hình
-            showDialog.setVisible(true);
-        } catch (SQLException ex) {
-            Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    };
-}
+                JPanel titleBar = new JPanel();
+                titleBar.setLayout(new BorderLayout());
+                titleBar.setBackground(Color.LIGHT_GRAY);
+
+                JLabel titleLabel = new JLabel("Thông tin nhân viên");
+                titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+                titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                titleLabel.setPreferredSize(new Dimension(dialogWidth, 50));
+
+                JButton closeButton = new JButton("X");
+                closeButton.setFocusPainted(false);
+                closeButton.setBorderPainted(false);
+                closeButton.setBackground(Color.RED);
+                closeButton.setForeground(Color.WHITE);
+                closeButton.setPreferredSize(new Dimension(45, 30));
+
+                // Sự kiện đóng cửa sổ khi nhấn nút X
+                closeButton.addActionListener(event -> showDialog.dispose());
+
+                titleBar.add(titleLabel, BorderLayout.WEST);
+                titleBar.add(closeButton, BorderLayout.EAST);
+
+                // Tạo JPanel chứa thông tin nhân viên và ảnh
+                JPanel contentPanel = new JPanel(new GridBagLayout());
+                contentPanel.setBackground(Color.WHITE);
+
+                // Panel bên trái chứa thông tin nhân viên
+
+                JPanel nv_panel = new JPanel(new GridBagLayout());
+                nv_panel.setBackground(Color.WHITE); // Đặt nền trắng cho panel
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.insets = new Insets(5, 5, 5, 5); // Đặt khoảng cách giữa các thành phần
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+
+                //Tạo panel bên trái
+                addField(nv_panel, gbc, "Mã nhân viên:", 0, String.valueOf(e.getManhanvien()));
+                addField(nv_panel, gbc, "Tên nhân viên:", 1, String.valueOf(e.getTennhanvien()));
+                addField(nv_panel, gbc, "Giới tính:", 2, String.valueOf(e.getGioitinh())); 
+                addField(nv_panel, gbc, "Năm sinh:", 3, String.valueOf(e.getNgaysinh()));  
+                addField(nv_panel, gbc, "Số điện thoại:", 4, String.valueOf(e.getSdt()));
+                addField(nv_panel, gbc, "Địa chỉ:", 5,  String.valueOf(e.getDiachi()));
+                addField(nv_panel, gbc, "Email:", 6, String.valueOf(e.getEmail()));
+                addField(nv_panel, gbc, "Lương:", 7, String.valueOf(e.getLuongcoban()));
+                addField(nv_panel, gbc, "Tên chức vụ:", 8,busNV.getTenChucVu(e.getMachucvu()));
+
+
+                // Tạo JPanel bên phải cho hình ảnh
+                JPanel imagePanel = new JPanel(new GridBagLayout());
+                imagePanel.setBackground(Color.WHITE);
+                GridBagConstraints rightGbc = new GridBagConstraints();
+                rightGbc.insets = new Insets(5, 5, 5, 5);
+                addImageField(imagePanel,rightGbc, e.getImg(), showDialog);
+
+                GridBagConstraints mainGbc = new GridBagConstraints();
+                mainGbc.insets = new Insets(10, 10, 10, 10);
+                mainGbc.fill = GridBagConstraints.BOTH;
+                mainGbc.gridx = 0;
+                mainGbc.gridy = 0;
+                mainGbc.weightx = 0.6;
+                contentPanel.add(nv_panel, mainGbc);
+
+                mainGbc.gridx = 1;
+                mainGbc.weightx = 0.4;
+                contentPanel.add(imagePanel, mainGbc);
+
+
+
+                JPanel buttonPanel = new JPanel();
+                buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER)); // Đặt vị trí nút về phía phải
+                buttonPanel.setBackground(Color.WHITE);
+
+                JButton saveButton = new JButton("Lưu");
+                saveButton.setPreferredSize(new Dimension(100, 30));
+                saveButton.setBackground(Color.GREEN); // Đặt màu nền xanh lá
+                saveButton.setForeground(Color.WHITE); // Đặt màu chữ trắng
+
+                saveButton.addActionListener(event -> {
+                    try {
+                        dtonhanvien nv = new dtonhanvien();
+                        nv.setManhanvien(Integer.parseInt(textField[0].getText()));
+                        nv.setTennhanvien(textField[1].getText());
+                        nv.setGioitinh(genderComboBox.getSelectedIndex());
+                        nv.setNgaysinh(dateChooser.getDate());
+                        nv.setSdt(textField[4].getText()); // lưu ý vị trí trường sdt
+                        nv.setDiachi(textField[5].getText());
+                        nv.setEmail(textField[6].getText());
+        //                nv.setLuongcoban(Double.parseDouble(textField[7].getText()));
+                        nv.setMachucvu(busNV.getMaChucVuByName((String) comboxCV.getSelectedItem()));
+
+                        // Nếu có ảnh mới, lưu ảnh vào thư mục
+                        if (selectedFile != null) {
+                            String destinationDir = "/source/image/nhanvien/";
+                            saveImageToDirectory(destinationDir);
+                            nv.setImg(selectedFile.getName()); // Cập nhật tên ảnh mới vào đối tượng
+                        }else{
+                            nv.setImg(e.getImg());
+                        }
+
+                        int result = JOptionPane.showConfirmDialog(null, "Bạn có chắc sửa thông tin nhân viên này không ?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+                        if(result == JOptionPane.YES_OPTION){
+                            busNV.updateNhanVien(nv);
+                            formInit();
+                            JOptionPane.showMessageDialog(null, "Cập nhật thành công");
+                            showDialog.dispose();
+                        }
+
+
+                    } catch (SQLException ex) {
+                        Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(null, "Có lỗi xảy ra trong quá trình cập nhật");
+                    }
+                });
+
+
+                buttonPanel.add(saveButton);
+                showDialog.add(titleBar, BorderLayout.NORTH);
+                showDialog.add(contentPanel, BorderLayout.CENTER);
+                showDialog.add(buttonPanel, BorderLayout.SOUTH); // Thêm nút lưu vào phía dưới
+                showDialog.setLocationRelativeTo(null); // Đặt JDialog ở giữa màn hình
+                showDialog.setVisible(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        };
+    }
 
 
     private void addImageField(JPanel panel, GridBagConstraints gbc, String imgPath, JDialog showDialog) {
@@ -260,7 +251,7 @@ public class formnhanvien extends Form {
         imageDisplayLabel = new JLabel();
         imageDisplayLabel.setPreferredSize(new Dimension(170, 210));
         if(!imgPath.isEmpty()){
-            ImageIcon curImg = new ImageIcon(getClass().getResource("/source/image/NhanVien/" + imgPath));
+            ImageIcon curImg = new ImageIcon(getClass().getResource("/source/image/nhanvien/" + imgPath));
             Image scaledImg = curImg.getImage().getScaledInstance(170, 230, Image.SCALE_SMOOTH);
             ImageIcon editImg = new ImageIcon(scaledImg);
             imageDisplayLabel.setIcon(editImg);
@@ -383,14 +374,23 @@ public class formnhanvien extends Form {
 
 
 
-     private Component createHeaderAction() {
-        JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,230][fill,100][fill,100]push[][]"));
+     private Component createHeaderAction() throws SQLException {
+        JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,230][fill,100][fill,100][fill,100]push[][]"));
 
         JTextField txtSearch = new JTextField();
         txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Tìm kiếm tên nhân viên...");
         txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/search.png")), 20, 20));
 
         JButton btnSearch = new JButton("Tìm kiếm");
+        
+        JComboBox comboMacv = new JComboBox();
+        comboMacv.addItem("Mặc định");
+        busNV = new busnhanvien();
+        list_CV =  busNV.listChucVu();
+        for(dtochucvu cv : list_CV){
+            comboMacv.addItem(cv.getTenchucvu());
+        }
+        
         JButton btnReset = new JButton("Reset");
 
         JCheckBox selectAllCheckbox = new JCheckBox("Chọn tất cả");
@@ -403,17 +403,55 @@ public class formnhanvien extends Form {
         btnSearch.addActionListener(e -> {
             panelCard.removeAll(); // Xóa các card cũ khỏi panelCard
             String searchText = txtSearch.getText().toLowerCase().trim(); // Lấy chuỗi tìm kiếm và loại bỏ khoảng trắng thừa
-
-            if (searchText.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Vui lòng nhập từ khóa để tìm kiếm.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                return;
-            }
-
-            boolean found = false; 
-
+            String tencv = (String) comboMacv.getSelectedItem();
             try {
                 busNV.list();
                 list_NV = busNV.getList();
+            } catch (SQLException ex) {
+                Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if(!tencv.equals("Mặc định")){
+                ArrayList<dtonhanvien> list_nv_tmp = new ArrayList<>();
+                for(dtonhanvien nv : list_NV){
+                        try {
+                            if(nv.getMachucvu() == busNV.getMaChucVuByName(tencv)){
+                                list_nv_tmp.add(nv);
+                            }
+                        } catch (SQLException ex) {
+                            Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                if(searchText.equals("")){
+                    for (dtonhanvien nv : list_nv_tmp) {
+                        NVCard card = new NVCard(nv, createEventCard1(), 1);
+                        cards.add(card);
+                        panelCard.add(card);
+                    }
+                    panelCard.repaint();
+                    panelCard.revalidate();
+                }else{
+                    for (dtonhanvien nv : list_nv_tmp) {
+                        String tenNhanVien = nv.getTennhanvien().toLowerCase();
+                        if (tenNhanVien.contains(searchText)) {
+                            NVCard card = new NVCard(nv, createEventCard1(), 1);
+                            cards.add(card);
+                            panelCard.add(card);
+                        }
+                    }
+                    panelCard.repaint();
+                    panelCard.revalidate();
+                }
+                
+                
+                
+                
+            }else{
+                if (searchText.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Vui lòng nhập từ khóa để tìm kiếm.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+
+                boolean found = false; 
 
                 for (dtonhanvien nv : list_NV) {
                     String tenNhanVien = nv.getTennhanvien().toLowerCase();
@@ -424,23 +462,20 @@ public class formnhanvien extends Form {
                         found = true;
                     }
                 }
-
                 if (!found) {
                     JOptionPane.showMessageDialog(null, "Không tìm thấy nhân viên tương ứng.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
-
                 panelCard.repaint();
                 panelCard.revalidate();
-
-            } catch (SQLException ex) {
-                Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
 
 
         
         btnReset.addActionListener( e -> {
-                formInit();
+            txtSearch.setText("");
+            comboMacv.setSelectedIndex(0);
+            formInit();
         });
         
         cmdDelete.addActionListener(e -> {
@@ -463,6 +498,7 @@ public class formnhanvien extends Form {
         });
 
         panel.add(txtSearch, "span 1 1"); // Mở rộng không gian của trường tìm kiếm
+        panel.add(comboMacv);
         panel.add(btnSearch);
         panel.add(btnReset);
         panel.add(selectAllCheckbox);
