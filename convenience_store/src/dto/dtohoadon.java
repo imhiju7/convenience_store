@@ -6,6 +6,8 @@ package dto;
 
 import bus.buskhachhang;
 import bus.busnhanvien;
+
+import java.sql.SQLException;
 import java.util.Date;
 
 /**
@@ -78,7 +80,7 @@ public class dtohoadon {
     }
     
     public dtohoadon(){}
-    public dtohoadon(int maHoaDon, int maNhanVien, double tongTien, int maKhachHang, int maKhuyenMai, Date ngayMua, String ghiChu, int maTichDiem) {
+    public dtohoadon(int maHoaDon, int maNhanVien, double tongTien, int maKhachHang, int maKhuyenMai, Date ngayMua, String ghiChu, int maTichDiem) throws SQLException {
         this.maHoaDon = maHoaDon;
         this.maNhanVien = maNhanVien;
         this.tongTien = tongTien;
@@ -101,7 +103,7 @@ public class dtohoadon {
     private int maTichDiem;
     private String tenkhachhang;
     private String tennhanvien;
-
+    
     @Override
     public String toString() {
         return "dtohoadon{" + "maHoaDon=" + maHoaDon + ", maNhanVien=" + maNhanVien + ", tongTien=" + tongTien + ", maKhachHang=" + maKhachHang + ", maKhuyenMai=" + maKhuyenMai + ", ngayMua=" + ngayMua + ", ghiChu=" + ghiChu + ", maTichDiem=" + maTichDiem + ", tenkhachhang=" + tenkhachhang + ", tennhanvien=" + tennhanvien + '}';
@@ -128,7 +130,7 @@ public class dtohoadon {
         this.tenkhachhang = bus.getkhachhangbyid(ma).getTenKhachHang();
     }
 
-    public void setTennhanvien(int manhanvien) {
+    public void setTennhanvien(int manhanvien) throws SQLException {
         busnhanvien busnv = new busnhanvien();
         this.tennhanvien = busnv.gettennvbymanv(manhanvien);
     }

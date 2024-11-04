@@ -4,12 +4,14 @@ import bus.buschucvu;
 import bus.busnhanvien;
 import gui.form.frmlogin;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 public class Header extends javax.swing.JPanel {
 
-    public Header(int manv,int macv) {
+    public Header(int manv,int macv) throws SQLException {
         initComponents();
         
         busnhanvien busnv = new busnhanvien();

@@ -3,6 +3,8 @@ package gui.form;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.SQLException;
+
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import bus.buschamcong;
@@ -29,7 +31,7 @@ public class formchamcong extends javax.swing.JPanel {
     private JTable generalTable;
     private buschamcong buscc = new buschamcong();
     private buschitietchamcong busctcc = new buschitietchamcong();
-    private busnhanvien busnv = new busnhanvien();
+    private busnhanvien busnv;
     /**
      * Creates new form formchamcong
      */
@@ -216,7 +218,13 @@ public class formchamcong extends javax.swing.JPanel {
         txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("../../source/image/icon/search.png", 0.4f));
         JButton cmdCreate = new JButton("Create");
 
-        cmdCreate.addActionListener(e -> showModal());
+        cmdCreate.addActionListener(e -> {
+            try {
+                showModal();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        });
         panel.add(txtSearch);
         panel.add(cmdCreate);
         panel.putClientProperty(FlatClientProperties.STYLE, ""
@@ -236,7 +244,8 @@ public class formchamcong extends javax.swing.JPanel {
         return panel;
     }
 
-    private void showModal() {
+    private void showModal() throws SQLException {
+        busnv = new busnhanvien();
         int currYear = Year.now().getValue();
         Calendar calendar = Calendar.getInstance();
         int currMonth = calendar.get(Calendar.MONTH) + 1;
@@ -247,7 +256,11 @@ public class formchamcong extends javax.swing.JPanel {
         }
         int count = buscc.countchamcong();
         System.out.print("dem ma cham cong"+ count);
-        busnv.getlist();
+        try {
+            busnv.getlist();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         for (dtonhanvien nhanvien : busnv.list_nv) {
             dtochamcong cc = new dtochamcong(++count , nhanvien.getManhanvien(), 0, 0, 0, 0, 0, "", currMonth, currYear);
             System.out.print("ma cham cong tu dong"+ count);

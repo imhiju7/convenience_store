@@ -11,6 +11,38 @@ import java.util.Date;
  * @author giavi
  */
 public class dtosanpham {
+    
+    
+    private int maPhanLoai;
+    private int maSanPham;
+    private String tenSanPham;
+    private double giaBan;
+    private int soLuong;
+    private Date ngayThem;
+    private String img;
+    private int ishidden;
+    private int maNCC;
+    private String hanSD;
+    private double giaNhap;
+
+    
+    public dtosanpham(){
+    }
+    
+     public dtosanpham(int maPhanLoai, int maSanPham, String tenSanPham, double giaBan, int soLuong, Date ngayThem, String img, int ishidden, int maNCC, String hanSD, double giaNhap) {
+        this.maPhanLoai = maPhanLoai;
+        this.maSanPham = maSanPham;
+        this.tenSanPham = tenSanPham;
+        this.giaBan = giaBan;
+        this.soLuong = soLuong;
+        this.ngayThem = ngayThem;
+        this.img = img;
+        this.ishidden = ishidden;
+        this.maNCC = maNCC;
+        this.hanSD = hanSD;
+        this.giaNhap = giaNhap;
+    }
+
     public int getMaSanPham() {
         return maSanPham;
     }
@@ -70,18 +102,6 @@ public class dtosanpham {
         else this.ishidden = 0;
     }
 
-    public dtosanpham(){}
-    public dtosanpham(int maSanPham, String tenSanPham, double giaBan, int soLuong, Date ngayThem, String img, int ishidden,int maphanloai,double giaNhap) {
-        this.maSanPham = maSanPham;
-        this.tenSanPham = tenSanPham;
-        this.giaBan = giaBan;
-        this.soLuong = soLuong;
-        this.ngayThem = ngayThem;
-        this.img = img;
-        this.ishidden = ishidden;
-        this.maPhanLoai = maphanloai;
-        this.giaNhap = giaNhap;
-    }
 
     public int getMaPhanLoai() {
         return maPhanLoai;
@@ -90,15 +110,23 @@ public class dtosanpham {
     public void setMaPhanLoai(int maPhanLoai) {
         this.maPhanLoai = maPhanLoai;
     }
-    private int maPhanLoai;
-    private int maSanPham;
-    private String tenSanPham;
-    private double giaBan;
-    private int soLuong;
-    private Date ngayThem;
-    private String img;
-    private int ishidden;
+    
+    public int getMaNCC() {
+        return maNCC;
+    }
 
+    public void setMaNCC(int maNCC) {
+        this.maNCC = maNCC;
+    }
+
+    public String getHanSD() {
+        return hanSD;
+    }
+
+    public void setHanSD(String hanSD) {
+        this.hanSD = hanSD;
+    }
+    
     public double getGiaNhap() {
         return giaNhap;
     }
@@ -106,5 +134,4 @@ public class dtosanpham {
     public void setGiaNhap(double giaNhap) {
         this.giaNhap = giaNhap;
     }
-    private double giaNhap;
 }

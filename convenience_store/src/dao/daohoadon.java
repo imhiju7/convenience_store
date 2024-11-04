@@ -13,18 +13,39 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
+
 /**
  *
- * @author giavi
+ * @author AD
  */
 public class daohoadon {
-    public daohoadon() {
-    }
+     
     
+    public daohoadon() {
+        }
+
+    public double getTongDoanhThu() {
+        double result=0;
+        String query = """
+                SELECT SUM(tongTien) AS tongDoanhThu FROM hoadon WHERE isDelete = 0;
+                """;
+        
+        try (Connection connection = connect.connection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            
+            while (resultSet.next()) {
+               result=resultSet.getInt("tongDoanhThu");
+            }
+        } catch (Exception e) {
+        }
+        return result;
+    }
     public ArrayList<dtohoadon> getlist() {
         ArrayList<dtohoadon> list = new ArrayList<>();
         java.sql.Connection con = connect.connection();
@@ -88,17 +109,5 @@ public class daohoadon {
             }
         }
     }
-
-
-
-    public static void main(String[] args) {
-        // Create an instance of the DAO class
-        daohoadon dao = new daohoadon();
-
-        // Retrieve the list of details
-        ArrayList<dtohoadon> list = dao.getlist();
-        for (dtohoadon detail : list) {
-            System.out.println(detail);
-        }
     }
-}
+    

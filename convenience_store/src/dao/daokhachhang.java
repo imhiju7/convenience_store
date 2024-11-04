@@ -51,6 +51,23 @@ public class daokhachhang {
         }
         return list;
     }
+    public int getSoLuongKH() {
+        int result=0;
+        String query = """
+                SELECT COUNT(*) AS soLuongKhachHang FROM khachhang;
+                """;
+        
+        try (Connection connection = connect.connection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            
+            while (resultSet.next()) {
+               result=resultSet.getInt("soLuongKhachHang");
+            }
+        } catch (Exception e) {
+        }
+        return result;
+    }
     public static void main(String[] args) {
         // Create an instance of the DAO class
         daokhachhang dao = new daokhachhang();

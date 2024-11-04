@@ -5,6 +5,8 @@
 package dto;
 
 import bus.busnhanvien;
+
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -25,7 +27,7 @@ public class dtochamcong {
     private int namchamcong;
     private String tennhanvien;
     
-    public dtochamcong(int machamcong, int manhanvien, int sogiolamviec, int songaylamviec, int songaynghi, int songaytre, int sogiolamthem, String chitiet, int thangchamcong, int namchamcong) {
+    public dtochamcong(int machamcong, int manhanvien, int sogiolamviec, int songaylamviec, int songaynghi, int songaytre, int sogiolamthem, String chitiet, int thangchamcong, int namchamcong) throws SQLException {
         this.machamcong = machamcong;
         this.manhanvien = manhanvien;
         this.sogiolamviec = sogiolamviec;
@@ -127,7 +129,7 @@ public class dtochamcong {
         return tennhanvien;
     }
 
-    public void setTennhanvien(int manhanvien) {
+    public void setTennhanvien(int manhanvien) throws SQLException {
         busnhanvien busnv = new busnhanvien();
         this.tennhanvien = busnv.gettennvbymanv(manhanvien);
     }
