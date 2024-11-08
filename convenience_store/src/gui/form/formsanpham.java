@@ -7,12 +7,15 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.toedter.calendar.JDateChooser;
 import dto.dtochucvu;
+import dto.dtoctphieunhap;
 import dto.dtonhacungcap;
 import net.miginfocom.swing.MigLayout;
 import gui.layout.ResponsiveLayout;
 import dto.dtonhanvien;
 import dto.dtophanloai;
+import dto.dtophieunhap;
 import dto.dtosanpham;
+import gui.comp.MenuCard;
 import gui.comp.RoundedBorder;
 import gui.comp.SPCard;
 import gui.simple.SimpleInputForms;
@@ -73,6 +76,8 @@ public class formsanpham extends Form {
     private JComboBox<String> comboBox;
     private JLabel imageDisplayLabel;
     private String tenspUpdate;
+    private ArrayList<dtophieunhap> list_PN;
+    private ArrayList<dtoctphieunhap> list_CTPN;
     
     public formsanpham() throws SQLException {
         init();
@@ -92,29 +97,63 @@ public class formsanpham extends Form {
     // Đây là chỗ để tạo các card nhân viên
     @Override
     public void formInit() {
+        busSP = new bussanpham();
         panelCard.removeAll();
+
         try {
-            busSP.list();
-            list_SP = busSP.getList();
-            System.out.println(list_SP);
-            for(int i = 0 ; i < list_SP.size() ; i++){
-                dtosanpham sp = list_SP.get(i);
-                SPCard card1 = new SPCard(sp, createEventCard1());
-                cards.add(card1);
-                panelCard.add(card1);
-            }
-            
-            panelCard.repaint();
-            panelCard.revalidate();
-            
+            list_SP = busSP.list(); // Fetch list of products
         } catch (SQLException ex) {
-            Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(formmenu.class.getName()).log(Level.SEVERE, null, ex);
         }
-//        
-//        
-//        
-//        
+
+        for (dtosanpham sp : list_SP) {
+            try {
+                list_PN = busSP.listPN(sp.getMaNCC()); // Get list of purchase orders for each product's supplier
+                
+                boolean checkTwice = false;
+                for (dtophieunhap pn : list_PN) {
+                    Integer maPN = pn.getMaPhieuNhap();
+                    list_CTPN = busSP.listCTPN(maPN); // Get details of each purchase order
+
+                    boolean isCardAdded = false; 
+
+                    for (dtoctphieunhap ctpn : list_CTPN) {
+                        if (ctpn.getMaSanPham() == sp.getMaSanPham()) {
+                            if(ctpn.getSoluongtonkho() != 0){
+                                sp.setGiaBan(ctpn.getGiaBan());
+                                sp.setSoLuong(ctpn.getSoluongtonkho());
+                                System.out.println("Giá bán : " + sp.getGiaBan());
+                                SPCard card = new SPCard(sp, createEventCard1());
+                                cards.add(card);
+                                panelCard.add(card);
+                                isCardAdded = true; // Card is added
+                                break;
+                            }
+                            
+                        }
+                    }
+
+                    if (isCardAdded) {
+                        checkTwice = true;
+                        break; // Exit purchase order loop if card has been added
+                    }
+                }
+                if(!checkTwice){
+                    SPCard card = new SPCard(sp, createEventCard1());
+                    cards.add(card);
+                    panelCard.add(card);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(formmenu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        panelCard.repaint();
+        panelCard.revalidate();
     }
+    
+    
+    
     private Consumer<dtosanpham> createEventCard1() {
         return e -> {
             try {
@@ -605,17 +644,22 @@ public class formsanpham extends Form {
                         dtosanpham sp;
                         try {
                             sp = form.getSanPham();
-
+                            selectedFile = form.getSelectedFile();
+                            
                             if (!check(sp.getImg(), sp.getTenSanPham())) {
                                 return; 
                             }
+                            
+                            
+                            
                             if (busSP.addSanPham(sp)) {
+                                if(selectedFile != null) {
+                                    System.out.println(selectedFile.getName());
+                                    String root_dir = System.getProperty("user.dir") +  "/src/source/image/sanpham/" ;
+                                    saveImageToDirectory(root_dir);
+                                }
                                 JOptionPane.showMessageDialog(panelCard, "Thêm sản phẩm thành công");
-                                SPCard card1 = new SPCard(sp, createEventCard1());
-                                cards.add(card1);
-                                panelCard.add(card1);
-                                panelCard.repaint();
-                                panelCard.revalidate();
+                                formInit();
                             }
                         } catch (ParseException ex) {
                             Logger.getLogger(formsanpham.class.getName()).log(Level.SEVERE, null, ex);

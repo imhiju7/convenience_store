@@ -4,8 +4,11 @@
  */
 package bus;
 import dao.daosanpham;
+import dto.dtochitietchamcong;
+import dto.dtoctphieunhap;
 import dto.dtonhacungcap;
 import dto.dtophanloai;
+import dto.dtophieunhap;
 import dto.dtosanpham;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,6 +21,8 @@ public class bussanpham {
     private ArrayList<dtosanpham> list_sp = new ArrayList();
     private ArrayList<dtophanloai> listpl = new ArrayList();
     private ArrayList<dtonhacungcap> list_NCC = new ArrayList();
+    private ArrayList<dtophieunhap> list_PN = new ArrayList<>();
+    private ArrayList<dtoctphieunhap> list_CTPN = new ArrayList<>();
 
     
     public ArrayList<dtosanpham> list () throws SQLException{
@@ -72,4 +77,19 @@ public class bussanpham {
         list_NCC = daoSanPham.listNCC();
         return list_NCC;
     }
+    
+    public ArrayList<dtophieunhap> listPN(Integer mancc) throws SQLException{
+        daoSanPham = new daosanpham();
+        list_PN = daoSanPham.listPN(mancc);
+        return list_PN;
+    }
+    
+    public ArrayList<dtoctphieunhap> listCTPN(Integer mapn) throws SQLException{
+        daoSanPham = new daosanpham();
+        list_CTPN = daoSanPham.listCTPN(mapn);
+        return list_CTPN;
+    }
+    
+    
+    
 }

@@ -11,6 +11,22 @@ import java.util.Date;
  * @author ADMIN
  */
 public class dtoctphieunhap {
+    
+      
+    private int maCTPhieuNhap;
+    private int soLuong;
+    private double donGia;
+    private int maPhieuNhap;
+    private int maSanPham;
+    private Date ngayhethan;
+    private int soluongtonkho;
+    private int ishidden;
+    private String ghichu;
+    private Double giaBan;
+    
+    
+    
+    
     public dtoctphieunhap(){}
     public dtoctphieunhap(int maCTPhieuNhap, int soLuong, float donGia, int maPhieuNhap, int maSanPham, Date ngayhethan, int soluongtonkho, int ishidden, String ghichu) {
         this.maCTPhieuNhap = maCTPhieuNhap;
@@ -104,16 +120,15 @@ public class dtoctphieunhap {
         return (double)this.soLuong*this.donGia;
     }
     
-    
-    private int maCTPhieuNhap;
-    private int soLuong;
-    private double donGia;
-    private int maPhieuNhap;
-    private int maSanPham;
-    private Date ngayhethan;
-    private int soluongtonkho;
-    private int ishidden;
-    private String ghichu;
+  
+
+    public Double getGiaBan() {
+        return giaBan;
+    }
+
+    public void setGiaBan(Double giaBan) {
+        this.giaBan = giaBan;
+    }
     
     
 }

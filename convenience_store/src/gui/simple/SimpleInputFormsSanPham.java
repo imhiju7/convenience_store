@@ -18,7 +18,12 @@ import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import static java.lang.Integer.parseInt;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,6 +47,7 @@ public class SimpleInputFormsSanPham extends JPanel {
     private ArrayList<dtophanloai> listpl = new ArrayList<>();
     private ArrayList<dtonhacungcap> listNCC = new ArrayList<>();
     private Map<String, Integer> categoryMaNCC;
+    private File selectedFile;
     
     public SimpleInputFormsSanPham() {
         init();
@@ -119,7 +125,7 @@ public class SimpleInputFormsSanPham extends JPanel {
 
             int result = fileChooser.showOpenDialog(showDialog);
             if (result == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = fileChooser.getSelectedFile();
+                selectedFile = fileChooser.getSelectedFile();
                 nameImg = selectedFile.getName();
                 updateImageLabel(labelImg, selectedFile.getPath());
             }
@@ -140,7 +146,28 @@ public class SimpleInputFormsSanPham extends JPanel {
         }
     }
     
+    
+    public File getSelectedFile(){
+        return selectedFile;
+    }
+    
    
+    private void saveImageToDirectory(String destinationDir) {
+        try {
+            File destinationDirFile = new File(destinationDir);
+
+            if (!destinationDirFile.exists()) {
+                destinationDirFile.mkdirs(); // Tạo thư mục nếu không tồn tại
+            }
+
+            Path destinationPath = Paths.get(destinationDir, selectedFile.getName());
+
+            Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("Image saved to: " + destinationPath.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     
     public dtosanpham getSanPham() throws ParseException{
         bussanpham bus = new bussanpham();
@@ -151,7 +178,6 @@ public class SimpleInputFormsSanPham extends JPanel {
         sp.setTenSanPham(txtTenSanPham.getText().trim());
         sp.setNgayThem(null);
         sp.setImg(nameImg);
-        sp.setGiaBan(0);
         sp.setSoLuong(0);
         sp.setHanSD("0");
         sp.setIshidden(0);

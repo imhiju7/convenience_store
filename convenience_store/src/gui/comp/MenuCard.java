@@ -9,7 +9,7 @@ import gui.model.ModelEmployee;
 import javax.swing.*;
 import java.util.function.Consumer;
 
-public class SPCard extends JPanel {
+public class MenuCard extends JPanel {
 
     private dtosanpham sp;
     private final Consumer<dtosanpham> event_sp;
@@ -18,7 +18,7 @@ public class SPCard extends JPanel {
     private JPanel panelBody;
     
     
-    public SPCard(dtosanpham sp, Consumer<dtosanpham> event_sp) {
+    public MenuCard(dtosanpham sp, Consumer<dtosanpham> event_sp) {
         this.sp = sp;
         this.event_sp = event_sp;
         init();
@@ -40,11 +40,11 @@ public class SPCard extends JPanel {
         add(panelHeader);
         add(panelBody);
         addMouseListener(new java.awt.event.MouseAdapter() {
-        public void mouseClicked(java.awt.event.MouseEvent evt) {
-            isSelected = !isSelected;
-            updateCardStyle();
-        }
-    });
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    isSelected = !isSelected;
+                    updateCardStyle();
+            }
+        });
     }
      private void updateCardStyle() {
         if (isSelected) {
@@ -72,6 +72,8 @@ public class SPCard extends JPanel {
             return new ImageIcon(getClass().getResource("/source/image/sanpham/Americano-nong-10oz-01-1-400x400.jpg"));
         }
     }
+    
+    
     private JPanel createHeader() {
         JPanel header = new JPanel(new MigLayout("fill,insets 0", "[fill]", "[top]"));
         header.putClientProperty(FlatClientProperties.STYLE, "" +
@@ -82,15 +84,16 @@ public class SPCard extends JPanel {
     }
 
     private JPanel createBody() {
-        JPanel body = new JPanel(new MigLayout("wrap", "[150]", "[][][]push[]"));
+        JPanel body = new JPanel(new MigLayout("wrap", "[150]", "[][]push[]"));
         body.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:null");
         JLabel title = new JLabel(sp.getTenSanPham());
         title.putClientProperty(FlatClientProperties.STYLE, "" +
                 "font:bold +1;");
         JTextPane description = new JTextPane();
-        description.setText("Giá tiền: " + sp.getGiaBan());
         description.setEditable(false);
+        description.setEnabled(false);
+        description.setText("Giá tiền: " + sp.getGiaBan());
         description.putClientProperty(FlatClientProperties.STYLE, "" +
                 "border:0,0,0,0;" +
                 "background:null;" +
@@ -120,15 +123,26 @@ public class SPCard extends JPanel {
         body.add(button);
         return body;
     }
+    
     public void setSelected(boolean selected) {
         this.isSelected = selected;
         updateCardStyle();
     }
+    
     public boolean isSelected() {
         return this.isSelected;
     }
+    
     public String getSanPhamName() {
         return sp.getTenSanPham();
+    }
+    
+    public Double getGiaTien(){
+        return sp.getGiaBan();
+    }
+    
+    public Integer getSoLuong(){
+        return sp.getSoLuong();
     }
     
     public int getMaSanPham(){
