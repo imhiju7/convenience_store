@@ -1,19 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package bus;
 import dao.daohoadon;
 import dto.dtohoadon;
 import java.util.ArrayList;
 /**
  *
- * @author giavi
+ * @author AD
  */
 public class bushoadon {
     private daohoadon daoHD = new daohoadon();
-    public ArrayList <dtohoadon> dshd;
-    
+	public ArrayList <dtohoadon> dshd;
+
     public bushoadon() {
         getlist() ;
     }
@@ -36,14 +33,8 @@ public class bushoadon {
         }
         return null;
     }
-    public static void main(String[] args) {
-        // Create an instance of the BUS class
-        bushoadon bus = new bushoadon();
-        System.out.println(bus.get(56));
-        // Print each dtohoadon object in the list
-        for (dtohoadon HD : bus.dshd) {
-            System.out.println(HD);
-        }
-        
-    }
+    public double getTongDoanhThu(){
+        return daoHD.getTongDoanhThu();
+    } 
 }
+

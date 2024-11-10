@@ -25,8 +25,6 @@ public class Card extends javax.swing.JPanel {
         setOpaque(false);
         setBackground(new Color(112, 69, 246));
         colorGradient = new Color(255, 255, 255);
-        pro.setBackground(new Color(255, 255, 255, 100));
-        pro.setForeground(Color.WHITE);
     }
 
     public void setData(ModelCard data) {
@@ -34,8 +32,7 @@ public class Card extends javax.swing.JPanel {
         lbTitle.setText(data.getTitle());
         lbValues.setText(df.format(data.getValues()));
         lbIcon.setIcon(data.getIcon());
-        pro.setValue(data.getPercentage());
-        lbPer.setText(df.format(data.getPercentage()) + "%");
+        
     }
 
     @SuppressWarnings("unchecked")
@@ -45,8 +42,6 @@ public class Card extends javax.swing.JPanel {
         lbTitle = new javax.swing.JLabel();
         lbValues = new javax.swing.JLabel();
         lbIcon = new javax.swing.JLabel();
-        pro = new gui.swing.dashboard.ProgressBarCustom();
-        lbPer = new javax.swing.JLabel();
 
         setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -60,9 +55,6 @@ public class Card extends javax.swing.JPanel {
 
         lbIcon.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 
-        lbPer.setForeground(new java.awt.Color(255, 255, 255));
-        lbPer.setText("0%");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -70,16 +62,10 @@ public class Card extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(pro, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lbPer))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbTitle)
-                            .addComponent(lbValues))
-                        .addGap(18, 18, 18)
-                        .addComponent(lbIcon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(lbTitle)
+                    .addComponent(lbValues))
+                .addGap(18, 18, 18)
+                .addComponent(lbIcon, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -91,12 +77,7 @@ public class Card extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lbValues))
                     .addComponent(lbIcon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbPer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(pro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                .addGap(26, 26, 26))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -112,9 +93,7 @@ public class Card extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lbIcon;
-    private javax.swing.JLabel lbPer;
     private javax.swing.JLabel lbTitle;
     private javax.swing.JLabel lbValues;
-    private gui.swing.dashboard.ProgressBarCustom pro;
     // End of variables declaration//GEN-END:variables
 }

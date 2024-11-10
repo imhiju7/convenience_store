@@ -101,7 +101,7 @@ public class dtohoadon {
     private int maTichDiem;
     private String tenkhachhang;
     private String tennhanvien;
-
+    
     @Override
     public String toString() {
         return "dtohoadon{" + "maHoaDon=" + maHoaDon + ", maNhanVien=" + maNhanVien + ", tongTien=" + tongTien + ", maKhachHang=" + maKhachHang + ", maKhuyenMai=" + maKhuyenMai + ", ngayMua=" + ngayMua + ", ghiChu=" + ghiChu + ", maTichDiem=" + maTichDiem + ", tenkhachhang=" + tenkhachhang + ", tennhanvien=" + tennhanvien + '}';
@@ -128,7 +128,7 @@ public class dtohoadon {
         this.tenkhachhang = bus.getkhachhangbyid(ma).getTenKhachHang();
     }
 
-    public void setTennhanvien(int manhanvien) {
+    public void setTennhanvien(int manhanvien) throws SQLException {
         busnhanvien busnv = new busnhanvien();
         this.tennhanvien = busnv.gettennvbymanv(manhanvien);
     }

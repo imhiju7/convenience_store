@@ -57,13 +57,13 @@ public class dtokhachhang {
     public void setMaUuDai(int maUuDai) {
         this.maUuDai = maUuDai;
     }
-    
+
     private int maKhachHang;
     private String tenKhachHang;
     private String SDT;
     private int diemTichLuy;
     private int maUuDai;
-
+    
     @Override
     public String toString() {
         return "dtokhachhang{" + "maKhachHang=" + maKhachHang + ", tenKhachHang=" + tenKhachHang + ", SDT=" + SDT + ", diemTichLuy=" + diemTichLuy + ", maUuDai=" + maUuDai + '}';

@@ -99,5 +99,21 @@ public class daophieunhap {
         }
 
         return count;
+     public double getTongChiPhi() {
+        double result=0;
+        String query = """
+                SELECT SUM(tongTien) AS tongChiPhi FROM phieunhap WHERE isDelete = 0;
+                """;
+        
+        try (Connection connection = connect.connection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            
+            while (resultSet.next()) {
+               result=resultSet.getInt("tongChiPhi");
+            }
+        } catch (Exception e) {
+        }
+        return result;
     }
 }

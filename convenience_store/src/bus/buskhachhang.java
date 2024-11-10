@@ -31,7 +31,9 @@ public class buskhachhang {
         }
         return null;
     }
-    
+    public int getSoLuongKH () {
+        return dao.getSoLuongKH();
+    }
     public static void main(String[] args) {
         // Create an instance of the BUS class
         buskhachhang bus = new buskhachhang();

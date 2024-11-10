@@ -19,6 +19,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -188,7 +189,12 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
          @Override
          public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            dangNhap(); 
+            try {
+                dangNhap();
+            } catch (SQLException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            } 
                 }
             }
         });
@@ -208,7 +214,12 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         
         cmd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dangNhap();
+                try {
+                    dangNhap();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -228,7 +239,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         }
     }
     
-    public void dangNhap() {
+    public void dangNhap() throws SQLException {
         bustaikhoan bustk = new bustaikhoan();
         String tendangnhap = txtUsername.getText();
         String matkhau = String.valueOf(txtPass.getPassword());

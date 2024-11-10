@@ -20,13 +20,7 @@ public class ModelCard {
         this.values = values;
     }
 
-    public int getPercentage() {
-        return percentage;
-    }
-
-    public void setPercentage(int percentage) {
-        this.percentage = percentage;
-    }
+   
 
     public Icon getIcon() {
         return icon;
@@ -36,10 +30,10 @@ public class ModelCard {
         this.icon = icon;
     }
 
-    public ModelCard(String title, double values, int percentage, Icon icon) {
+    public ModelCard(String title, double values, Icon icon) {
         this.title = title;
         this.values = values;
-        this.percentage = percentage;
+        
         this.icon = icon;
     }
 

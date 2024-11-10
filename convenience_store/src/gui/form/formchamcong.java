@@ -3,6 +3,8 @@ package gui.form;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.SQLException;
+
 import com.formdev.flatlaf.FlatClientProperties;
 import java.util.List;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
@@ -328,7 +330,11 @@ public class formchamcong extends javax.swing.JPanel {
         }
         int count = buscc.countchamcong();
         System.out.print("dem ma cham cong"+ count);
-        busnv.getlist();
+        try {
+            busnv.getlist();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         for (dtonhanvien nhanvien : busnv.list_nv) {
             dtochamcong cc = new dtochamcong(++count , nhanvien.getManhanvien(), 0, 0, 0, 0, 0, "", currMonth, currYear);
             System.out.print("ma cham cong tu dong"+ count);

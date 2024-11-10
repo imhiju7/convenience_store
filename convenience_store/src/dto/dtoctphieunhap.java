@@ -13,6 +13,22 @@ import java.util.Vector;
  * @author ADMIN
  */
 public class dtoctphieunhap {
+    
+      
+    private int maCTPhieuNhap;
+    private int soLuong;
+    private double donGia;
+    private int maPhieuNhap;
+    private int maSanPham;
+    private Date ngayhethan;
+    private int soluongtonkho;
+    private int ishidden;
+    private String ghichu;
+    private Double giaBan;
+    
+    
+    
+    
     public dtoctphieunhap(){}
 
     public dtoctphieunhap(int maCTPhieuNhap, int soLuong, double giaNhap, int maPhieuNhap, int maSanPham, Timestamp ngayhethan, int soluongtonkho, String ghichu, double giaBan) {
