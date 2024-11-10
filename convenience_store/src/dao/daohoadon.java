@@ -3,19 +3,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package dao;
-import dto.dtocthoadon;
+
 import dto.dtohoadon;
-import dto.dtohoadon;
-import java.sql.Connection;
-import java.sql.Date;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
+
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 
 /**
  *
@@ -30,7 +27,6 @@ public class daohoadon {
         java.sql.Connection con = connect.connection();
         String sql = "SELECT * FROM hoadon "
                 + "where hoadon.isDelete = 0";
-        
         try {
             PreparedStatement pst = con.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
@@ -41,7 +37,7 @@ public class daohoadon {
                     rs.getDouble("tongTien"),
                     rs.getInt("maKhachHang"),
                     rs.getInt("maKhuyenMai"),
-                    rs.getDate("ngayMua"),
+                    rs.getTimestamp("ngayMua"),
                     rs.getString("ghiChu"),
                     rs.getInt("maTichDiem")
                 );
@@ -72,7 +68,7 @@ public class daohoadon {
             pst.setDouble(3, hoadon.getTongTien());
             pst.setInt(4, hoadon.getMaKhachHang());
             pst.setInt(5, hoadon.getMaKhuyenMai());
-            pst.setDate(6, (Date) hoadon.getNgayMua());
+            pst.setTimestamp(6,hoadon.getNgayMua());
             pst.setString(7, hoadon.getGhiChu());
             pst.setInt(8, hoadon.getMaTichDiem());
             pst.setInt(9, 0);
@@ -88,8 +84,6 @@ public class daohoadon {
             }
         }
     }
-
-
 
     public static void main(String[] args) {
         // Create an instance of the DAO class

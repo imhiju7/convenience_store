@@ -4,7 +4,9 @@
  */
 package dto;
 
+import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Vector;
 
 /**
  *
@@ -12,16 +14,18 @@ import java.util.Date;
  */
 public class dtoctphieunhap {
     public dtoctphieunhap(){}
-    public dtoctphieunhap(int maCTPhieuNhap, int soLuong, float donGia, int maPhieuNhap, int maSanPham, Date ngayhethan, int soluongtonkho, int ishidden, String ghichu) {
+
+    public dtoctphieunhap(int maCTPhieuNhap, int soLuong, double giaNhap, int maPhieuNhap, int maSanPham, Timestamp ngayhethan, int soluongtonkho, String ghichu, double giaBan) {
         this.maCTPhieuNhap = maCTPhieuNhap;
         this.soLuong = soLuong;
-        this.donGia = donGia;
+        this.giaNhap = giaNhap;
+        this.giaBan = giaBan;
         this.maPhieuNhap = maPhieuNhap;
         this.maSanPham = maSanPham;
         this.ngayhethan = ngayhethan;
         this.soluongtonkho = soluongtonkho;
-        this.ishidden = ishidden;
         this.ghichu = ghichu;
+        setIshidden();
     }
 
     public int getMaCTPhieuNhap() {
@@ -40,14 +44,6 @@ public class dtoctphieunhap {
         this.soLuong = soLuong;
     }
 
-    public double getDonGia() {
-        return donGia;
-    }
-
-    public void setDonGia(double donGia) {
-        this.donGia = donGia;
-    }
-
     public int getMaPhieuNhap() {
         return maPhieuNhap;
     }
@@ -64,14 +60,6 @@ public class dtoctphieunhap {
         this.maSanPham = maSanPham;
     }
 
-    public Date getNgayhethan() {
-        return ngayhethan;
-    }
-
-    public void setNgayhethan(Date ngayhethan) {
-        this.ngayhethan = ngayhethan;
-    }
-
     public int getSoluongtonkho() {
         return soluongtonkho;
     }
@@ -84,12 +72,9 @@ public class dtoctphieunhap {
         return ishidden;
     }
 
-    public void setIshidden(int hidden) {
-        if(hidden == 0){
-            if(this.soluongtonkho == 0 || this.ngayhethan.before(new Date())) this.ishidden = 1;
-            else this.ishidden = 0;
-        }
-        else this.ishidden = hidden;
+    public void setIshidden() {
+        if(this.soluongtonkho == 0 || this.ngayhethan.before(new Date())) this.ishidden = 1;
+        else this.ishidden = 0;
     }
 
     public String getGhichu() {
@@ -101,19 +86,53 @@ public class dtoctphieunhap {
     }
     
     public double getthanhtien(){
-        return (double)this.soLuong*this.donGia;
+        return (double)this.soLuong*this.giaNhap;
     }
-    
+
+    public double getGiaNhap() {
+        return giaNhap;
+    }
+
+    public void setGiaNhap(double giaNhap) {
+        this.giaNhap = giaNhap;
+    }
+
+    public double getGiaBan() {
+        return giaBan;
+    }
+
+    public void setGiaBan(double giaBan) {
+        this.giaBan = giaBan;
+    }
+
+    public Timestamp getNgayhethan() {
+        return ngayhethan;
+    }
+
+    public void setNgayhethan(Timestamp ngayhethan) {
+        this.ngayhethan = ngayhethan;
+    }
     
     private int maCTPhieuNhap;
     private int soLuong;
-    private double donGia;
+    private double giaNhap;
+    private double giaBan;
     private int maPhieuNhap;
     private int maSanPham;
-    private Date ngayhethan;
+    private Timestamp ngayhethan;
     private int soluongtonkho;
     private int ishidden;
     private String ghichu;
-    
-    
+
+    public String getTenSP(int masp){
+        return "Ten sp";
+    }
+    @Override
+    public String toString() {
+        return "dtoctphieunhap{" + "maCTPhieuNhap=" + maCTPhieuNhap + ", soLuong=" + soLuong + ", giaNhap=" + giaNhap + ", giaBan=" + giaBan + ", maPhieuNhap=" + maPhieuNhap + ", maSanPham=" + maSanPham + ", ngayhethan=" + ngayhethan + ", soluongtonkho=" + soluongtonkho + ", ishidden=" + ishidden + ", ghichu=" + ghichu + '}';
+    }
+
+    public Object[] toTableRow() {
+        return new Object[]{maSanPham , getTenSP(maSanPham), soLuong, giaNhap, ngayhethan, giaBan, soluongtonkho};
+    }
 }

@@ -6,7 +6,7 @@ package dto;
 
 import bus.buskhachhang;
 import bus.busnhanvien;
-import java.util.Date;
+import java.sql.Timestamp;
 
 /**
  *
@@ -53,11 +53,11 @@ public class dtohoadon {
         this.maKhuyenMai = maKhuyenMai;
     }
 
-    public Date getNgayMua() {
+    public Timestamp getNgayMua() {
         return ngayMua;
     }
 
-    public void setNgayMua(Date ngayMua) {
+    public void setNgayMua(Timestamp ngayMua) {
         this.ngayMua = ngayMua;
     }
 
@@ -78,7 +78,7 @@ public class dtohoadon {
     }
     
     public dtohoadon(){}
-    public dtohoadon(int maHoaDon, int maNhanVien, double tongTien, int maKhachHang, int maKhuyenMai, Date ngayMua, String ghiChu, int maTichDiem) {
+    public dtohoadon(int maHoaDon, int maNhanVien, double tongTien, int maKhachHang, int maKhuyenMai, Timestamp ngayMua, String ghiChu, int maTichDiem) {
         this.maHoaDon = maHoaDon;
         this.maNhanVien = maNhanVien;
         this.tongTien = tongTien;
@@ -96,7 +96,7 @@ public class dtohoadon {
     private double tongTien;
     private int maKhachHang;
     private int maKhuyenMai;
-    private Date ngayMua;
+    private Timestamp ngayMua;
     private String ghiChu;
     private int maTichDiem;
     private String tenkhachhang;

@@ -23,6 +23,9 @@ public class buschamcong {
     public void getlist() {
         this.dscc =  dao.getlist();
     }
+    public ArrayList <Integer> listYears() {
+        return dao.getListYears();
+    }
 
     public void create(dtochamcong cc){
         dao.create(cc);

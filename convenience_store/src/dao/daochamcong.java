@@ -110,14 +110,38 @@ public class daochamcong {
     return count;
 }
 
+    public ArrayList<Integer> getListYears() {
+        ArrayList<Integer> years = new ArrayList<>();
+        java.sql.Connection con = connect.connection();
+        String sql = "SELECT DISTINCT namChamCong FROM chamcong ORDER BY namChamCong ASC";
+
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                years.add(rs.getInt("namChamCong"));
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(daochamcong.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                Logger.getLogger(daochamcong.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+        return years;
+    }
+    
     public static void main(String[] args) {
         // Create an instance of the DAO class
         daochamcong dao = new daochamcong();
 
         // Retrieve the list of details
-        ArrayList<dtochamcong> list = dao.getlist();
+        ArrayList<Integer> list = dao.getListYears();
 
-        for (dtochamcong detail : list) {
+        for (Integer detail : list) {
             System.out.println(detail);
         }
     }

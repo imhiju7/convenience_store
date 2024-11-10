@@ -22,7 +22,9 @@ public class buscthoadon {
     public void getlist() {
         dscthd =  daoCTHD.getlist();
     }
-
+    public void getlist(int id) {
+        dscthd =  daoCTHD.getlist();
+    }
     // Business logic method to add a new detail record
     public void add (dtocthoadon detail) {
         daoCTHD.add(detail);

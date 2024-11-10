@@ -36,7 +36,6 @@ public class buskhachhang {
         // Create an instance of the BUS class
         buskhachhang bus = new buskhachhang();
         System.out.print(bus.getkhachhangbyid(4));
-  
     }
     
 }

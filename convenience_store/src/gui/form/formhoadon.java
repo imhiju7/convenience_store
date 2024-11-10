@@ -13,23 +13,17 @@ import bus.bushoadon;
 import bus.buscthoadon;
 import dto.dtohoadon;
 import dto.dtocthoadon;
-import gui.modal.ModalDialog;
-import gui.modal.component.SimpleModalBorder;
+
 
 import net.miginfocom.swing.MigLayout;
 
 import gui.table.TableHeaderAlignment;
-import gui.modal.option.*;
-import gui.simple.SimpleInputForms;
+
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import java.text.ParseException;
-import java.time.Year;
 import java.util.ArrayList;
-import java.util.Calendar;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -39,8 +33,8 @@ public class formhoadon extends javax.swing.JPanel {
     private JTable generalTable;
     private bushoadon bushd = new bushoadon();
     private buscthoadon buscthd = new buscthoadon();
-    private int hdIDOnClick = 0;
-    JButton btnDetail ;
+    private JButton btnDetail;
+    
     /**
      * Creates new form formhoadon
      */
@@ -134,7 +128,7 @@ public class formhoadon extends javax.swing.JPanel {
 
         return panel;
     }
-    private Component createDetailTable() {
+    private Component createDetailTable(int hdIDOnClick) {
     JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
 
     // Create table model
@@ -152,11 +146,11 @@ public class formhoadon extends javax.swing.JPanel {
     // Table scroll with size adjustments
     JScrollPane scrollPane = new JScrollPane(table);
     scrollPane.setBorder(BorderFactory.createEmptyBorder());
-    scrollPane.setPreferredSize(new Dimension(550, 250)); // Set preferred size
-    scrollPane.setMinimumSize(new Dimension(550, 250));   // Set minimum size if needed
+    scrollPane.setPreferredSize(new Dimension(400, 250)); // Set preferred size
+    scrollPane.setMinimumSize(new Dimension(400, 250));   // Set minimum size if needed
 
     // Table header alignment
-    table.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(generalTable) {
+    table.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(table) {
         protected int getAlignment() {
             return SwingConstants.CENTER;
         }
@@ -194,82 +188,187 @@ public class formhoadon extends javax.swing.JPanel {
     panel.add(scrollPane, "growx"); // Adjust with growx to expand width
 
     // Fill table data
-    buscthd.getlist();
+    buscthd.getlist(hdIDOnClick);
     for (dtocthoadon hd : buscthd.dscthd) {
         model.addRow(hd.toTableRow());
     }
-
     return panel;
 }
 
     private Component createHeaderGeneralTable() {
-        JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,230]push[][]"));
+        JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,fill]push[][]")); 
 
         JTextField txtSearch = new JTextField();
-        txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Search...");
+        txtSearch.setPreferredSize(new Dimension(250, 28));
+        txtSearch.setMaximumSize(new Dimension(260, 28));
         txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("../../source/image/icon/search.png", 0.4f));
+        txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Tìm kiếm mã HĐ ,tên NV, tên KH ");
+
+        JButton btnSearch = new JButton("Search");
+        btnSearch.addActionListener(e -> searching(txtSearch));
+
         btnDetail = new JButton("Xem chi tiết");
-        if(hdIDOnClick == 0){
-            btnDetail.addActionListener(e -> {
-                    JOptionPane.showMessageDialog(null, "Hãy chọn vào 1 hóa đơn để xem chi tiết");
-                }
-            );
-        }
-        panel.add(txtSearch);
-        panel.add(btnDetail);
+        btnDetail.addActionListener(e -> {
+            JOptionPane.showMessageDialog(null, "Hãy chọn vào 1 hóa đơn để xem chi tiết");
+            }
+        );
+        
+        JButton btnReload = new JButton("Reload");
+        btnReload.addActionListener(e -> {
+            txtSearch.setText("");
+            // Clear the row sorter to display all rows
+            generalTable.setRowSorter(null);
+            DefaultTableModel model = (DefaultTableModel) generalTable.getModel();
+            model.setRowCount(0); // Clear existing rows
+            
+            // Refresh the data source
+            bushd.getlist(); 
+            // Reload the data into the table
+            for (dtohoadon hd : bushd.dshd) {
+                model.addRow(hd.toTableRow());
+            }
+            // Notify table model of data changes
+            model.fireTableDataChanged();
+        });
+
+        panel.add(txtSearch, "split 2");
+        panel.add(btnSearch);                    
+
+        panel.add(btnReload, "split 2");
+        panel.add(btnDetail);                    
+
         panel.putClientProperty(FlatClientProperties.STYLE, "background:null;");
         return panel;
     }
-    private JPanel SimpleInputForms(){
+    private void searching(JTextField txtSearch) {
+        String searchText = txtSearch.getText().trim();
+
+        if (searchText.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Vui lòng nhập/chọn thông tin tìm kiếm",
+                    "Thông báo",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(generalTable.getModel());
+        generalTable.setRowSorter(sorter);
+
+        RowFilter<TableModel, Object> filter;
+        if (searchText.chars().allMatch(Character::isDigit)) {
+            filter = RowFilter.regexFilter(searchText, 0); // Column index 0 for numeric search
+        } else {
+            // Combine filters for columns 2 and 5
+            java.util.List<RowFilter<TableModel, Object>> filters = new ArrayList<>();
+            filters.add(RowFilter.regexFilter("(?i)" + searchText, 2,5)); // Case-insensitive search in column 2
+            filter = RowFilter.andFilter(filters);
+        }
+        sorter.setRowFilter(filter);
+
+        java.util.List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+        sortKeys.add(new RowSorter.SortKey(1, SortOrder.DESCENDING));
+        sorter.setSortKeys(sortKeys);
+
+        if (generalTable.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "Không có dữ liệu");
+        }
+    }
+
+    private JPanel detailForms(int hdIDOnClick){
         JPanel panel = new JPanel();
         panel.setLayout(new MigLayout("fillx,wrap,insets 5 35 5 35,width 400", "[fill]", ""));
-        JTextField txtFirstName = new JTextField();
-        JTextField txtLastName = new JTextField();
-        JTextField txtCompany = new JTextField();
-        JTextField txtEmail = new JTextField();
-        JComboBox comboCountry = new JComboBox();
+        JTextField txtHDid = new JTextField();
+        txtHDid.setEditable(false);
 
-        JTextArea txtAddress = new JTextArea();
-        txtAddress.setWrapStyleWord(true);
-        txtAddress.setLineWrap(true);
-        JScrollPane scroll = new JScrollPane(txtAddress);
+        JTextField txtDate = new JTextField();
+        txtDate.setEditable(false);
 
-        // style
-        txtFirstName.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "First");
-        txtLastName.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Last");
-        txtCompany.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "e.g. Tesla Motors");
+        JTextField txtKHid = new JTextField();
+        txtKHid.setEditable(false);
+
+        JTextField txtKHname = new JTextField();
+        txtKHname.setEditable(false);
+
+        JTextField txtNVid = new JTextField();
+        txtNVid.setEditable(false);
+
+        JTextField txtNVname = new JTextField();
+        txtNVname.setEditable(false);
+
+        JTextField txtKMid = new JTextField();
+        txtKMid.setEditable(false);
+
+        JTextField txtKMname = new JTextField();
+        txtKMname.setEditable(false);
+
+        JTextField txtTDid = new JTextField();
+        txtTDid.setEditable(false);
+
+        JTextField txtScore = new JTextField();
+        txtScore.setEditable(false);
+
+        JTextArea txtNote = new JTextArea();
+        txtNote.setWrapStyleWord(true);
+        txtNote.setLineWrap(true);
+        txtNote.setEditable(false);
+        txtNote.setWrapStyleWord(true);
+        txtNote.setLineWrap(true);
+        JScrollPane scroll = new JScrollPane(txtNote);
 
         panel.add(new JLabel("Hóa đơn"), "gapy 5 0");
-        panel.add(txtFirstName, "split 2");
-        panel.add(txtLastName);
-        panel.add(new JLabel("Khách hàng"), "gapy 5 0");
-        panel.add(txtCompany);
-        panel.add(new JLabel("Nhân viên thanh toán"), "gapy 5 0");
-        panel.add(txtEmail);
+        panel.add(txtHDid, "split 2, growx 0.5, wmin 100"); // Half width
+        panel.add(txtDate, "growx"); // Full width
+        txtHDid.setText(String.valueOf(hdIDOnClick));
+        txtDate.setText(String.valueOf(bushd.get(hdIDOnClick).getNgayMua()));
 
+        panel.add(new JLabel("Thông tin khách hàng"), "gapy 5 0");
+        panel.add(txtKHid, "split 2, growx 0.5, wmin 100"); // Half width
+        panel.add(txtKHname, "growx"); // Full width
+        txtKHid.setText(String.valueOf(bushd.get(hdIDOnClick).getMaKhachHang()));
+        txtKHname.setText(String.valueOf(bushd.get(hdIDOnClick).getTenkhachhang()));
+
+        panel.add(new JLabel("Nhân viên thanh toán"), "gapy 5 0");
+        panel.add(txtNVid, "split 2, growx 0.5, wmin 100"); // Half width
+        panel.add(txtNVname, "growx"); // Full width
+        txtNVid.setText(String.valueOf(bushd.get(hdIDOnClick).getMaNhanVien()));
+        txtNVname.setText(String.valueOf(bushd.get(hdIDOnClick).getTennhanvien()));
+
+        panel.add(new JLabel("Chương trình khuyến mãi"), "gapy 5 0");
+        panel.add(txtKMid, "split 2, growx 0.5, wmin 100"); // Half width
+        panel.add(txtKMname, "growx"); // Full width
+        txtKMid.setText(String.valueOf(bushd.get(hdIDOnClick).getMaKhuyenMai()));
+        txtKMname.setText("wait for KM dao, bus");
+        
+        panel.add(new JLabel("Mã tích điểm"), "split 2, growx 0.5, wmin 100");
+        panel.add(new JLabel("Điểm tích lũy"));
+        panel.add(txtTDid, "split 2"); 
+        panel.add(txtScore); // Full width
+        txtTDid.setText(String.valueOf(bushd.get(hdIDOnClick).getMaTichDiem()));
+        txtScore.setText("wait for TD dao, bus");
 
         panel.add(new JLabel("Ghi chú"), "gapy 5 0");
         panel.add(scroll, "height 50,grow,pushy");
-        panel.add(createDetailTable());
+        txtNote.setText(String.valueOf(bushd.get(hdIDOnClick).getGhiChu()));
+
+        panel.add(createDetailTable(hdIDOnClick));
         return panel;
     }
     
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {
-        for (ActionListener listener : btnDetail.getActionListeners()) {
+        for (ActionListener listener : btnDetail.getActionListeners()){
         btnDetail.removeActionListener(listener);
-    }
+        }
 
         int row = generalTable.getSelectedRow();
-        hdIDOnClick = (int) generalTable.getValueAt(row,0);
+        int hdIDOnClick = (int) generalTable.getValueAt(row,0);
         
         btnDetail.addActionListener(e -> {
             JDialog dialog = new JDialog((JFrame) null, "Chi tiết hóa đơn", true);
-            dialog.setContentPane(SimpleInputForms());
+            dialog.setContentPane(detailForms(hdIDOnClick));
             dialog.pack();
             dialog.setLocationRelativeTo(generalTable);
             dialog.setVisible(true);
         });
-
     }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */

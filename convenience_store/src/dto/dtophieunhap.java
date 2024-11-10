@@ -4,7 +4,8 @@
  */
 package dto;
 
-import java.util.Date;
+import bus.busnhanvien;
+import java.sql.Timestamp;
 
 /**
  *
@@ -19,11 +20,11 @@ public class dtophieunhap {
         this.maPhieuNhap = maPhieuNhap;
     }
 
-    public Date getNgayNhap() {
+    public Timestamp getNgayNhap() {
         return ngayNhap;
     }
 
-    public void setNgayNhap(Date ngayNhap) {
+    public void setNgayNhap(Timestamp ngayNhap) {
         this.ngayNhap = ngayNhap;
     }
 
@@ -59,30 +60,37 @@ public class dtophieunhap {
         this.ghiChu = ghiChu;
     }
     public dtophieunhap(){}
-    public dtophieunhap(int maPhieuNhap, Date ngayNhap, double tongTien, int maNhaCungCap, int maNhanVien, String ghiChu,int isHidden) {
+    public dtophieunhap(int maPhieuNhap, Timestamp ngayNhap, double tongTien, int maNhaCungCap, int maNhanVien, String ghiChu) {
         this.maPhieuNhap = maPhieuNhap;
         this.ngayNhap = ngayNhap;
         this.tongTien = tongTien;
         this.maNhaCungCap = maNhaCungCap;
         this.maNhanVien = maNhanVien;
         this.ghiChu = ghiChu;
-        this.isHidden = isHidden;
     }
 
+    public String getTenNCC(int maNCC){
+        return "wait for NCC bus, dao";
+    }
+
+    public String getTenNV(int maNV){
+        busnhanvien busnv = new busnhanvien();
+        return busnv.gettennvbymanv(maNV);
+    }
+    @Override
+    public String toString() {
+        return "dtophieunhap{" + "maPhieuNhap=" + maPhieuNhap + ", ngayNhap=" + ngayNhap + ", tongTien=" + tongTien + ", maNhaCungCap=" + maNhaCungCap + ", maNhanVien=" + maNhanVien + ", ghiChu=" + ghiChu + '}';
+    }
     
+    public Object[] toTableRow() {
+        return new Object[]{maPhieuNhap , ngayNhap, getTenNCC(this.maNhaCungCap), tongTien, getTenNV(this.maNhanVien), ghiChu};
+    }
+
     private int maPhieuNhap;
-    private Date ngayNhap;
+    private Timestamp ngayNhap;
     private double tongTien;
     private int maNhaCungCap;
     private int maNhanVien;
     private String ghiChu;
-    private int isHidden;
 
-    public int getIsHidden() {
-        return isHidden;
-    }
-
-    public void setIsHidden(int isHidden) {
-        this.isHidden = isHidden;
-    }
 }

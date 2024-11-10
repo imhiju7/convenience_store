@@ -4,10 +4,51 @@
  */
 package bus;
 import dao.daophieunhap;
+import dao.daophieunhap;
+import dto.dtophieunhap;
+import java.util.ArrayList;
 /**
  *
  * @author giavi
  */
 public class busphieunhap {
-    private daophieunhap daoPhieuNhap = new daophieunhap();
+    private daophieunhap daoHD = new daophieunhap();
+    public ArrayList <dtophieunhap> dspn;
+    
+    public busphieunhap() {
+        getlist() ;
+    }
+
+    // Retrieve all records through the DAO
+    public void getlist() {
+        dspn =  daoHD.getlist();
+    }
+
+    // Business logic method to add a new HD record
+    public void add (dtophieunhap HD) {
+        daoHD.create(HD);
+    }
+    
+    public dtophieunhap get(int maphieunhap){
+        for(dtophieunhap pn: dspn){
+            if(pn.getMaPhieuNhap() == maphieunhap){
+                return pn;
+            }
+        }
+        return null;
+    }
+    
+    public int maxID(){
+        return daoHD.maxID();
+    }
+    public static void main(String[] args) {
+        // Create an instance of the BUS class
+        busphieunhap bus = new busphieunhap();
+        System.out.println(bus.maxID());
+        // Print each dtophieunhap object in the list
+        for (dtophieunhap HD : bus.dspn) {
+            System.out.println(HD);
+        }
+        
+    }
 }
