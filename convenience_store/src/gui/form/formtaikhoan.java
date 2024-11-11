@@ -2,7 +2,7 @@ package gui.form;
 
 import bus.busnhanvien;
 import bus.bustaikhoan;
-import gui.comp.NVCard;
+import gui.comp.AccountCard;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.toedter.calendar.JDateChooser;
@@ -88,7 +88,7 @@ public class formtaikhoan extends Form {
             list_NV = busNV.getList();
             for(int i = 0 ; i < list_NV.size() ; i++){
                 dtonhanvien nv = list_NV.get(i);
-                NVCard card1 = new NVCard(nv, createEventCard1() , 1);
+                AccountCard card1 = new AccountCard(nv, createEventCard1() , 1);
                 cards.add(card1);
                 panelCard.add(card1);
             }
@@ -544,7 +544,7 @@ public class formtaikhoan extends Form {
 // Thêm các card vào panelCard
 private void addCardsToPanel(ArrayList<dtonhanvien> list_nv) {
     for (dtonhanvien nv : list_nv) {
-        NVCard card = new NVCard(nv, createEventCard1(), 1);
+        AccountCard card = new AccountCard(nv, createEventCard1(), 1);
         cards.add(card);
         panelCard.add(card);
     }
@@ -554,14 +554,14 @@ private void addCardsToPanel(ArrayList<dtonhanvien> list_nv) {
 
 
      private void selectAll(boolean selected) {
-        for (NVCard card : cards) {
+        for (AccountCard card : cards) {
             card.setSelected(selected);
         }
     }
     private void deleteSelectedCards() throws SQLException {         
-        List<NVCard> selectedCards = new ArrayList<>();
+        List<AccountCard> selectedCards = new ArrayList<>();
         StringBuilder deletedNames = new StringBuilder("Đã xóa các nhân viên: ");
-        for (NVCard card : cards) {
+        for (AccountCard card : cards) {
             if (card.isSelected()) { 
                 selectedCards.add(card);
             }
@@ -576,7 +576,7 @@ private void addCardsToPanel(ArrayList<dtonhanvien> list_nv) {
             return;
         }
         busNV = new busnhanvien();
-        for (NVCard card : selectedCards) {
+        for (AccountCard card : selectedCards) {
             deletedNames.append(card.getEmployeeName()).append(", ");
             busNV.deleteNhanVien(card.getMaNhanVien());
             panelCard.remove(card);
@@ -661,7 +661,7 @@ private void addCardsToPanel(ArrayList<dtonhanvien> list_nv) {
     Image newImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
     return new ImageIcon(newImg);
     }
-    private List<NVCard> cards;
+    private List<AccountCard> cards;
     private JPanel panelCard;
     private ResponsiveLayout responsiveLayout;
     
