@@ -1,574 +1,669 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package gui.form;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.net.URL;
-import java.sql.SQLException;
 
 import bus.busnhanvien;
 import bus.bustaikhoan;
-import dto.dtotaikhoan;
+import gui.comp.NVCard;
+import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.toedter.calendar.JDateChooser;
+import net.miginfocom.swing.MigLayout;
+import gui.layout.ResponsiveLayout;
+import gui.model.ModelEmployee;
+import dto.SampleData;
+import dto.dtochucvu;
 import dto.dtonhanvien;
+import dto.dtotaikhoan;
+import gui.comp.RoundedBorder;
+import gui.simple.SimpleInputForms;
+import gui.simple.SimpleInputFormsNhanVien;
+import gui.swing.dashboard.Form;
+import gui.swing.dashboard.SystemForm;
 import java.util.ArrayList;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.geom.RoundRectangle2D;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import raven.modal.ModalDialog;
+import raven.modal.component.SimpleModalBorder;
+import raven.modal.option.Location;
+import raven.modal.option.Option;
 
-public class formtaikhoan extends JPanel {
-    private JPanel mainPanel;
-    private JPanel detailPanel;
-    private JPanel searchPanel; // Thêm panel tìm kiếm
-    private Timer slideInTimer, slideOutTimer;
-    private boolean detailPanelVisible = false;
-    private String manv;
-    private busnhanvien busnv;
-    private bus.buschucvu busChucVu;
-    private JTextField searchField; // Trường tìm kiếm
-    private JComboBox<String> searchComboBox; // ComboBox tìm kiếm
 
+@SystemForm(name = "Responsive Layout", description = "responsive layout user interface", tags = {"card"})
+public class formtaikhoan extends Form {
+    
+    
+    private busnhanvien busNV;
+    private bustaikhoan busTK;
+    private ArrayList<dtonhanvien> list_NV;
+    private ArrayList<dtotaikhoan> list_TK;
+    private ArrayList<dtochucvu> list_CV;
+    private JLabel imageDisplayLabel;
+    private File selectedFile;
+    private JComboBox<Object> comboxNCC;
+    private JComboBox<Object> comboxCV;
+    private JTextField[] textField = new JTextField[20];
+    private JComboBox<String> genderComboBox;
+    private JDateChooser dateChooser;
+    
+    
     public formtaikhoan() throws SQLException {
-        busnv = new busnhanvien(); // Khởi tạo BUS để lấy dữ liệu từ DAO
-        busChucVu = new bus.buschucvu(); // Khởi tạo BUS chức vụ
-        setLayout(new BorderLayout());
-
-        // Tạo và thêm panel tìm kiếm
-        searchPanel = new JPanel();
-        searchPanel.setLayout(new FlowLayout(FlowLayout.CENTER)); // Thay đổi thành CENTER để căn giữa
-        searchPanel.setPreferredSize(new Dimension(1070, 40));
-        searchPanel.setBackground(Color.DARK_GRAY);
-
-        // Tìm kiếm
-        JLabel searchLabel = new JLabel("Tìm kiếm:");
-        searchLabel.setForeground(Color.BLACK);
-        searchPanel.add(searchLabel);
-
-        // Trường tìm kiếm
-        searchField = new JTextField(20); // 20 ký tự
-        searchPanel.add(searchField);
-
-        // ComboBox tìm kiếm
-        String[] searchOptions = { "Tên nhân viên", "Chức vụ", "Trạng thái" };
-        searchComboBox = new JComboBox<>(searchOptions);
-        searchPanel.add(searchComboBox);
-
-        // Nút tìm kiếm
-        JButton searchButton = new JButton("Tìm");
-        searchButton.addActionListener(e -> searchEmployees());
-        searchPanel.add(searchButton);
-
-        // Nút reset
-        JButton resetButton = new JButton("Reset");
-        resetButton.addActionListener(e -> resetSearch());
-        searchPanel.add(resetButton);
-
-        // Thêm panel tìm kiếm vào đầu
-        add(searchPanel, BorderLayout.NORTH);
-        searchField.setPreferredSize(new Dimension(200, 30));
-        searchComboBox.setPreferredSize(new Dimension(150, 30));
-        searchButton.setPreferredSize(new Dimension(80, 30));
-        resetButton.setPreferredSize(new Dimension(80, 30));
-
-        // Khởi tạo mainPanel với JScrollPane
-        mainPanel = new JPanel(new GridLayout(0, 3, 10, 10)); // Bắt đầu với 3 cột
-        JScrollPane scrollPane = new JScrollPane(mainPanel);
-        add(scrollPane, BorderLayout.CENTER);
-
-        // Lấy danh sách nhân viên từ BUS
-        ArrayList<dtonhanvien> employees = busnv.list_nv;
-
-        // Duyệt qua danh sách nhân viên và thêm vào panel
-        for (dtonhanvien nv : employees) {
-            JPanel employeePanel = createEmployeePanel(nv.getTennhanvien(), nv.getMachucvu(), nv.getImg(),
-                    nv.getManhanvien());
-            mainPanel.add(employeePanel);
-        }
-
-        // Khởi tạo panel chi tiết, ẩn nó đi và không thêm vào layout ngay
-        detailPanel = new JPanel();
-        detailPanel.setPreferredSize(new Dimension(0, getHeight()));
-        detailPanel.setBackground(new Color(220, 220, 220));
-        detailPanel.setLayout(null);
+        init();
+        formInit();
+        
     }
 
-    // Phương thức tìm kiếm nhân viên
-    private void searchEmployees() {
-        String searchText = searchField.getText().trim();
-        String selectedOption = (String) searchComboBox.getSelectedItem();
+    private void init() throws SQLException {
+        cards = new ArrayList<>();
+        setLayout(new MigLayout("wrap,fill,insets 7 15 7 15", "[fill]", "[grow 0][fill]"));
+        add(createHeaderAction());
+        add(createExample());
+       
+    }
 
-        // Clear main panel
-        mainPanel.removeAll();
-
-        // Lấy danh sách nhân viên từ BUS
-        ArrayList<dtonhanvien> employees = busnv.list_nv;
-
-        // Duyệt qua danh sách nhân viên và tìm kiếm
-        for (dtonhanvien nv : employees) {
-            boolean matches = false;
-
-            // Lấy thông tin tài khoản từ manhanvien
-            bustaikhoan bustk = new bustaikhoan();
-            dtotaikhoan tk = bustk.getlist().stream()
-                    .filter(account -> account.getManhanvien() == nv.getManhanvien())
-                    .findFirst()
-                    .orElse(null);
-
-            // Kiểm tra nếu tài khoản không null để lấy trạng thái
-            String status = (tk != null && tk.getIsblock() == 1) ? "Đã khóa" : "Hoạt động";
-
-            switch (selectedOption) {
-                case "Tên nhân viên":
-                    matches = nv.getTennhanvien().toLowerCase().contains(searchText.toLowerCase());
-                    break;
-                case "Chức vụ":
-                    String position = getPositionName(nv.getMachucvu());
-                    matches = position.toLowerCase().contains(searchText.toLowerCase());
-                    break;
-                case "Trạng thái":
-                    matches = status.toLowerCase().contains(searchText.toLowerCase());
-                    break;
+    
+    // Đây là chỗ để tạo các card nhân viên
+    @Override
+    public void formInit() {
+        panelCard.removeAll();
+        try {
+            busNV = new busnhanvien();
+            busNV.list();
+            list_NV = busNV.getList();
+            for(int i = 0 ; i < list_NV.size() ; i++){
+                dtonhanvien nv = list_NV.get(i);
+                NVCard card1 = new NVCard(nv, createEventCard1() , 1);
+                cards.add(card1);
+                panelCard.add(card1);
             }
-            if (matches) {
-                JPanel employeePanel = createEmployeePanel(nv.getTennhanvien(), nv.getMachucvu(), nv.getImg(),
-                        nv.getManhanvien());
-                mainPanel.add(employeePanel);
-            }
+            
+            panelCard.repaint();
+            panelCard.revalidate();
+        } catch (SQLException ex) {
+        }
+    }
+    
+    private Consumer<dtonhanvien> createEventCard1() {
+        return e -> {
+            try {
+                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                int dialogWidth = (int) (screenSize.width * 0.7);
+                int dialogHeight = (int) (screenSize.height * 0.7);
+
+                JDialog showDialog = new JDialog();
+                showDialog.setSize(dialogWidth, dialogHeight);
+                showDialog.setUndecorated(true); // Bỏ khung mặc định của JDialog
+                showDialog.setShape(new RoundRectangle2D.Double(0, 0, dialogWidth, dialogHeight, 30, 30)); // Bo góc
+                showDialog.setLayout(new BorderLayout());
+                showDialog.setModal(true);
+
+                JPanel titleBar = new JPanel();
+                titleBar.setLayout(new BorderLayout());
+                titleBar.setBackground(Color.LIGHT_GRAY);
+
+                JLabel titleLabel = new JLabel("Thông tin tài khoản nhân viên");
+                titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+                titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                titleLabel.setPreferredSize(new Dimension(dialogWidth, 50));
+
+                JButton closeButton = new JButton("X");
+                closeButton.setFocusPainted(false);
+                closeButton.setBorderPainted(false);
+                closeButton.setBackground(Color.RED);
+                closeButton.setForeground(Color.WHITE);
+                closeButton.setPreferredSize(new Dimension(45, 30));
+
+                // Sự kiện đóng cửa sổ khi nhấn nút X
+                closeButton.addActionListener(event -> showDialog.dispose());
+
+                titleBar.add(titleLabel, BorderLayout.WEST);
+                titleBar.add(closeButton, BorderLayout.EAST);
+
+                // Tạo JPanel chứa thông tin nhân viên và ảnh
+                JPanel contentPanel = new JPanel(new GridBagLayout());
+                contentPanel.setBackground(Color.WHITE);
+
+                // Panel bên trái chứa thông tin nhân viên
+
+                JPanel nv_panel = new JPanel(new GridBagLayout());
+                nv_panel.setBackground(Color.WHITE); // Đặt nền trắng cho panel
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.insets = new Insets(5, 5, 5, 5); // Đặt khoảng cách giữa các thành phần
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                bustaikhoan busTk = new bustaikhoan();
+
+                int maNhanVien = e.getManhanvien();
+                String tenDangNhap = busTk.getTenDangNhap(maNhanVien);
+                String matKhau = busTk.getMatKhau(maNhanVien);
+                Date ngayTao = busTk.getNgayTao(maNhanVien);
+                int isBlock = busTk.getIsBlock(maNhanVien);
+               // Tạo panel bên trái
+                addField(nv_panel, gbc, "Mã nhân viên:", 0, String.valueOf(maNhanVien));
+                addField(nv_panel, gbc, "Tên nhân viên:", 1, String.valueOf(e.getTennhanvien()));
+                addField(nv_panel, gbc, "Tên đăng nhập:", 2, tenDangNhap);
+                addField(nv_panel, gbc, "Mật khẩu:", 3, matKhau);
+                addField(nv_panel, gbc, "Ngày tạo:", 4, ngayTao != null ? ngayTao.toString() : "N/A");
+                addField(nv_panel, gbc, "Trạng thái khóa:", 5, isBlock == 1 ? "Đã khóa" : "Hoạt động");
+                addField(nv_panel, gbc, "Tên chức vụ:", 6,busNV.getTenChucVu(e.getMachucvu()));
+
+
+                // Tạo JPanel bên phải cho hình ảnh
+                JPanel imagePanel = new JPanel(new GridBagLayout());
+                imagePanel.setBackground(Color.WHITE);
+                GridBagConstraints rightGbc = new GridBagConstraints();
+                rightGbc.insets = new Insets(5, 5, 5, 5);
+                addImageField(imagePanel,rightGbc, e.getImg(), showDialog);
+
+                GridBagConstraints mainGbc = new GridBagConstraints();
+                mainGbc.insets = new Insets(10, 10, 10, 10);
+                mainGbc.fill = GridBagConstraints.BOTH;
+                mainGbc.gridx = 0;
+                mainGbc.gridy = 0;
+                mainGbc.weightx = 0.6;
+                contentPanel.add(nv_panel, mainGbc);
+
+                mainGbc.gridx = 1;
+                mainGbc.weightx = 0.4;
+                contentPanel.add(imagePanel, mainGbc);
+
+
+
+                JPanel buttonPanel = new JPanel();
+                buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER)); // Đặt vị trí nút về phía phải
+                buttonPanel.setBackground(Color.WHITE);
+
+                JButton saveButton = new JButton("Lưu");
+                saveButton.setPreferredSize(new Dimension(100, 30));
+                saveButton.setBackground(Color.GREEN); // Đặt màu nền xanh lá
+                saveButton.setForeground(Color.WHITE); // Đặt màu chữ trắng
+
+                saveButton.addActionListener(event -> {
+    try {
+        dtonhanvien nv = new dtonhanvien();
+        dtotaikhoan tk = new dtotaikhoan();
+
+        // Lấy giá trị từ giao diện người dùng
+        nv.setManhanvien(Integer.parseInt(textField[0].getText()));  // Mã nhân viên
+        nv.setTennhanvien(textField[1].getText());  // Tên nhân viên
+
+        // Kiểm tra chức vụ hiện tại, nếu là admin thì không cho phép sửa
+        String currentChucVu = busNV.getChucVuByMaNhanVien(nv.getManhanvien()); // Lấy chức vụ hiện tại của nhân viên
+        String newChucVu = (String) comboxCV.getSelectedItem(); // Chức vụ mới từ ComboBox
+
+        if (currentChucVu.equals("admin") && !newChucVu.equals("admin")) {
+            JOptionPane.showMessageDialog(null, "Không thể sửa chức vụ của nhân viên 'admin'.");
+            comboxCV.setSelectedItem(currentChucVu); // Quay lại chức vụ hiện tại
+            return;  // Dừng lại nếu chức vụ là admin và cố gắng thay đổi chức vụ
         }
 
-        mainPanel.revalidate();
-        mainPanel.repaint();
-    }
-
-    // Phương thức reset tìm kiếm
-    private void resetSearch() {
-        searchField.setText("");
-        searchComboBox.setSelectedIndex(0);
-        mainPanel.removeAll();
-
-        // Lấy danh sách nhân viên từ BUS
-        ArrayList<dtonhanvien> employees = busnv.list_nv;
-
-        // Duyệt qua danh sách nhân viên và thêm vào panel
-        for (dtonhanvien nv : employees) {
-            JPanel employeePanel = createEmployeePanel(nv.getTennhanvien(), nv.getMachucvu(), nv.getImg(),
-                    nv.getManhanvien());
-            mainPanel.add(employeePanel);
+        if (!currentChucVu.equals("admin") && newChucVu.equals("admin")) {
+            JOptionPane.showMessageDialog(null, "Không thể sửa chức vụ của nhân viên thành 'admin'.");
+            comboxCV.setSelectedItem(currentChucVu); // Quay lại chức vụ hiện tại
+            return;  // Dừng lại nếu chức vụ không phải admin và cố gắng chuyển thành admin
         }
 
-        mainPanel.revalidate();
-        mainPanel.repaint();
-    }
+        // Set lại thông tin tài khoản từ các component tương ứng
+        tk.setTendangnhap(textField[2].getText());  // Tên đăng nhập
+        tk.setMatkhau(textField[3].getText());  // Mật khẩu
 
-    // Chỉnh sửa phương thức để nhận thêm mã nhân viên
-    private JPanel createEmployeePanel(String name, int positionId, String imagePath, int manhanvien) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220), 1));
-        panel.setPreferredSize(new Dimension(0, 200));
-        panel.setBackground(new Color(220, 220, 220));
+        // Trạng thái khóa - lấy từ JComboBox
+        String trangThai = (String) genderComboBox.getSelectedItem(); // Hoạt động hay đã khóa
+        tk.setIsblock(trangThai.equals("Hoạt động") ? 0 : 1);  // 0 là hoạt động, 1 là khóa
 
-        // Tạo đường dẫn cho ảnh
-        URL imageUrl = getClass().getResource("/source/image/nhanvien/" + imagePath);
-        ImageIcon imageIcon = null;
-        if (imageUrl != null) {
-            imageIcon = new ImageIcon(imageUrl);
+        // Cập nhật chức vụ từ ComboBox
+        nv.setMachucvu(busNV.getMaChucVuByName(newChucVu));  // Cập nhật chức vụ mới
+
+        // Nếu có ảnh mới, lưu ảnh vào thư mục
+        if (selectedFile != null) {
+            String destinationDir = "/source/image/nhanvien/";
+            saveImageToDirectory(destinationDir);  // Lưu ảnh vào thư mục
+            nv.setImg(selectedFile.getName());  // Cập nhật tên ảnh vào đối tượng
         } else {
-            System.out.println("Không tìm thấy ảnh: " + imagePath);
+            nv.setImg(e.getImg());  // Nếu không có ảnh mới, giữ ảnh cũ
         }
 
-        JLabel imageLabel = new JLabel(imageIcon);
-        imageLabel.setPreferredSize(new Dimension(180, 180));
-        panel.add(imageLabel, BorderLayout.WEST);
+        // Khởi tạo đối tượng busTK nếu chưa có, hoặc dùng đối tượng đã khởi tạo
+        bustaikhoan busTK = new bustaikhoan();  // Tạo đối tượng BusNhanVien
 
-        JPanel infoPanel = new JPanel();
-        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-        infoPanel.setBackground(new Color(220, 220, 220));
+        // Hiển thị thông báo xác nhận cập nhật
+        int result = JOptionPane.showConfirmDialog(null, "Bạn có chắc sửa thông tin nhân viên này không ?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        if (result == JOptionPane.YES_OPTION) {
+            // Cập nhật thông tin tài khoản
+            boolean isUpdated = busTK.updateTaiKhoan(nv.getManhanvien(), tk.getTendangnhap(), tk.getMatkhau(), tk.getIsblock());
+            
+            // Cập nhật chức vụ nhân viên
+            if (isUpdated) {
+                // Cập nhật chức vụ nhân viên
+                busnhanvien busNV = new busnhanvien(); // Tạo đối tượng BusNhanVien
+                boolean isChucVuUpdated = busNV.updateChucVuByMaNhanVien(nv.getManhanvien(), nv.getMachucvu());
 
-        // Sử dụng HTML để hiển thị tên nhân viên
-        JLabel nameLabel = new JLabel("<html>" + name + "</html>");
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        nameLabel.setForeground(Color.BLACK);
-        nameLabel.setMaximumSize(new Dimension(300, 80)); // Đặt chiều cao tối đa
-        infoPanel.add(nameLabel);
-
-        // Lấy tên chức vụ dựa trên mã chức vụ
-        String position = getPositionName(positionId);
-        JLabel positionLabel = new JLabel(position);
-        positionLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        positionLabel.setForeground(Color.BLACK);
-        positionLabel.setMaximumSize(new Dimension(300, 60));
-        infoPanel.add(positionLabel);
-
-        JButton viewButton = new JButton("Xem");
-        viewButton.addActionListener(e -> showDetailPanel(name, position, manhanvien)); // Truyền mã nhân viên
-        infoPanel.add(viewButton);
-
-        panel.add(infoPanel, BorderLayout.CENTER);
-        infoPanel.add(Box.createVerticalStrut(5)); // Khoảng trống giữa tên và chức vụ
-        return panel;
-    }
-
-    private String getPositionName(int positionId) {
-        // Lấy tên chức vụ từ busChucVu dựa trên mã chức vụ
-        return busChucVu.gettencvbymacv(positionId);
-    }
-
-    private void showDetailPanel(String name, String position, int manhanvien) {
-        bustaikhoan bustk = new bustaikhoan();
-        dtotaikhoan taikhoan = bustk.getlist().stream()
-                .filter(tk -> tk.getManhanvien() == manhanvien) // Tìm tài khoản dựa trên mã nhân viên
-                .findFirst()
-                .orElse(null);
-
-        if (taikhoan != null) {
-            if (!detailPanelVisible) {
-                detailPanelVisible = true;
-                this.add(detailPanel, BorderLayout.EAST); // Thêm panel chi tiết vào bên phải
-                mainPanel.setLayout(new GridLayout(0, 2, 10, 10)); // Chuyển thành 2 cột
-                this.revalidate(); // Cập nhật lại layout
-                slideInDetailPanel(); // Hiệu ứng trượt vào
-            }
-
-            detailPanel.removeAll(); // Xóa các thành phần cũ trước khi thêm mới
-
-            // Tiêu đề "Tên nhân viên"
-            JLabel nameTitleLabel = new JLabel("Tên nhân viên:");
-            nameTitleLabel.setBounds(10, 20, 280, 30);
-            nameTitleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-            nameTitleLabel.setForeground(Color.BLACK);
-            detailPanel.add(nameTitleLabel);
-
-            // Thông tin tên nhân viên
-            JLabel nameLabel = new JLabel(name);
-            nameLabel.setBounds(150, 20, 280, 30);
-            nameLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-            nameLabel.setForeground(Color.BLACK);
-            detailPanel.add(nameLabel);
-
-            // Tiêu đề "Chức vụ"
-            JLabel positionTitleLabel = new JLabel("Chức vụ:");
-            positionTitleLabel.setBounds(10, 60, 280, 30);
-            positionTitleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-            positionTitleLabel.setForeground(Color.BLACK);
-            detailPanel.add(positionTitleLabel);
-
-            // Thông tin chức vụ
-            JLabel positionLabel = new JLabel(position);
-            positionLabel.setBounds(150, 60, 280, 30);
-            positionLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-            positionLabel.setForeground(Color.BLACK);
-            detailPanel.add(positionLabel);
-
-            // Tiêu đề "Tên đăng nhập"
-            JLabel usernameTitleLabel = new JLabel("Tên đăng nhập:");
-            usernameTitleLabel.setBounds(10, 100, 280, 30);
-            usernameTitleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-            usernameTitleLabel.setForeground(Color.BLACK);
-            detailPanel.add(usernameTitleLabel);
-
-            // Thông tin tên đăng nhập
-            JLabel usernameLabel = new JLabel(taikhoan.getTendangnhap());
-            usernameLabel.setBounds(150, 100, 280, 30);
-            usernameLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-            usernameLabel.setForeground(Color.BLACK);
-            detailPanel.add(usernameLabel);
-
-            // Tiêu đề "Mật khẩu"
-            JLabel passwordTitleLabel = new JLabel("Mật khẩu:");
-            passwordTitleLabel.setBounds(10, 140, 280, 30);
-            passwordTitleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-            passwordTitleLabel.setForeground(Color.BLACK);
-            detailPanel.add(passwordTitleLabel);
-
-            // Thông tin mật khẩu
-            JLabel passwordLabel = new JLabel(taikhoan.getMatkhau());
-            passwordLabel.setBounds(150, 140, 280, 30);
-            passwordLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-            passwordLabel.setForeground(Color.BLACK);
-            detailPanel.add(passwordLabel);
-
-            // Tiêu đề "Ngày tạo"
-            JLabel createdDateTitleLabel = new JLabel("Ngày tạo:");
-            createdDateTitleLabel.setBounds(10, 180, 280, 30);
-            createdDateTitleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-            createdDateTitleLabel.setForeground(Color.BLACK);
-            detailPanel.add(createdDateTitleLabel);
-
-            // Thông tin ngày tạo
-            // Lấy giá trị ngày tạo từ đối tượng taikhoan
-            // Lấy giá trị ngày tạo
-            Date createdDate = taikhoan.getNgaytao();
-
-            // Kiểm tra nếu giá trị không null
-            if (createdDate != null) {
-                // Định dạng ngày tháng theo định dạng bạn muốn
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy"); // Ví dụ: định dạng ngày tháng năm
-                String createdDateString = sdf.format(createdDate); // Chuyển đổi Date thành String
-
-                // Tạo JLabel để hiển thị ngày tạo
-                JLabel createdDateLabel = new JLabel(createdDateString);
-                createdDateLabel.setBounds(150, 180, 280, 30);
-                createdDateLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-                createdDateLabel.setForeground(Color.BLACK);
-                detailPanel.add(createdDateLabel);
-            } else {
-                // Xử lý trường hợp giá trị createdDate là null
-                System.out.println("Ngày tạo không hợp lệ!");
-            }
-
-            // Tiêu đề "Trạng thái"
-            JLabel statusTitleLabel = new JLabel("Trạng thái:");
-            statusTitleLabel.setBounds(10, 220, 280, 30);
-            statusTitleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-            statusTitleLabel.setForeground(Color.BLACK);
-            detailPanel.add(statusTitleLabel);
-
-            // Thông tin trạng thái
-            String status = (taikhoan.getIsblock() == 1) ? "Đã khóa" : "Hoạt động"; // Giả sử bạn đã thêm phương thức
-                                                                                    // isblock() trong dtotaikhoan
-            JLabel statusLabel = new JLabel(status);
-            statusLabel.setBounds(150, 220, 280, 30);
-            statusLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-            statusLabel.setForeground(Color.BLACK);
-            detailPanel.add(statusLabel);
-
-            // Nút "Sửa"
-            JButton editButton = new JButton("Sửa TK");
-            editButton.setBounds(100, 280, 80, 30);
-            editButton.addActionListener(e -> {
-                // Ngăn sửa admin
-                if (position.equals("admin")) { // Thêm dấu ngoặc đơn đóng
-                    JOptionPane.showMessageDialog(detailPanel, "Không được sửa thông tin admin", "Lỗi",
-                            JOptionPane.ERROR_MESSAGE);
-                    return;
+                if (isChucVuUpdated) {
+                    // Cập nhật giao diện và thông báo thành công
+                    formInit();  // Cập nhật lại giao diện
+                    JOptionPane.showMessageDialog(null, "Cập nhật thành công");
+                    showDialog.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Cập nhật chức vụ không thành công");
                 }
-                // Hiển thị các trường chỉnh sửa khi nhấn "Sửa"
-                // Tiêu đề "Tên đăng nhập mới"
-                JLabel newUsernameLabel = new JLabel("Tên ĐN mới:");
-                newUsernameLabel.setBounds(10, 320, 280, 30);
-                newUsernameLabel.setFont(new Font("Arial", Font.BOLD, 18));
-                newUsernameLabel.setForeground(Color.BLACK);
-                detailPanel.add(newUsernameLabel);
+            } else {
+                JOptionPane.showMessageDialog(null, "Cập nhật tài khoản không thành công");
+            }
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(formtaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+        JOptionPane.showMessageDialog(null, "Có lỗi xảy ra trong quá trình cập nhật");
+    }
+});
 
-                // Trường để nhập tên đăng nhập mới
-                JTextField newUsernameField = new JTextField();
-                newUsernameField.setBounds(150, 320, 140, 30);
-                detailPanel.add(newUsernameField);
 
-                // Tiêu đề "XN Tên đăng nhập mới"
-                JLabel confirmnewUsernameLabel = new JLabel("Xác nhận TĐN:");
-                confirmnewUsernameLabel.setBounds(10, 360, 280, 30);
-                confirmnewUsernameLabel.setFont(new Font("Arial", Font.BOLD, 18));
-                confirmnewUsernameLabel.setForeground(Color.BLACK);
-                detailPanel.add(confirmnewUsernameLabel);
 
-                // Trường để nhập tên đăng nhập mới
-                JTextField confirmnewUsernameField = new JTextField();
-                confirmnewUsernameField.setBounds(150, 360, 140, 30);
-                detailPanel.add(confirmnewUsernameField);
 
-                // Tiêu đề "Mật khẩu mới"
-                JLabel newPasswordLabel = new JLabel("Mật khẩu mới:");
-                newPasswordLabel.setBounds(10, 400, 280, 30);
-                newPasswordLabel.setFont(new Font("Arial", Font.BOLD, 18));
-                newPasswordLabel.setForeground(Color.BLACK);
-                detailPanel.add(newPasswordLabel);
+                buttonPanel.add(saveButton);
+                showDialog.add(titleBar, BorderLayout.NORTH);
+                showDialog.add(contentPanel, BorderLayout.CENTER);
+                showDialog.add(buttonPanel, BorderLayout.SOUTH); // Thêm nút lưu vào phía dưới
+                showDialog.setLocationRelativeTo(null); // Đặt JDialog ở giữa màn hình
+                showDialog.setVisible(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(formtaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        };
+    }
 
-                // Trường để nhập mật khẩu mới
-                JPasswordField newPasswordField = new JPasswordField();
-                newPasswordField.setBounds(150, 400, 140, 30);
-                detailPanel.add(newPasswordField);
 
-                // Tiêu đề "Xác nhận mật khẩu mới"
-                JLabel confirmPasswordLabel = new JLabel("Xác nhận MK:");
-                confirmPasswordLabel.setBounds(10, 440, 280, 30);
-                confirmPasswordLabel.setFont(new Font("Arial", Font.BOLD, 18));
-                confirmPasswordLabel.setForeground(Color.BLACK);
-                detailPanel.add(confirmPasswordLabel);
+    private void addImageField(JPanel panel, GridBagConstraints gbc, String imgPath, JDialog showDialog) {
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
 
-                // Trường để xác nhận mật khẩu mới
-                JPasswordField confirmPasswordField = new JPasswordField();
-                confirmPasswordField.setBounds(150, 440, 140, 30);
-                detailPanel.add(confirmPasswordField);
+        JLabel imgLabel = new JLabel("IMG:");
+        imgLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        imgLabel.setPreferredSize(new Dimension(150, 20));
+        panel.add(imgLabel, gbc);
 
-                // Tiêu đề "Trạng thái mới"
-                JLabel newstatusLabel = new JLabel("Trạng thái mới:");
-                newstatusLabel.setBounds(10, 480, 280, 30);
-                newstatusLabel.setFont(new Font("Arial", Font.BOLD, 18));
-                newstatusLabel.setForeground(Color.BLACK);
-                detailPanel.add(newstatusLabel);
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        imageDisplayLabel = new JLabel();
+        imageDisplayLabel.setPreferredSize(new Dimension(170, 210));
+        if(!imgPath.isEmpty()){
+            ImageIcon curImg = new ImageIcon(getClass().getResource("/source/image/nhanvien/" + imgPath));
+            Image scaledImg = curImg.getImage().getScaledInstance(170, 230, Image.SCALE_SMOOTH);
+            ImageIcon editImg = new ImageIcon(scaledImg);
+            imageDisplayLabel.setIcon(editImg);
 
-                // Tạo JComboBox cho trạng thái mới
-                String[] statusOptions = { "0", "1" };
-                JComboBox<String> statusComboBox = new JComboBox<>(statusOptions);
-                statusComboBox.setBounds(150, 480, 140, 30);
-                statusComboBox.setSelectedIndex(0); // Mặc định chọn "Hoạt động" (tương ứng với giá trị 0)
-                detailPanel.add(statusComboBox);
+        }
+        panel.add(imageDisplayLabel, gbc);
 
-                // Nút "OK" để xác nhận cập nhật
-                JButton okButton = new JButton("OK");
-                okButton.setBounds(100, 520, 80, 30);
-                okButton.addActionListener(evt -> {
-                    String newUsername = newUsernameField.getText().trim();
-                    String confirmNewUsername = confirmnewUsernameField.getText().trim();
-                    String newPassword = new String(newPasswordField.getPassword()).trim();
-                    String confirmPassword = new String(confirmPasswordField.getPassword()).trim();
-                    int newStatus = statusComboBox.getSelectedIndex(); // 0: Hoạt động, 1: Đã khóa
+        gbc.gridy = 2;
+        JButton fileChooserButton = new JButton("Chọn ảnh");
+        fileChooserButton.setPreferredSize(new Dimension(100, 30));
+        fileChooserButton.addActionListener(event -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            fileChooser.setDialogTitle("Chọn ảnh");
 
-                    // Kiểm tra nếu các trường không được để trống
-                    if (newUsername.isEmpty() || confirmNewUsername.isEmpty() || newPassword.isEmpty()
-                            || confirmPassword.isEmpty()) {
-                        JOptionPane.showMessageDialog(detailPanel, "Không được để trống các trường thông tin!", "Lỗi",
-                                JOptionPane.ERROR_MESSAGE);
-                        return;
+            int result = fileChooser.showOpenDialog(showDialog);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                selectedFile = fileChooser.getSelectedFile();
+                updateImageLabel(imageDisplayLabel, selectedFile.getPath());
+            }
+        });
+//        panel.add(fileChooserButton, gbc);
+    }
+
+    private void updateImageLabel(JLabel label, String imgPath) {
+        if (imgPath != null && !imgPath.isEmpty()) {
+            ImageIcon imageIcon = new ImageIcon(new ImageIcon(imgPath).getImage().getScaledInstance(170, 
+                    230, Image.SCALE_SMOOTH));
+            label.setIcon(imageIcon);
+        } else {
+            label.setIcon(null);
+        }
+    }
+    
+    
+    private void saveImageToDirectory(String destinationDir) {
+        try {
+            File destinationDirFile = new File(destinationDir);
+
+            if (!destinationDirFile.exists()) {
+                destinationDirFile.mkdirs(); // Tạo thư mục nếu không tồn tại
+            }
+
+            Path destinationPath = Paths.get(destinationDir, selectedFile.getName());
+
+            Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("Image saved to: " + destinationPath.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
+    
+    private void addField(JPanel panel, GridBagConstraints gbc, String label, int row, String value) throws SQLException {
+    // Thêm label với kích thước lớn hơn
+    gbc.gridx = 0;
+    gbc.gridy = row;
+    gbc.weightx = 0; // Không chiếm thêm không gian ngang cho label
+    gbc.fill = GridBagConstraints.NONE; // Label sẽ có kích thước tự nhiên
+    JLabel jLabel = new JLabel(label);
+    jLabel.setFont(new Font("Arial", Font.PLAIN, 16)); // Thiết lập kích thước phông chữ lớn hơn
+    jLabel.setPreferredSize(new Dimension(150, 30)); // Thiết lập kích thước cố định cho label
+    panel.add(jLabel, gbc);
+
+    gbc.gridx = 1;
+    gbc.weightx = 1.0; // Chiếm toàn bộ không gian ngang còn lại
+    gbc.fill = GridBagConstraints.HORIZONTAL; // TextField sẽ lấp đầy không gian ngang
+
+        if (label.equals("Trạng thái khóa:")) {
+    // Khởi tạo JComboBox nếu chưa được khởi tạo
+    if (genderComboBox == null) {
+        genderComboBox = new JComboBox<>(new String[]{"Hoạt động", "Đã khóa"});
+        genderComboBox.setFont(new Font("Arial", Font.PLAIN, 16));
+        genderComboBox.setPreferredSize(new Dimension(150, 40));
+        // Thiết lập giá trị mặc định dựa trên giá trị của `value`
+        genderComboBox.setSelectedIndex(value.equals("1") ? 1 : 0);
+    }
+    panel.add(genderComboBox, gbc);
+}
+
+
+        else if (label.equals("Ngày tạo:")) {
+    // Nếu là trường "Ngày tạo", tạo JTextField và đặt ở chế độ chỉ đọc
+    JTextField ngayTaoField = new JTextField(20);
+    ngayTaoField.setFont(new Font("Arial", Font.PLAIN, 16));
+    ngayTaoField.setPreferredSize(new Dimension(150, 40));
+    ngayTaoField.setBorder(new RoundedBorder(10));
+    ngayTaoField.setText(value); // Thiết lập giá trị ban đầu từ chuỗi value
+    ngayTaoField.setEditable(false); // Đặt JTextField ở trạng thái chỉ đọc
+    panel.add(ngayTaoField, gbc);
+}
+
+
+
+     else if (label.equals("Tên chức vụ:")) {
+        // Nếu là trường chức vụ, tạo JComboBox
+        comboxCV = new JComboBox<>();
+        comboxCV.setFont(new Font("Arial", Font.PLAIN, 16));
+        comboxCV.setPreferredSize(new Dimension(150, 40));
+        comboxCV.setBorder(new RoundedBorder(10));
+
+        list_CV = busNV.listChucVu();
+        for (dtochucvu cv : list_CV) {
+            comboxCV.addItem(cv.getTenchucvu());
+        }
+        comboxCV.setSelectedItem(value);
+        panel.add(comboxCV, gbc);
+
+    } else {
+        // Nếu không phải, tạo JTextField bình thường
+        textField[row] = new JTextField(20);
+        textField[row].setFont(new Font("Arial", Font.PLAIN, 16));
+        textField[row].setPreferredSize(new Dimension(150, 40));
+        textField[row].setMinimumSize(new Dimension(150, 40));
+        textField[row].setText(value);
+        textField[row].setBorder(new RoundedBorder(10));
+
+        // Kiểm tra các nhãn và đặt các trường cần không thể chỉnh sửa
+        if (label.equals("Mã nhân viên:") || label.equals("Tên nhân viên:") || label.equals("Ngày tạo:")) {
+            textField[row].setEditable(false);
+        }
+        panel.add(textField[row], gbc);
+    }
+}
+
+
+
+
+     private Component createHeaderAction() throws SQLException {
+    JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,230][fill,100][fill,100][fill,100]push[][]"));
+
+    JTextField txtSearch = new JTextField();
+    txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Tìm kiếm tài khoản...");
+    txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/search.png")), 20, 20));
+
+    JButton btnSearch = new JButton("Tìm kiếm");
+
+    // Chức vụ
+    JComboBox comboMacv = new JComboBox();
+    comboMacv.addItem("Chức vụ");
+    busNV = new busnhanvien();
+    list_CV = busNV.listChucVu();
+    for (dtochucvu cv : list_CV) {
+        comboMacv.addItem(cv.getTenchucvu());
+    }
+
+    // Trạng thái
+    JComboBox combotrangthai = new JComboBox();
+    combotrangthai.addItem("Trạng thái");
+    combotrangthai.addItem("Đã khóa");
+    combotrangthai.addItem("Kích hoạt");
+
+    JButton btnReset = new JButton("Reset");
+
+    JCheckBox selectAllCheckbox = new JCheckBox("Chọn tất cả");
+    selectAllCheckbox.addActionListener(e -> selectAll(selectAllCheckbox.isSelected()));
+
+    JButton cmdCreate = new JButton("Thêm");
+    JButton cmdDelete = new JButton("Khóa");
+
+    btnSearch.addActionListener(e -> {
+        panelCard.removeAll(); // Xóa các card cũ khỏi panelCard
+        String searchText = txtSearch.getText().toLowerCase().trim(); // Lấy chuỗi tìm kiếm và loại bỏ khoảng trắng thừa
+        String tencv = (String) comboMacv.getSelectedItem();
+        String trangThai = (String) combotrangthai.getSelectedItem();
+
+        try {
+            busNV.list(); // Lấy danh sách nhân viên
+            list_NV = busNV.getList();
+        } catch (SQLException ex) {
+            Logger.getLogger(formtaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        ArrayList<dtonhanvien> list_nv_tmp = new ArrayList<>();
+        // Lọc theo chức vụ
+        if (!tencv.equals("Chức vụ")) {
+            try {
+                int machucvu = busNV.getMaChucVuByName(tencv);
+                for (dtonhanvien nv : list_NV) {
+                    if (nv.getMachucvu() == machucvu) {
+                        list_nv_tmp.add(nv);
                     }
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(formtaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            list_nv_tmp = list_NV;  // Không lọc theo chức vụ nếu không chọn chức vụ
+        }
 
-                    // Kiểm tra nếu tên đăng nhập mới và xác nhận tên đăng nhập không giống nhau
-                    if (!newUsername.equals(confirmNewUsername)) {
-                        JOptionPane.showMessageDialog(detailPanel,
-                                "Tên đăng nhập mới và xác nhận tên đăng nhập không khớp!", "Lỗi",
-                                JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
+        // Lọc theo trạng thái
+        if (!trangThai.equals("Trạng thái")) {
+            ArrayList<dtonhanvien> list_nv_trangthai_tmp = new ArrayList<>();
+            for (dtonhanvien nv : list_nv_tmp) {
+                bustaikhoan busTK = new bustaikhoan();
+                boolean     isBlocked = busTK.getIsBlockedByMaNhanVien(nv.getManhanvien());
+                if ((trangThai.equals("Đã khóa") && isBlocked) || (trangThai.equals("Kích hoạt") && !isBlocked)) {
+                    list_nv_trangthai_tmp.add(nv);
+                }
+            }
+            list_nv_tmp = list_nv_trangthai_tmp;
+        }
 
-                    // Kiểm tra nếu mật khẩu mới trùng với mật khẩu cũ
-                    if (newPassword.equals(taikhoan.getMatkhau())) {
-                        JOptionPane.showMessageDialog(detailPanel, "Mật khẩu mới không được trùng với mật khẩu cũ!",
-                                "Lỗi", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
+        // Tìm kiếm theo tên nhân viên
+        if (searchText.isEmpty()) {
+            addCardsToPanel(list_nv_tmp);
+        } else {
+            ArrayList<dtonhanvien> foundNv = new ArrayList<>();
+            for (dtonhanvien nv : list_nv_tmp) {
+                if (nv.getTennhanvien().toLowerCase().contains(searchText)) {
+                    foundNv.add(nv);
+                }
+            }
+            if (foundNv.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Không tìm thấy tài khoản nhân viên tương ứng.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            }
+            addCardsToPanel(foundNv);
+        }
+    });
 
-                    // Kiểm tra nếu mật khẩu mới và xác nhận mật khẩu không giống nhau
-                    if (!newPassword.equals(confirmPassword)) {
-                        JOptionPane.showMessageDialog(detailPanel, "Mật khẩu mới và xác nhận mật khẩu không khớp!",
-                                "Lỗi", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
+    btnReset.addActionListener(e -> {
+        txtSearch.setText("");
+        comboMacv.setSelectedIndex(0);
+        combotrangthai.setSelectedIndex(0);
+        formInit();  // Reset lại các form, nếu cần
+    });
 
-                    // Nếu các điều kiện đều thỏa mãn, tiến hành cập nhật
-                    int confirm = JOptionPane.showConfirmDialog(detailPanel,
-                            "Bạn có chắc chắn muốn cập nhật thông tin?", "Xác nhận", JOptionPane.YES_NO_OPTION);
-                    if (confirm == JOptionPane.YES_OPTION) {
-                        // Thực hiện cập nhật thông tin tài khoản
-                        boolean success = bustk.updateTaiKhoan(manhanvien, newUsername, newPassword, newStatus);
+    panel.add(txtSearch, "span 1 1"); // Mở rộng không gian của trường tìm kiếm
+    panel.add(comboMacv);
+    panel.add(combotrangthai);
+    panel.add(btnSearch);
+    panel.add(btnReset);
 
-                        if (success) {
-                            // Cập nhật thông tin hiển thị trên các JLabel phía trên
-                            usernameLabel.setText(newUsername); // Cập nhật tên đăng nhập
-                            passwordLabel.setText(newPassword); // Cập nhật mật khẩu
-                            statusLabel.setText(newStatus == 1 ? "Đã khóa" : "Hoạt động"); // Cập nhật trạng thái
+    panel.putClientProperty(FlatClientProperties.STYLE, "background:null;");
+    return panel;
+}
 
-                            // Hiển thị thông báo cập nhật thành công
-                            JOptionPane.showMessageDialog(detailPanel, "Cập nhật thành công!", "Thông báo",
-                                    JOptionPane.INFORMATION_MESSAGE);
+// Thêm các card vào panelCard
+private void addCardsToPanel(ArrayList<dtonhanvien> list_nv) {
+    for (dtonhanvien nv : list_nv) {
+        NVCard card = new NVCard(nv, createEventCard1(), 1);
+        cards.add(card);
+        panelCard.add(card);
+    }
+    panelCard.repaint();
+    panelCard.revalidate();
+}
 
-                            // Cập nhật lại giao diện của panel
-                            detailPanel.revalidate();
-                            detailPanel.repaint();
-                        } else {
-                            JOptionPane.showMessageDialog(detailPanel, "Cập nhật thất bại!", "Lỗi",
-                                    JOptionPane.ERROR_MESSAGE);
+
+     private void selectAll(boolean selected) {
+        for (NVCard card : cards) {
+            card.setSelected(selected);
+        }
+    }
+    private void deleteSelectedCards() throws SQLException {         
+        List<NVCard> selectedCards = new ArrayList<>();
+        StringBuilder deletedNames = new StringBuilder("Đã xóa các nhân viên: ");
+        for (NVCard card : cards) {
+            if (card.isSelected()) { 
+                selectedCards.add(card);
+            }
+        }
+        if (selectedCards.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Không có nhân viên nào được chọn để xóa.");
+            return;
+        }
+
+        int result = JOptionPane.showConfirmDialog(null, "Bạn có muốn xóa các nhân viên vừa chọn không ?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+        if(result == JOptionPane.NO_OPTION){
+            return;
+        }
+        busNV = new busnhanvien();
+        for (NVCard card : selectedCards) {
+            deletedNames.append(card.getEmployeeName()).append(", ");
+            busNV.deleteNhanVien(card.getMaNhanVien());
+            panelCard.remove(card);
+            cards.remove(card);
+        }
+        panelCard.revalidate();
+        panelCard.repaint();
+
+        JOptionPane.showMessageDialog(this, "Đã xóa " + selectedCards.size() + " nhân viên.");
+        if (deletedNames.length() > 0) {
+            deletedNames.setLength(deletedNames.length() - 2); // Xóa dấu phẩy và khoảng trắng cuối cùng
+        }   
+        JOptionPane.showMessageDialog(this, deletedNames.toString());
+    }
+     private void showModal() throws SQLException {
+        Option option = ModalDialog.createOption();
+        option.getLayoutOption().setSize(-1, 1f)
+                .setLocation(Location.TRAILING, Location.TOP)
+                .setAnimateDistance(0.7f, 0);
+        SimpleInputFormsNhanVien form = new SimpleInputFormsNhanVien();
+        ModalDialog.showModal(this, new SimpleModalBorder(
+                 form, "Create", SimpleModalBorder.YES_NO_OPTION,
+                (controller, action) -> {
+                    if(action == SimpleModalBorder.YES_OPTION){
+                        int result =  JOptionPane.showConfirmDialog(null, "Bạn có chắc thêm nhân viên này không","Xác nhận" ,JOptionPane.YES_NO_OPTION);
+                        if(result == JOptionPane.NO_OPTION){
+                            return;
+                        }
+                        dtonhanvien nv = new dtonhanvien();
+                        try {
+                            busNV = new busnhanvien();
+                        } catch (SQLException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        try {
+                            nv = form.getNhanVien();
+                            form.check_NV(nv);
+                            busNV.AddNhanVien(nv);
+                        } catch (ParseException ex) {
+                            Logger.getLogger(formtaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (SQLException ex) {
+                            Logger.getLogger(formtaikhoan.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
-                });
-
-                detailPanel.add(okButton);
-                // Nút "Đóng" để hủy việc sửa thông tin
-                JButton closeEditButton = new JButton("0 sửa");
-                closeEditButton.setBounds(200, 520, 80, 30);
-                closeEditButton.addActionListener(evt -> {
-                    // Xóa bỏ các trường nhập liệu và nút "OK" khi nhấn "Đóng"
-                    detailPanel.remove(newUsernameLabel);
-                    detailPanel.remove(newUsernameField);
-                    detailPanel.remove(confirmnewUsernameLabel);
-                    detailPanel.remove(confirmnewUsernameField);
-                    detailPanel.remove(newPasswordLabel);
-                    detailPanel.remove(newPasswordField);
-                    detailPanel.remove(confirmPasswordLabel);
-                    detailPanel.remove(confirmPasswordField);
-                    detailPanel.remove(newstatusLabel);
-                    detailPanel.remove(statusComboBox);
-                    detailPanel.remove(okButton);
-                    detailPanel.remove(closeEditButton);
-
-                    // Cập nhật lại giao diện để phản ánh các thay đổi
-                    detailPanel.revalidate();
-                    detailPanel.repaint();
-                });
-                detailPanel.add(closeEditButton);
-
-                detailPanel.revalidate();
-                detailPanel.repaint();
-            });
-            detailPanel.add(editButton);
-
-            // Nút "Đóng"
-            JButton closeButton = new JButton("Đóng");
-            closeButton.setBounds(100, 580, 80, 30);
-            closeButton.addActionListener(e -> closeDetailPanel());
-            detailPanel.add(closeButton);
-
-            detailPanel.revalidate();
-            detailPanel.repaint();
-        } else {
-            System.out.println("Không tìm thấy thông tin tài khoản.");
-        }
+                    if(action == SimpleModalBorder.NO_OPTION){
+                        controller.close();
+                    }
+                }), option);
+        
     }
-
-    private void slideInDetailPanel() {
-        slideInTimer = new Timer(1, new ActionListener() {
-            int width = 0;
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (width < 300) {
-                    detailPanel.setPreferredSize(new Dimension(width, getHeight()));
-                    formtaikhoan.this.revalidate();
-                    width += 5;
-                } else {
-                    ((Timer) e.getSource()).stop();
-                }
-            }
-        });
-        slideInTimer.start();
+     
+     
+     
+     
+    private Component createExample() {
+        responsiveLayout = new ResponsiveLayout(ResponsiveLayout.JustifyContent.FIT_CONTENT, new Dimension(-1, -1), 10, 10);
+        panelCard = new JPanel(responsiveLayout);
+        panelCard.putClientProperty(FlatClientProperties.STYLE, "" +
+                "border:10,10,10,10;");
+        JScrollPane scrollPane = new JScrollPane(panelCard);
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(10);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        scrollPane.getHorizontalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
+                "trackArc:$ScrollBar.thumbArc;" +
+                "thumbInsets:0,0,0,0;" +
+                "width:7;");
+        scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
+                "trackArc:$ScrollBar.thumbArc;" +
+                "thumbInsets:0,0,0,0;" +
+                "width:7;");
+        scrollPane.setBorder(null);
+        JSplitPane splitPane = new JSplitPane();
+        splitPane.setLeftComponent(scrollPane);
+        splitPane.setRightComponent(Box.createGlue());
+        splitPane.setResizeWeight(1);
+         splitPane.setDividerSize(0);
+        return splitPane;
     }
-
-    private void closeDetailPanel() {
-        slideOutTimer = new Timer(1, new ActionListener() {
-            int width = 300;
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (width > 0) {
-                    detailPanel.setPreferredSize(new Dimension(width, getHeight()));
-                    formtaikhoan.this.revalidate(); // Cập nhật lại layout của formtaikhoan
-                    width -= 5;
-                } else {
-                    ((Timer) e.getSource()).stop();
-                    formtaikhoan.this.remove(detailPanel); // Xóa panel chi tiết khi trượt ra
-                    mainPanel.setLayout(new GridLayout(0, 3, 10, 10)); // Trả về 3 cột
-                    formtaikhoan.this.revalidate(); // Cập nhật lại layout của formtaikhoan
-                    detailPanelVisible = false;
-                }
-            }
-        });
-        slideOutTimer.start();
+    private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
+    Image img = icon.getImage();
+    Image newImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    return new ImageIcon(newImg);
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            formtaikhoan frame;
-            try {
-                frame = new formtaikhoan();
-                frame.setVisible(true);
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        });
-    }
+    private List<NVCard> cards;
+    private JPanel panelCard;
+    private ResponsiveLayout responsiveLayout;
+    
+       
 }

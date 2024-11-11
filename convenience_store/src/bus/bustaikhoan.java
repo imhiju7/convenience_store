@@ -7,6 +7,7 @@ import dto.dtonhanvien;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -39,7 +40,29 @@ public class bustaikhoan {
     }
 
     // get
-    
+    public String getTenDangNhap(int maNhanVien) {
+    return daotk.getTenDangNhap(maNhanVien);
+}
+    public String getMatKhau(int maNhanVien) {
+    return daotk.getMatKhau(maNhanVien);
+}
+
+public Date getNgayTao(int maNhanVien) {
+    return daotk.getNgayTao(maNhanVien);
+}
+
+public int getIsBlock(int maNhanVien) {
+    return daotk.getIsBlock(maNhanVien);
+}
+public boolean getIsBlockedByMaNhanVien(int manhanvien) {
+    try {
+        return daotk.getIsBlockedByMaNhanVien(manhanvien);  // Gọi phương thức trong DAO
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;  // Trả về false nếu có lỗi xảy ra trong quá trình truy vấn
+    }
+}
+
     public ArrayList<dtotaikhoan> getlist(){
         return daotk.getlist();
     }

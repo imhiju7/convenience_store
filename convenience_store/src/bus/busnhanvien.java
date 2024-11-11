@@ -78,7 +78,15 @@ public class busnhanvien {
         return daonv.getTenChucVu(ma);
     }
     
-    
+      // Phương thức gọi DAO để lấy chức vụ của nhân viên theo mã nhân viên
+    public String getChucVuByMaNhanVien(int manhanvien) throws SQLException {
+        return daonv.getChucVuByMaNhanVien(manhanvien);
+    }
+
+    // Phương thức cập nhật chức vụ cho nhân viên
+    public boolean updateChucVuByMaNhanVien(int manhanvien, int machucvu) throws SQLException {
+        return daonv.updateChucVuByMaNhanVien(manhanvien, machucvu);
+    }
     public Integer getSoLuongNV() throws SQLException{
         daonv = new daonhanvien();
         return daonv.getSoLuongNV();
