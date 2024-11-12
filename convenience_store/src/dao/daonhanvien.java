@@ -188,7 +188,41 @@ public class daonhanvien {
         }
         return macv;
     }
-    
+    public String getChucVuByMaNhanVien(int manhanvien) throws SQLException {
+        String sql = "SELECT cv.tenchucvu FROM nhanvien nv JOIN chucvu cv ON nv.machucvu = cv.machucvu WHERE nv.manhanvien = ?";
+        
+        try (Connection con = connect.connection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, manhanvien);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("tenchucvu");  // Trả về tên chức vụ
+            }
+            return null;  // Nếu không tìm thấy, trả về null
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean updateChucVuByMaNhanVien(int manhanvien, int machucvu) throws SQLException {
+        String sql = "UPDATE nhanvien SET machucvu = ? WHERE manhanvien = ?";
+        
+        try (Connection con = connect.connection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, machucvu);  // Cập nhật mã chức vụ mới
+            ps.setInt(2, manhanvien); // Dựa trên mã nhân viên
+
+            int rowsAffected = ps.executeUpdate(); // Thực hiện cập nhật
+            return rowsAffected > 0;  // Trả về true nếu cập nhật thành công
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     public String getemail(int manv){
         Connection con = connect.connection();
         String sql = "SELECT * FROM nhanvien where isDelete= 0 and maNhanVien = ?";
