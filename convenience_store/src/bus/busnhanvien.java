@@ -6,6 +6,7 @@ package bus;
 import dao.daonhanvien;
 import dao.daosanpham;
 import dto.dtochucvu;
+import dto.dtohopdong;
 import dto.dtonhanvien;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -94,10 +95,36 @@ public class busnhanvien {
         this.list_nv = daonv.list();
     }
 
+    
+    public ArrayList<dtohopdong> list_HD() throws SQLException{
+        daonv = new daonhanvien();
+        return daonv.list_HD();
+    }
+    
+    
+    public boolean checkExistSdt(String sdt) throws SQLException{
+        daonv = new daonhanvien();
+        return daonv.checkExistSdt(sdt);
+    }
+    
+    
+    public boolean checkExistEmail(String email) throws SQLException{
+        daonv = new daonhanvien();
+        return daonv.checkemailexist(email);
+    }
+    
+    
+    
+    
+    
     public static void main(String args[]) throws SQLException {
         busnhanvien bus = new busnhanvien();
         for(dtonhanvien nv:bus.list_nv){
             System.out.print(nv);
         }
     }
+    
+    
+    
+    
 }

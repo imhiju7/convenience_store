@@ -84,24 +84,21 @@ public class MenuCard extends JPanel {
     }
 
     private JPanel createBody() {
-        JPanel body = new JPanel(new MigLayout("wrap", "[150]", "[][]push[]"));
+        JPanel body = new JPanel(new MigLayout("wrap", "[150]", "[][][]push[]"));
         body.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:null");
         JLabel title = new JLabel(sp.getTenSanPham());
         title.putClientProperty(FlatClientProperties.STYLE, "" +
                 "font:bold +1;");
-        JTextPane description = new JTextPane();
-        description.setEditable(false);
-        description.setEnabled(false);
+        JLabel description = new JLabel();
         description.setText("Giá tiền: " + sp.getGiaBan());
         description.putClientProperty(FlatClientProperties.STYLE, "" +
                 "border:0,0,0,0;" +
                 "background:null;" +
                 "[light]foreground:tint($Label.foreground,30%);" +
                 "[dark]foreground:shade($Label.foreground,30%)");
-        JTextPane soluong = new JTextPane();
+        JLabel soluong = new JLabel();
         soluong.setText("Số lượng tồn kho: " + sp.getSoLuong());
-        soluong.setEditable(false);
         soluong.putClientProperty(FlatClientProperties.STYLE, "" +
                 "border:0,0,0,0;" +
                 "background:null;" +
