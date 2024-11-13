@@ -6,6 +6,8 @@ package dao;
 import dto.dtonhanvien;
 import dao.connect;
 import dto.dtochucvu;
+import dto.dtoctphieunhap;
+import dto.dtohopdong;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -72,36 +74,32 @@ public class daonhanvien {
     
     // add
     public void AddNhanVien(dtonhanvien nv) throws SQLException {
-    Connection con = connect.connection();
+        Connection con = connect.connection();
 
-    String sql = "INSERT INTO nhanvien (maNhanVien, tenNhanVien, maChucVu, gioiTinh, ngaySinh, diaChi, email, " +
-                 "soDienThoai, isDelete, ngayTao, img, maHopDong, luongCoBan, ngayLamViec, ngayKetThuc) " +
-                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO nhanvien (maNhanVien, tenNhanVien, maChucVu, gioiTinh, ngaySinh, diaChi, email, " +
+                     "soDienThoai, isDelete, ngayTao, img) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    try (PreparedStatement pst = con.prepareStatement(sql)) {
-        pst.setInt(1, nv.getManhanvien());
-        pst.setString(2, nv.getTennhanvien());
-        pst.setInt(3, nv.getMachucvu());
-        pst.setString(4, nv.getGioitinh() == 1 ? "Nam" : "Nữ");
-        pst.setDate(5, nv.getNgaysinh() != null ? new java.sql.Date(nv.getNgaysinh().getTime()) : null);
-        pst.setString(6, nv.getDiachi());
-        pst.setString(7, nv.getEmail());
-        pst.setString(8, nv.getSdt());
-        pst.setInt(9, nv.getIsdelete());
-        pst.setTimestamp(10, nv.getNgaytao() != null ? new java.sql.Timestamp(nv.getNgaytao().getTime()) : null);
-        pst.setString(11, nv.getImg());
-        pst.setObject(12, nv.getMahopdong() == 0 ? nv.getMahopdong() : null, java.sql.Types.INTEGER);
-        pst.setFloat(13, nv.getLuongcoban());
-        pst.setDate(14, nv.getNgaylamviec() != null ? new java.sql.Date(nv.getNgaylamviec().getTime()) : null);
-        pst.setDate(15, nv.getNgayketthuc() != null ? new java.sql.Date(nv.getNgayketthuc().getTime()) : null);
+        try (PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setInt(1, nv.getManhanvien());
+            pst.setString(2, nv.getTennhanvien());
+            pst.setInt(3, nv.getMachucvu());
+            pst.setInt(4, nv.getGioitinh());
+            pst.setDate(5, nv.getNgaysinh() != null ? new java.sql.Date(nv.getNgaysinh().getTime()) : null);
+            pst.setString(6, nv.getDiachi());
+            pst.setString(7, nv.getEmail());
+            pst.setString(8, nv.getSdt());
+            pst.setInt(9, nv.getIsdelete());
+            pst.setTimestamp(10, nv.getNgaytao() != null ? new java.sql.Timestamp(nv.getNgaytao().getTime()) : null);
+            pst.setString(11, nv.getImg());
 
-        pst.executeUpdate();
-    } finally {
-        if (con != null) {
-            con.close();
+            pst.executeUpdate();
+        } finally {
+            if (con != null) {
+                con.close();
+            }
         }
     }
-}
 
     
     // update
@@ -143,6 +141,22 @@ public class daonhanvien {
         con.close();
     }
     // check
+    
+    
+     public boolean checkExistSdt(String sdt) throws SQLException{
+        String sql = "SELECT * FROM nhanvien WHERE soDienThoai = ? ";
+        Connection con = connect.connection();
+        PreparedStatement pst = con.prepareStatement(sql);
+        pst.setString(1, sdt);
+        
+        ResultSet rs = pst.executeQuery();
+        while (rs.next()) {
+            System.out.println("Đã tồn tại số điện thoại này");
+            return true;
+        }
+        return false;
+    }
+    
     
     public boolean checkemailexist(String mail){
         Connection con = connect.connection();
@@ -189,7 +203,41 @@ public class daonhanvien {
         }
         return macv;
     }
-    
+    public String getChucVuByMaNhanVien(int manhanvien) throws SQLException {
+        String sql = "SELECT cv.tenchucvu FROM nhanvien nv JOIN chucvu cv ON nv.machucvu = cv.machucvu WHERE nv.manhanvien = ?";
+        
+        try (Connection con = connect.connection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, manhanvien);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("tenchucvu");  // Trả về tên chức vụ
+            }
+            return null;  // Nếu không tìm thấy, trả về null
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean updateChucVuByMaNhanVien(int manhanvien, int machucvu) throws SQLException {
+        String sql = "UPDATE nhanvien SET machucvu = ? WHERE manhanvien = ?";
+        
+        try (Connection con = connect.connection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, machucvu);  // Cập nhật mã chức vụ mới
+            ps.setInt(2, manhanvien); // Dựa trên mã nhân viên
+
+            int rowsAffected = ps.executeUpdate(); // Thực hiện cập nhật
+            return rowsAffected > 0;  // Trả về true nếu cập nhật thành công
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     public String getemail(int manv){
         Connection con = connect.connection();
         String sql = "SELECT * FROM nhanvien where isDelete= 0 and maNhanVien = ?";
@@ -349,7 +397,21 @@ public class daonhanvien {
     
     
     
-//    public ArrayList<dtoh
+    public ArrayList<dtohopdong> list_HD() throws SQLException{
+        String sql = "SELECT * FROM hopdonglaodong WHERE 1";
+        Connection con = connect.connection();
+        PreparedStatement pst = con.prepareStatement(sql);
+        ResultSet rs = pst.executeQuery();
+        ArrayList<dtohopdong> list_HD = new ArrayList<>();
+
+        while(rs.next()){
+            dtohopdong hd = new dtohopdong();
+            hd.setMaNV(rs.getInt("maNhanVien"));
+            hd.setLuongCoBan(rs.getFloat("luongcoban"));
+            list_HD.add(hd);
+        }
+        return list_HD;
+    }
     
     
     
@@ -363,4 +425,6 @@ public class daonhanvien {
 
         // }
     }
+
+   
 }

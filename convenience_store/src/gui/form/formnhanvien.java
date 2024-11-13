@@ -10,6 +10,7 @@ import gui.layout.ResponsiveLayout;
 import gui.model.ModelEmployee;
 import dto.SampleData;
 import dto.dtochucvu;
+import dto.dtohopdong;
 import dto.dtonhanvien;
 import gui.comp.RoundedBorder;
 import gui.simple.SimpleInputForms;
@@ -57,7 +58,7 @@ public class formnhanvien extends Form {
     private JTextField[] textField = new JTextField[20];
     private JComboBox<String> genderComboBox;
     private JDateChooser dateChooser;
-    
+    private ArrayList<dtohopdong> list_HD;
     
     public formnhanvien() throws SQLException {
         init();
@@ -82,11 +83,30 @@ public class formnhanvien extends Form {
             busNV = new busnhanvien();
             busNV.list();
             list_NV = busNV.getList();
+            list_HD = busNV.list_HD();
+          
             for(int i = 0 ; i < list_NV.size() ; i++){
                 dtonhanvien nv = list_NV.get(i);
-                NVCard card1 = new NVCard(nv, createEventCard1() , 1);
-                cards.add(card1);
-                panelCard.add(card1);
+                
+                boolean isExist = false;
+                for(dtohopdong hd : list_HD){
+                    if(hd.getMaNV() == nv.getManhanvien()){
+                        nv.setLuongcoban(hd.getLuongCoBan());
+                        NVCard card1 = new NVCard(nv, createEventCard1() , 1);
+                        cards.add(card1);
+                        panelCard.add(card1);
+                        isExist = true;
+                        break;
+                    }
+                }
+                
+                if(!isExist){
+                    NVCard card1 = new NVCard(nv, createEventCard1() , 1);
+                    cards.add(card1);
+                    panelCard.add(card1);
+                }
+                
+                
             }
             
             panelCard.repaint();
@@ -195,22 +215,24 @@ public class formnhanvien extends Form {
                         nv.setSdt(textField[4].getText()); // lưu ý vị trí trường sdt
                         nv.setDiachi(textField[5].getText());
                         nv.setEmail(textField[6].getText());
-        //                nv.setLuongcoban(Double.parseDouble(textField[7].getText()));
                         nv.setMachucvu(busNV.getMaChucVuByName((String) comboxCV.getSelectedItem()));
 
-                        // Nếu có ảnh mới, lưu ảnh vào thư mục
-                        if (selectedFile != null) {
-                            String destinationDir = "/source/image/nhanvien/";
-                            saveImageToDirectory(destinationDir);
-                            nv.setImg(selectedFile.getName()); // Cập nhật tên ảnh mới vào đối tượng
-                        }else{
-                            nv.setImg(e.getImg());
-                        }
+                        
 
                         int result = JOptionPane.showConfirmDialog(null, "Bạn có chắc sửa thông tin nhân viên này không ?", "Xác nhận", JOptionPane.YES_NO_OPTION);
                         if(result == JOptionPane.YES_OPTION){
+                            if (selectedFile != null) {
+                                nv.setImg(selectedFile.getName()); 
+                                String root_dir = System.getProperty("user.dir") +  "/src/source/image/nhanvien/" ;
+                                saveImageToDirectory(root_dir);
+                                
+                            }else{
+                                nv.setImg(e.getImg());
+                            }
+                            
                             busNV.updateNhanVien(nv);
                             formInit();
+                            
                             JOptionPane.showMessageDialog(null, "Cập nhật thành công");
                             showDialog.dispose();
                         }
@@ -292,7 +314,7 @@ public class formnhanvien extends Form {
             File destinationDirFile = new File(destinationDir);
 
             if (!destinationDirFile.exists()) {
-                destinationDirFile.mkdirs(); // Tạo thư mục nếu không tồn tại
+                destinationDirFile.mkdirs(); 
             }
 
             Path destinationPath = Paths.get(destinationDir, selectedFile.getName());
@@ -365,7 +387,7 @@ public class formnhanvien extends Form {
             textField[row].setMinimumSize(new Dimension(150, 40)); 
             textField[row].setText(value);
             textField[row].setBorder(new RoundedBorder(10));
-            if(row == 0){
+            if(row == 0 || row == 7){
                 textField[row].setEditable(false);
             }
             panel.add(textField[row], gbc);
@@ -547,39 +569,58 @@ public class formnhanvien extends Form {
         }   
         JOptionPane.showMessageDialog(this, deletedNames.toString());
     }
-     private void showModal() throws SQLException {
-        Option option = ModalDialog.createOption();
-        option.getLayoutOption().setSize(-1, 1f)
-                .setLocation(Location.TRAILING, Location.TOP)
-                .setAnimateDistance(0.7f, 0);
-        SimpleInputFormsNhanVien form = new SimpleInputFormsNhanVien();
-        ModalDialog.showModal(this, new SimpleModalBorder(
-                 form, "Create", SimpleModalBorder.YES_NO_OPTION,
-                (controller, action) -> {
-                    if(action == SimpleModalBorder.YES_OPTION){
-                        int result =  JOptionPane.showConfirmDialog(null, "Bạn có chắc thêm nhân viên này không","Xác nhận" ,JOptionPane.YES_NO_OPTION);
-                        if(result == JOptionPane.NO_OPTION){
-                            return;
-                        }
-                        dtonhanvien nv = new dtonhanvien();
-                        busNV = new busnhanvien();
+    private void showModal() throws SQLException {
+    Option option = ModalDialog.createOption();
+    option.getLayoutOption().setSize(-1, 1f)
+            .setLocation(Location.TRAILING, Location.TOP)
+            .setAnimateDistance(0.7f, 0);
 
-                        try {
-                            nv = form.getNhanVien();
-                            form.check_NV(nv);
+    SimpleInputFormsNhanVien form = new SimpleInputFormsNhanVien();
+    ModalDialog.showModal(this, new SimpleModalBorder(
+            form, "Create", SimpleModalBorder.YES_NO_OPTION,
+            (controller, action) -> {
+                if (action == SimpleModalBorder.YES_OPTION) {
+                    int result = JOptionPane.showConfirmDialog(null, "Bạn có chắc thêm nhân viên này không", "Xác nhận", JOptionPane.YES_NO_OPTION);
+                    if (result == JOptionPane.NO_OPTION) {
+                        return; // Giữ nguyên modal nếu người dùng chọn NO
+                    }
+
+                    boolean isSuccessful = false; // Flag để kiểm tra thành công
+
+                    try {
+                        busNV = new busnhanvien();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        return; // Giữ modal nếu có lỗi khi khởi tạo busNV
+                    }
+
+                    try {
+                        dtonhanvien nv = form.getNhanVien();
+                        if (form.check_NV(nv)) {
+                            selectedFile = form.getSelectedFile();
+                            String root_dir = System.getProperty("user.dir") + "/src/source/image/nhanvien/";
+                            saveImageToDirectory(root_dir);
                             busNV.AddNhanVien(nv);
-                        } catch (ParseException ex) {
-                            Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (SQLException ex) {
-                            Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                            JOptionPane.showMessageDialog(null, "Thêm nhân viên thành công");
+                            formInit();
+                            isSuccessful = true; // Đặt flag thành công nếu mọi thứ hoàn tất
+                        } 
+                    } catch (ParseException | SQLException ex) {
+                        Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(null, "Có lỗi xảy ra trong quá trình thêm nhân viên");
                     }
-                    if(action == SimpleModalBorder.NO_OPTION){
-                        controller.close();
+
+                    if (isSuccessful) {
+                        controller.close(); // Chỉ đóng modal nếu tất cả các bước thành công
                     }
-                }), option);
-        
-    }
+                } else if (action == SimpleModalBorder.NO_OPTION) {
+                    controller.close(); // Đóng modal nếu người dùng chọn NO_OPTION
+                }
+            }), option);
+}
+
+
+
      
      
      

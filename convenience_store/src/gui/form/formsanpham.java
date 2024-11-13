@@ -78,7 +78,7 @@ public class formsanpham extends Form {
     private String tenspUpdate;
     private ArrayList<dtophieunhap> list_PN;
     private ArrayList<dtoctphieunhap> list_CTPN;
-    
+    private JTextField[] textField = new JTextField[20];
     public formsanpham() throws SQLException {
         init();
         formInit();
@@ -144,7 +144,7 @@ public class formsanpham extends Form {
                             if(ctpn.getSoluongtonkho() != 0){
                                 sp.setGiaBan(ctpn.getGiaBan());
                                 sp.setSoLuong(ctpn.getSoluongtonkho());
-                                System.out.println("Giá bán : " + sp.getGiaBan());
+//                                System.out.println("Giá bán : " + sp.getGiaBan());
                                 SPCard card = new SPCard(sp, createEventCard1());
                                 cards.add(card);
                                 panelCard.add(card);
@@ -271,7 +271,7 @@ public class formsanpham extends Form {
                             busSP = new bussanpham();
                             dtosanpham sp = new dtosanpham();
 //                            String tenSanPham = ((JTextField) leftPanel.getComponent(1)).getText();
-                            String tenSanPham = tenspUpdate;
+                            String tenSanPham = textField[1].getText();
                             Integer maNCC = (Integer) categoryMaNCC.get(comboxBoxNCC.getSelectedItem());
                             Integer maPhanLoai = busSP.getMaPL((String) comboBox.getSelectedItem());
                             String imgPath = selectedFile != null ? selectedFile.getPath() : e.getImg();
@@ -296,11 +296,12 @@ public class formsanpham extends Form {
                                 formInit();
                             }
                             JOptionPane.showMessageDialog(null, "Lưu thay đổi thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                            showDialog.dispose();
                             
                         } catch (SQLException ex) {
                             Logger.getLogger(formsanpham.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        formInit();
+//                        formInit();
                     }
                 });
                 
@@ -459,23 +460,23 @@ public class formsanpham extends Form {
             
             panel.add(comboBox, gbc);
         } else {
-            JTextField textField = new JTextField(20);
-            textField.setFont(new Font("Arial", Font.PLAIN, 16));
-            textField.setPreferredSize(new Dimension(150, 40));
-            textField.setText(value);
-            textField.setBorder(new RoundedBorder(10));
-            textField.setEditable(false);
+            textField[row] = new JTextField(20);
+            textField[row].setFont(new Font("Arial", Font.PLAIN, 16));
+            textField[row].setPreferredSize(new Dimension(150, 40));
+            textField[row].setText(value);
+            textField[row].setBorder(new RoundedBorder(10));
+            textField[row].setEditable(false);
             if(row == 1){
-                textField.setEditable(true);
+                textField[row].setEditable(true);
             }
-            tenspUpdate = textField.getText();
-            textField.addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyReleased(KeyEvent e) {
-                    tenspUpdate = textField.getText();
-                }
-            });
-            panel.add(textField, gbc);
+//            tenspUpdate = textField[row].getText();
+//            textField[row].addKeyListener(new KeyAdapter() {
+//                @Override
+//                public void keyReleased(KeyEvent e) {
+//                    tenspUpdate = textField[row].getText();
+//                }
+//            });
+            panel.add(textField[row], gbc);
         }
     }
 

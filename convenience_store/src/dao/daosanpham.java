@@ -136,8 +136,7 @@ public class daosanpham {
         }
     }
 
-
-    
+   
     
     
     public Integer getCountSanPham() {

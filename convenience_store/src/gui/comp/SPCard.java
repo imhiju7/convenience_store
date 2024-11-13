@@ -88,17 +88,15 @@ public class SPCard extends JPanel {
         JLabel title = new JLabel(sp.getTenSanPham());
         title.putClientProperty(FlatClientProperties.STYLE, "" +
                 "font:bold +1;");
-        JTextPane description = new JTextPane();
+        JLabel description = new JLabel();
         description.setText("Giá tiền: " + sp.getGiaBan());
-        description.setEditable(false);
         description.putClientProperty(FlatClientProperties.STYLE, "" +
                 "border:0,0,0,0;" +
                 "background:null;" +
                 "[light]foreground:tint($Label.foreground,30%);" +
                 "[dark]foreground:shade($Label.foreground,30%)");
-        JTextPane soluong = new JTextPane();
+        JLabel soluong = new JLabel();
         soluong.setText("Số lượng tồn kho: " + sp.getSoLuong());
-        soluong.setEditable(false);
         soluong.putClientProperty(FlatClientProperties.STYLE, "" +
                 "border:0,0,0,0;" +
                 "background:null;" +

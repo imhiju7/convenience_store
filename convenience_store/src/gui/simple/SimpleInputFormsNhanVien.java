@@ -21,17 +21,20 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class SimpleInputFormsNhanVien extends JPanel {
 
-    private JTextField tennv , sdt, diachi, email, luong;
+    private JTextField tennv , sdt, diachi, email;
+//    , luong;
     private JComboBox comboGioitinh, comboChucvu;
     private JDateChooser namsinh;
     
     private ArrayList<dtochucvu> list_cv;
     private busnhanvien bus_nv;
     private String nameImg = "";
+    private File selectedFile;
     
     
     public SimpleInputFormsNhanVien() throws SQLException {
@@ -45,17 +48,18 @@ public class SimpleInputFormsNhanVien extends JPanel {
         sdt = new JTextField();
         diachi = new JTextField();
         email = new JTextField();
-        luong = new JTextField();
         comboGioitinh = new JComboBox();
         comboChucvu = new JComboBox();
         namsinh = new JDateChooser();
+        namsinh.setDateFormatString("dd-MM-yyyy");
+        ((JTextField) namsinh.getDateEditor().getUiComponent()).setEditable(false);
+
         
         // style
         tennv.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nhập tên");
         sdt.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nhập số điện thoại");
         diachi.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nhập địa chỉ");
         email.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nhập email");
-        luong.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nhập lương");
         
 
         add(new JLabel("Tên nhân viên: "), "gapy 5 0");
@@ -66,8 +70,6 @@ public class SimpleInputFormsNhanVien extends JPanel {
         add(email);
         add(new JLabel("Địa chỉ"), "gapy 5 0");
         add(diachi);
-        add(new JLabel("Lương: "), "gapy 5 0");
-        add(luong);
         
         add(new JLabel("Ngày Sinh"), "Split 2");
         add(new JLabel("Giới tính: "));
@@ -101,7 +103,7 @@ public class SimpleInputFormsNhanVien extends JPanel {
 
             int result = fileChooser.showOpenDialog(showDialog);
             if (result == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = fileChooser.getSelectedFile();
+                selectedFile = fileChooser.getSelectedFile();
                 nameImg = selectedFile.getName();
                 updateImageLabel(labelImg, selectedFile.getPath());
             }
@@ -122,19 +124,12 @@ public class SimpleInputFormsNhanVien extends JPanel {
         }
     }
     
-    public boolean check_NV(dtonhanvien nv){
+    public boolean check_NV(dtonhanvien nv) throws SQLException{
         String regexTenNV = "^[A-Za-zÀ-ỹ]+( [A-Za-zÀ-ỹ]+)*$";
         String regexSDT = "^0\\d{9}$";
-        String regexLuong = "^[1-9]\\d*(\\.\\d+)?$";
+        String regexEmail = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+
         
-        if (nv.getSdt() == null || nv.getSdt().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Số điện thoại không được để trống");
-            return false;
-        }
-        if(!nv.getSdt().matches(regexSDT)){
-            JOptionPane.showMessageDialog(null, "Số điện thoại phải bắt đầu bằng số 0 và đủ 10 số");
-            return false;
-        }
         if (nv.getTennhanvien()== null || nv.getTennhanvien().trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Tên nhân viên không để trống");
             return false;
@@ -143,12 +138,68 @@ public class SimpleInputFormsNhanVien extends JPanel {
             JOptionPane.showMessageDialog(null, "Tên nhân viên không chứa ký tự đặc biệt");
             return false;
         }
-        if (!String.valueOf(nv.getLuongcoban()).matches(regexLuong)) {
-            JOptionPane.showMessageDialog(null, "Lương không được âm và phải là số");
+        
+        if (nv.getSdt() == null || nv.getSdt().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Số điện thoại không được để trống");
+            return false;
+        }
+        
+        if(bus_nv.checkExistSdt(nv.getSdt())) {
+            JOptionPane.showMessageDialog(null, "Số điện thoại đã tồn tại");
+            return false;
+        }
+        
+        if(!nv.getSdt().matches(regexSDT)){
+            JOptionPane.showMessageDialog(null, "Số điện thoại phải bắt đầu bằng số 0 và đủ 10 số");
+            return false;
+        }
+        
+        if (nv.getEmail() == null || !nv.getEmail().matches(regexEmail)) {
+            JOptionPane.showMessageDialog(null, "Email không hợp lệ");
+            return false;
+        }
+        
+        if(bus_nv.checkExistEmail(nv.getEmail())) {
+            JOptionPane.showMessageDialog(null, "Email này đã tồn tại");
+            return false;
+        }
+        
+        
+
+        
+        
+        Date ngaysinh = nv.getNgaysinh();
+        if (ngaysinh != null) {
+            Calendar calNgaySinh = Calendar.getInstance();
+            calNgaySinh.setTime(ngaysinh);
+
+            int namSinh = calNgaySinh.get(Calendar.YEAR);
+            int namHienTai = Calendar.getInstance().get(Calendar.YEAR);
+            int tuoi = namHienTai - namSinh;
+
+            // Kiểm tra tuổi, nếu nhỏ hơn 18 tuổi thì báo lỗi
+            if (tuoi < 18 || (tuoi == 18 && calNgaySinh.after(Calendar.getInstance()))) {
+                JOptionPane.showMessageDialog(null, "Nhân viên phải lớn hơn 18 tuổi");
+                return false;
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Không được để trống năm sinh nhân viên");
             return false;
         }
 
+        if(nv.getImg().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn hình ảnh cần thêm");
+            return false;
+        }
+
+        
+        
         return true;
+    }
+    
+    
+    public File getSelectedFile(){
+        return selectedFile;
     }
 
     public dtonhanvien getNhanVien() throws ParseException, SQLException {
@@ -162,13 +213,13 @@ public class SimpleInputFormsNhanVien extends JPanel {
         nv.setGioitinh(comboGioitinh.getSelectedIndex());
         nv.setImg(nameImg);
         nv.setIsdelete(0);
-        nv.setLuongcoban(Float.parseFloat(luong.getText()));
+//        nv.setLuongcoban(Float.parseFloat(luong.getText()));
+        nv.setLuongcoban(0);
         nv.setMachucvu(bus_nv.getMaChucVuByName((String) comboChucvu.getSelectedItem()));
         nv.setMahopdong(0);
         
-        nv.setNgaylamviec(null);
-        nv.setNgayketthuc(null);
-
+//        nv.setNgaylamviec(null);
+//        nv.setNgayketthuc(null);
         // Gán ngày sinh nếu người dùng đã chọn ngày
         if (namsinh.getDate() != null) {
             nv.setNgaysinh(namsinh.getDate());

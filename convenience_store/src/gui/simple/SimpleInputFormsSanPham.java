@@ -152,22 +152,6 @@ public class SimpleInputFormsSanPham extends JPanel {
     }
     
    
-    private void saveImageToDirectory(String destinationDir) {
-        try {
-            File destinationDirFile = new File(destinationDir);
-
-            if (!destinationDirFile.exists()) {
-                destinationDirFile.mkdirs(); // Tạo thư mục nếu không tồn tại
-            }
-
-            Path destinationPath = Paths.get(destinationDir, selectedFile.getName());
-
-            Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
-            System.out.println("Image saved to: " + destinationPath.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     
     public dtosanpham getSanPham() throws ParseException{
         bussanpham bus = new bussanpham();

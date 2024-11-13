@@ -244,7 +244,97 @@ public class daotaikhoan {
         }
         return list;
     }
-    
+    public String getTenDangNhap(int maNhanVien) {
+    Connection con = connect.connection();
+    String sql = "SELECT tenDangNhap FROM taikhoan WHERE maNhanVien = ?";
+    String tenDangNhap = null;
+    try {
+        PreparedStatement pst = con.prepareStatement(sql);
+        pst.setInt(1, maNhanVien);
+        ResultSet rs = pst.executeQuery();
+        if (rs.next()) {
+            tenDangNhap = rs.getString("tenDangNhap");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    return tenDangNhap;
+}
+public String getMatKhau(int maNhanVien) {
+    Connection con = connect.connection();
+    String sql = "SELECT matKhau FROM taikhoan WHERE maNhanVien = ?";
+    String matKhau = null;
+    try {
+        PreparedStatement pst = con.prepareStatement(sql);
+        pst.setInt(1, maNhanVien);
+        ResultSet rs = pst.executeQuery();
+        if (rs.next()) {
+            matKhau = rs.getString("matKhau");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    return matKhau;
+}
+
+public Date getNgayTao(int maNhanVien) {
+    Connection con = connect.connection();
+    String sql = "SELECT ngayTao FROM taikhoan WHERE maNhanVien = ?";
+    Date ngayTao = null;
+    try {
+        PreparedStatement pst = con.prepareStatement(sql);
+        pst.setInt(1, maNhanVien);
+        ResultSet rs = pst.executeQuery();
+        if (rs.next()) {
+            ngayTao = rs.getTimestamp("ngayTao");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    return ngayTao;
+}
+
+public int getIsBlock(int maNhanVien) {
+    Connection con = connect.connection();
+    String sql = "SELECT isBlock FROM taikhoan WHERE maNhanVien = ?";
+    int isBlock = 0;
+    try {
+        PreparedStatement pst = con.prepareStatement(sql);
+        pst.setInt(1, maNhanVien);
+        ResultSet rs = pst.executeQuery();
+        if (rs.next()) {
+            isBlock = rs.getInt("isBlock");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    return isBlock;
+}
+
     public int getmanhanvien(String tendangnhap){
         Connection con = connect.connection();
         String sql = "select * from taikhoan where tenDangNhap = ? and isBlock = 0";
@@ -266,4 +356,22 @@ public class daotaikhoan {
         }
         return manv;
     }
+    public boolean getIsBlockedByMaNhanVien(int manhanvien) throws SQLException {
+    String sql = "SELECT isblock FROM taikhoan WHERE manhanvien = ?";
+    
+    try (Connection con = connect.connection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+        
+        ps.setInt(1, manhanvien);  // Thiết lập mã nhân viên
+        ResultSet rs = ps.executeQuery();  // Thực hiện truy vấn
+        
+        if (rs.next()) {
+            return rs.getInt("isblock") == 1;  // Trả về true nếu tài khoản bị khóa (isblock = 1)
+        }
+    }
+    
+    return false;  // Trả về false nếu không tìm thấy hoặc tài khoản không bị khóa
+}
+
+
 }
