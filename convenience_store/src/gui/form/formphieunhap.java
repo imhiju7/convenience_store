@@ -71,20 +71,17 @@ public class formphieunhap extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     private void init() {
         setLayout(new MigLayout("fillx,wrap,insets 7 15 7 15", "[fill]", "[][fill,grow]"));
-        add(createTab(), "grow, gapx 7 7"); // Added "grow" to allow resizing
+        add(createTab(), "grow, gapx 7 7"); // Allow the tab component to grow
     }
 
     private Component createTab() {
         JTabbedPane tabb = new JTabbedPane();
         tabb.putClientProperty(FlatClientProperties.STYLE, "tabType:card");
-        
         tabb.addTab("Danh sách phiếu nhập", createBorder(createGeneralTable()));
         tabb.addTab("Nhập hàng", createBorder(nhapHangTab()));
-        
-        tabb.setPreferredSize(new Dimension(1070, 700)); // Set the preferred size
+        tabb.setPreferredSize(new Dimension(1070, 700)); // Set preferred size of the tabbed pane
         return tabb;
     }
-
     private Component createBorder(Component component) {
         JPanel panel = new JPanel(new MigLayout("fill,insets 7 0 7 0", "[fill]", "[fill]"));
         panel.add(component);
@@ -345,7 +342,8 @@ public class formphieunhap extends javax.swing.JPanel {
         separator.putClientProperty(FlatClientProperties.STYLE, "" + "foreground:$Table.gridColor;");
         panel.add(separator, "height 2");
 
-        panel.add(scrollPane);
+        panel.add(scrollPane, "grow");
+
 
         buspn.getlist();
         for (dtophieunhap cc : buspn.dspn) {
@@ -358,9 +356,7 @@ public class formphieunhap extends javax.swing.JPanel {
             tableMouseClicked(evt);
         }
         });
-
-        return panel;
-    }
+        return panel;    }
 
     private Component createHeaderGeneralTable() {
         JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,fill]push[][]")); 

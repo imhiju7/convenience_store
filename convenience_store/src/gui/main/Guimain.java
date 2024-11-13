@@ -13,6 +13,8 @@ import gui.form.formnhanvien;
 import gui.form.formmenu;
 import gui.form.formsanpham;
 import gui.form.formthongke;
+import gui.form.formhoadon;
+import gui.form.formphieunhap;
 import gui.form.frmlogin;
 import gui.form.formtaikhoan;
 import gui.form.formthanhtoan;
@@ -79,6 +81,14 @@ public class Guimain extends javax.swing.JFrame {
                          Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
                      }
                  }
+                 if ((menuIndex==0)&&(subMenuIndex==1)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     main.showForm(new formhoadon());
+                 }
                 
 //                 Danh mục Kho
                 if ((menuIndex==1)&&(subMenuIndex==0)) {
@@ -93,6 +103,15 @@ public class Guimain extends javax.swing.JFrame {
                          Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
                      }
                  }
+                if ((menuIndex==1)&&(subMenuIndex==2)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     main.showForm(new formphieunhap(manv));
+                 }
+                
 //                 Danh mục Nhân viên
                  if ((menuIndex==2)&&(subMenuIndex==0)) {
                      try {

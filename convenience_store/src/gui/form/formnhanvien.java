@@ -586,13 +586,7 @@ public class formnhanvien extends Form {
                     }
 
                     boolean isSuccessful = false; // Flag để kiểm tra thành công
-
-                    try {
                         busNV = new busnhanvien();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        return; // Giữ modal nếu có lỗi khi khởi tạo busNV
-                    }
 
                     try {
                         dtonhanvien nv = form.getNhanVien();

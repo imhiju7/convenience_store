@@ -616,12 +616,8 @@ private void addCardsToPanel(ArrayList<dtonhanvien> list_nv) throws SQLException
                             return;
                         }
                         dtonhanvien nv = new dtonhanvien();
-                        try {
                             busNV = new busnhanvien();
-                        } catch (SQLException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+
                         try {
                             nv = form.getNhanVien();
                             form.check_NV(nv);

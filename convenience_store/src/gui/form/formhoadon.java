@@ -65,6 +65,7 @@ public class formhoadon extends javax.swing.JPanel {
     private void init() {
         setLayout(new MigLayout("fillx,wrap,insets 7 15 7 15", "[fill]", "[][fill,grow]"));
         Component createTable = createGeneralTable();
+        createTable.setPreferredSize(new Dimension(1070, 700));
         add(createTable);
     }
 
