@@ -7,6 +7,7 @@ import dto.dtophieunhap;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -58,7 +59,7 @@ public class daophieunhap {
         try {
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, phieunhap.getMaPhieuNhap());
-            pst.setTimestamp(2, phieunhap.getNgayNhap());
+            pst.setTimestamp(2, (Timestamp) phieunhap.getNgayNhap());
             pst.setDouble(3, phieunhap.getTongTien());
             pst.setInt(4, phieunhap.getMaNhaCungCap());
             pst.setInt(5, phieunhap.getMaNhanVien());
@@ -99,13 +100,14 @@ public class daophieunhap {
         }
 
         return count;
-     public double getTongChiPhi() {
+    }
+    public double getTongChiPhi() {
         double result=0;
         String query = """
                 SELECT SUM(tongTien) AS tongChiPhi FROM phieunhap WHERE isDelete = 0;
                 """;
         
-        try (Connection connection = connect.connection();
+        try (java.sql.Connection connection = connect.connection();
              PreparedStatement preparedStatement = connection.prepareStatement(query);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             
@@ -116,4 +118,5 @@ public class daophieunhap {
         }
         return result;
     }
+
 }

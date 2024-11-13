@@ -14,6 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author giavi
@@ -204,25 +206,35 @@ public class daosanpham {
         return list_NCC;
     }
 
-    public ArrayList<dtophieunhap> listPN(Integer maNCC) throws SQLException{
-        String sql = "select * from phieunhap where maNhaCungCap = ?";
-        Connection con = connect.connection();
-        PreparedStatement pst = con.prepareStatement(sql);
-        pst.setInt(1, maNCC);
-        ResultSet rs = pst.executeQuery();
-        while(rs.next()){
-            dtophieunhap pn = new dtophieunhap();
-            pn.setMaPhieuNhap(rs.getInt("maPhieuNhap"));
-            pn.setNgayNhap(rs.getDate("ngayNhap"));
-            list_Pn.add(pn);
+
+
+    public ArrayList<dtophieunhap> listPN(Integer maNCC) {
+        ArrayList<dtophieunhap> list = new ArrayList<>();
+        java.sql.Connection con = connect.connection();
+        String sql = "SELECT * FROM phieunhap WHERE maNhaCungCap = ?";
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                dtophieunhap pn = new dtophieunhap();
+                pn.setMaPhieuNhap(rs.getInt("maPhieuNhap"));
+                pn.setNgayNhap(rs.getTimestamp("ngayNhap"));
+                list_Pn.add(pn);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(daophieunhap.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                Logger.getLogger(daophieunhap.class.getName()).log(Level.SEVERE, null, e);
+            }
         }
-        return list_Pn;
+        return list;
     }
-    
-    
     public ArrayList<dtoctphieunhap> listCTPN(Integer mapn) throws SQLException {
         String sql = "SELECT * FROM chitietphieunhap WHERE maPhieuNhap = ? AND ishidden = 0";
-        Connection con = connect.connection();
+       Connection  con = connect.connection();
         PreparedStatement pst = con.prepareStatement(sql);
         pst.setInt(1, mapn);
         ResultSet rs = pst.executeQuery();
@@ -258,6 +270,7 @@ public class daosanpham {
         for(dtoctphieunhap pn1 : l1){
             System.out.println(pn1.getMaSanPham());
         }
+        dao.listPN(2);
     }
     
 }

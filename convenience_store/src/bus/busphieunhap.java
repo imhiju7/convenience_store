@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author giavi
  */
 public class busphieunhap {
-    private daophieunhap daoHD = new daophieunhap();
+    private daophieunhap dao = new daophieunhap();
     public ArrayList <dtophieunhap> dspn;
     
     public busphieunhap() {
@@ -21,12 +21,12 @@ public class busphieunhap {
 
     // Retrieve all records through the DAO
     public void getlist() {
-        dspn =  daoHD.getlist();
+        dspn =  dao.getlist();
     }
 
     // Business logic method to add a new HD record
     public void add (dtophieunhap HD) {
-        daoHD.create(HD);
+        dao.create(HD);
     }
     
     public dtophieunhap get(int maphieunhap){
@@ -37,10 +37,14 @@ public class busphieunhap {
         }
         return null;
     }
-    
-    public int maxID(){
-        return daoHD.maxID();
+
+    public double getTongChiPhi(){
+        return dao.getTongChiPhi();
     }
+    public int maxID(){
+        return dao.maxID();
+    }
+
     public static void main(String[] args) {
         // Create an instance of the BUS class
         busphieunhap bus = new busphieunhap();

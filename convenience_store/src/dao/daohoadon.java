@@ -31,7 +31,7 @@ public class daohoadon {
                 SELECT SUM(tongTien) AS tongDoanhThu FROM hoadon WHERE isDelete = 0;
                 """;
         
-        try (Connection connection = connect.connection();
+        try (java.sql.Connection connection = connect.connection();
              PreparedStatement preparedStatement = connection.prepareStatement(query);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             
@@ -115,4 +115,4 @@ public class daohoadon {
             System.out.println(detail);
         }
     }
-    
+}

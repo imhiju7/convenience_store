@@ -14,13 +14,11 @@ import java.util.ArrayList;
  * @author Hieu PC
  */
 public class busnhanvien {
-    private daonhanvien daonv;
     public ArrayList<dtonhanvien> list_nv;
     private ArrayList<dtochucvu> list_cv;
-    // daonhanvien daonv = new daonhanvien();
-    // public ArrayList<dtonhanvien> list_nv;
+    daonhanvien daonv = new daonhanvien();
 
-    public busnhanvien() throws SQLException {
+    public busnhanvien(){
         getlist();
     }
     
@@ -38,9 +36,7 @@ public class busnhanvien {
         daonv = new daonhanvien();
         return daonv.gettennvbymanv(manv);
     }
-    
-    
-    
+
     public void list() throws SQLException{
         daonv = new daonhanvien();
         list_nv = daonv.list();
@@ -60,9 +56,7 @@ public class busnhanvien {
         daonv = new daonhanvien();
         daonv.deleteNhanVien(ma);
     }
-    
-    
-    
+
     public ArrayList<dtonhanvien> getList(){
         return list_nv;
     }
@@ -89,7 +83,7 @@ public class busnhanvien {
         return daonv.getMaChucVuByName(tencv);
     }
     
-    public void getlist() throws SQLException {
+    public void getlist() {
         daonv = new daonhanvien();
         this.list_nv = daonv.list();
     }

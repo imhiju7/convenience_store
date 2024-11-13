@@ -79,7 +79,9 @@ public class Guimain extends javax.swing.JFrame {
                          Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
                      }
                  }
-                 if ((menuIndex==1)&&(subMenuIndex==0)) {
+                
+//                 Danh mục Kho
+                if ((menuIndex==1)&&(subMenuIndex==0)) {
                      try {
                        UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
                     } catch (Exception e) {
@@ -91,8 +93,6 @@ public class Guimain extends javax.swing.JFrame {
                          Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
                      }
                  }
-//                 Danh mục Kho
-
 //                 Danh mục Nhân viên
                  if ((menuIndex==2)&&(subMenuIndex==0)) {
                      try {

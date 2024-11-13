@@ -6,6 +6,7 @@ package dto;
 
 import bus.buskhachhang;
 import bus.busnhanvien;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 
 /**
@@ -78,7 +79,7 @@ public class dtohoadon {
     }
     
     public dtohoadon(){}
-    public dtohoadon(int maHoaDon, int maNhanVien, double tongTien, int maKhachHang, int maKhuyenMai, Timestamp ngayMua, String ghiChu, int maTichDiem) {
+    public dtohoadon(int maHoaDon, int maNhanVien, double tongTien, int maKhachHang, int maKhuyenMai, Timestamp ngayMua, String ghiChu, int maTichDiem) throws SQLException {
         this.maHoaDon = maHoaDon;
         this.maNhanVien = maNhanVien;
         this.tongTien = tongTien;

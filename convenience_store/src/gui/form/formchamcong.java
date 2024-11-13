@@ -22,6 +22,8 @@ import gui.table.TableHeaderAlignment;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.table.TableRowSorter;
 
@@ -33,7 +35,7 @@ public class formchamcong extends javax.swing.JPanel {
     private JTable generalTable;
     private buschamcong buscc = new buschamcong();
     private buschitietchamcong busctcc = new buschitietchamcong();
-    private busnhanvien busnv = new busnhanvien();
+    private final busnhanvien busnv = new busnhanvien();
 
     public formchamcong() {
         init();
@@ -224,7 +226,13 @@ public class formchamcong extends javax.swing.JPanel {
         JButton cmdCreate = new JButton("Create");
         JButton btnSearch = new JButton("Search");
 
-        cmdCreate.addActionListener(e -> create());
+        cmdCreate.addActionListener(e -> {
+            try {
+                create();
+            } catch (SQLException ex) {
+                Logger.getLogger(formchamcong.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
         btnSearch.addActionListener(e -> searching(txtSearch, cbmonth, cbyear));
 
         // Adding components with updated layout constraints
@@ -319,7 +327,7 @@ public class formchamcong extends javax.swing.JPanel {
     }
 
 
-    private void create() {
+    private void create() throws SQLException {
         int currYear = Year.now().getValue();
         Calendar calendar = Calendar.getInstance();
         int currMonth = calendar.get(Calendar.MONTH) + 1;
@@ -330,11 +338,8 @@ public class formchamcong extends javax.swing.JPanel {
         }
         int count = buscc.countchamcong();
         System.out.print("dem ma cham cong"+ count);
-        try {
             busnv.getlist();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
         for (dtonhanvien nhanvien : busnv.list_nv) {
             dtochamcong cc = new dtochamcong(++count , nhanvien.getManhanvien(), 0, 0, 0, 0, 0, "", currMonth, currYear);
             System.out.print("ma cham cong tu dong"+ count);

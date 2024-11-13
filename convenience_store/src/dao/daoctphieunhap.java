@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Date;
+
 /**
  *
  * @author giavi
@@ -30,10 +32,10 @@ public class daoctphieunhap {
                 dtoctphieunhap ctphieunhap = new dtoctphieunhap(
                     rs.getInt("maCTPhieuNhap"),
                     rs.getInt("soLuong"),
-                    rs.getInt("giaNhap"),
+                    rs.getDouble("giaNhap"),
                     rs.getInt("maPhieuNhap"),
                     rs.getInt("maSanPham"),
-                    rs.getTimestamp("ngayHetHan"),
+                    rs.getDate("ngayHetHan"),
                     rs.getInt("soLuongTonKho"),
                     rs.getString("ghiChu"),
                     rs.getDouble("giaBan")
@@ -67,7 +69,7 @@ public class daoctphieunhap {
                     rs.getInt("giaNhap"),
                     rs.getInt("maPhieuNhap"),
                     rs.getInt("maSanPham"),
-                    rs.getTimestamp("ngayHetHan"),
+                    rs.getDate("ngayHetHan"),
                     rs.getInt("soLuongTonKho"),
                     rs.getString("ghiChu"),
                     rs.getDouble("giaBan")
@@ -97,7 +99,7 @@ public class daoctphieunhap {
             pst.setDouble(3, ctphieunhap.getGiaNhap());
             pst.setInt(4, ctphieunhap.getMaPhieuNhap());
             pst.setInt(5, ctphieunhap.getMaSanPham());
-            pst.setTimestamp(6, ctphieunhap.getNgayhethan());
+            pst.setDate(6, (java.sql.Date) ctphieunhap.getNgayhethan());
             pst.setInt(7, 0);
             pst.setString(8, ctphieunhap.getGhichu());
             pst.setInt(9, ctphieunhap.getSoluongtonkho());
@@ -126,15 +128,21 @@ public class daoctphieunhap {
                 count = rs.getInt("maxMaPhieuNhap");
             }
         } catch (SQLException e) {
-            Logger.getLogger(daophieunhap.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(daoctphieunhap.class.getName()).log(Level.SEVERE, null, e);
         } finally {
             try {
                 con.close();
             } catch (SQLException e) {
-                Logger.getLogger(daophieunhap.class.getName()).log(Level.SEVERE, null, e);
+                Logger.getLogger(daoctphieunhap.class.getName()).log(Level.SEVERE, null, e);
             }
         }
 
         return count;
+    }
+        public static void main(String[] args) {
+        daoctphieunhap dao = new daoctphieunhap();
+        for (dtoctphieunhap pn:dao.getlist()){
+            System.out.println(pn);
+        }
     }
 }

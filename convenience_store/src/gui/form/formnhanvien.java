@@ -562,12 +562,8 @@ public class formnhanvien extends Form {
                             return;
                         }
                         dtonhanvien nv = new dtonhanvien();
-                        try {
-                            busNV = new busnhanvien();
-                        } catch (SQLException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+                        busNV = new busnhanvien();
+
                         try {
                             nv = form.getNhanVien();
                             form.check_NV(nv);

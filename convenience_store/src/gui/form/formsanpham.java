@@ -84,7 +84,29 @@ public class formsanpham extends Form {
         formInit();
         
     }
+    public static void main(String args[]) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                // Create a new JFrame
+                JFrame frame = new JFrame();
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+                // Add the formsanpham panel to the frame
+                formsanpham panel = null;
+                try {
+                    panel = new formsanpham();
+                } catch (SQLException ex) {
+                    Logger.getLogger(formsanpham.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                frame.add(panel);
+
+                // Set frame size and make it visible
+                frame.setSize(1070, 741); // Adjust size as needed
+                frame.setLocationRelativeTo(null); // Center the frame
+                frame.setVisible(true);
+            }
+        });
+    }
     private void init() throws SQLException {
         cards = new ArrayList<>();
         setLayout(new MigLayout("wrap,fill,insets 7 15 7 15", "[fill]", "[grow 0][fill]"));
