@@ -13,7 +13,6 @@ import bus.busphieunhap;
 import bus.busctphieunhap;
 import bus.busnhanvien;
 import dto.dtophieunhap;
-import dto.dtophieunhap;
 import dto.dtoctphieunhap;
 import dto.dtophieunhap;
 import dto.dtonhanvien;
@@ -89,40 +88,36 @@ public class formphieunhap extends javax.swing.JPanel {
     }
 
     private Component nhapHangTab() {
-    JPanel panel = new JPanel();
-    panel.setLayout(new MigLayout("fillx, wrap, insets 5 35 5 35"));
+        JPanel panel = new JPanel();
+        panel.setLayout(new MigLayout("fillx, wrap, insets 5 35 5 35"));
 
-    // Add header at the top
-    panel.add(createNhapHangHeader(), "span, growx, wrap");
+        // Add header at the top
+        panel.add(createNhapHangHeader(), "span, growx, wrap");
 
-    // Add middle left and right panels
-    panel.add(createMidLeftPanel(), "cell 0 1, grow");
-    panel.add(createMidRightPanel(), "cell 1 1, grow");
+        // Add middle left and right panels
+        panel.add(createMidLeftPanel(), "cell 0 1, grow");
+        panel.add(createMidRightPanel(), "cell 1 1, grow");
 
-    // Add detail table at the bottom
-    panel.add(createDetailTable(), "span, growx, dock south");
+        // Add detail table at the bottom
+        panel.add(createDetailTable(), "span, growx, dock south");
 
     return panel;
     }
 
 
     private JPanel createMidLeftPanel() {
-        JPanel midLeft = new JPanel(new MigLayout("fillx, wrap 2", "[fill][fill]"));
+        JPanel midLeft = new JPanel(new MigLayout("fillx, wrap 2", "[fill][grow]"));
 
         // Middle Left: Input fields
         JTextField txtNVid = new JTextField();
         txtNVid.setEditable(false);
         JTextField txtNVname = new JTextField();
         txtNVname.setEditable(false);
-
         JTextField txtNCCid = new JTextField();
         txtNCCid.setEditable(false);
-
         JComboBox cbNCCname = new JComboBox();
-
         JTextField txtTotal = new JTextField();
         txtTotal.setEditable(false);
-
         JTextArea txtNote = new JTextArea();
         txtNote.setWrapStyleWord(true);
         txtNote.setLineWrap(true);
@@ -132,13 +127,15 @@ public class formphieunhap extends javax.swing.JPanel {
         int nvid = pn.getMaNhanVien();
         txtNVid.setText(String.valueOf(nvid));
 
-        // Add components to midLeft section
-        midLeft.add(new JLabel("Nhân viên nhập hàng"), "gapy 5 0");
-        midLeft.add(txtNVid, "split 2, growx, wmin 100"); // Half width
-        midLeft.add(txtNVname, "growx, wrap");
+        // Add components to midLeft section with improved constraints
+        midLeft.add(new JLabel("Nhân viên nhập hàng"));
+        midLeft.add(txtNVid,"split 2, gapy 5 0,wmin 50");  // Small width for txtNVid
 
-        midLeft.add(new JLabel("Chọn nhà cung cấp"), "gapy 5 0");
-        midLeft.add(txtNCCid, "split 2, growx, wmin 100"); // Half width
+        midLeft.add(txtNVname, "growx, wrap"); // txtNVname will take remaining space
+
+        midLeft.add(new JLabel("Chọn nhà cung cấp"));
+        midLeft.add(txtNCCid, "split 2, gapy 5 0,wmin 50");  // Small width for txtNCCid
+
         midLeft.add(cbNCCname, "growx, wrap");
 
         midLeft.add(new JLabel("Ghi chú"), "gapy 5 0");
@@ -167,7 +164,8 @@ public class formphieunhap extends javax.swing.JPanel {
     return midRight;
 }
 
-    private JScrollPane createAdditionalTable() {
+    private Component createAdditionalTable() {
+    JPanel panel = new JPanel();
     // Creating a sample table with some data for demonstration
     String[] columnNames = {"Column 1", "Column 2", "Column 3"};
     Object[][] data = {
@@ -183,7 +181,8 @@ public class formphieunhap extends javax.swing.JPanel {
     JScrollPane scrollPane = new JScrollPane(additionalTable);
     scrollPane.setPreferredSize(new Dimension(200, 100)); // Adjust size as needed
 
-    return scrollPane;
+    panel.add(scrollPane);
+    return panel;
 }
 
     private Component nhapHangTable() {
@@ -304,9 +303,9 @@ public class formphieunhap extends javax.swing.JPanel {
     }
 
     private Component createGeneralTable() {
-        JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
+        JPanel panel = new JPanel(new MigLayout("fill, wrap, insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
 
-        // create table model
+        // Create table model
         Object columns[] = new Object[]{"Mã phiếu nhập", "Ngày nhập hàng", "Nhà cung cấp", "Tổng tiền", "Tên NV", "Ghi chú"};
         DefaultTableModel model = new DefaultTableModel(columns, 0) {
             @Override
@@ -315,48 +314,52 @@ public class formphieunhap extends javax.swing.JPanel {
             }
         };
 
-        // create table and assign to generalTable
+        // Create table and assign to generalTable
         generalTable = new JTable(model);
 
-        // table scroll
+        // Table scroll pane
         JScrollPane scrollPane = new JScrollPane(generalTable);
+        scrollPane.setMinimumSize(new Dimension(1000,600));
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
-        // alignment table header
+        // Align table header
         generalTable.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(generalTable) {
             protected int getAlignment() {
                 return SwingConstants.CENTER;
             }
         });
 
-        // style
-        generalTable.putClientProperty(FlatClientProperties.STYLE, "" + "arc:20;" + "background:$Table.background;");
-        generalTable.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" + "height:30;" + "hoverBackground:null;" + "pressedBackground:null;" + "separatorColor:$TableHeader.background;");
-        generalTable.putClientProperty(FlatClientProperties.STYLE, "" + "rowHeight:30;" + "showHorizontalLines:true;" + "intercellSpacing:0,1;" + "cellFocusColor:$TableHeader.hoverBackground;" + "selectionBackground:$TableHeader.hoverBackground;" + "selectionInactiveBackground:$TableHeader.hoverBackground;" + "selectionForeground:$Table.foreground;");
-        scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" + "trackArc:$ScrollBar.thumbArc;" + "trackInsets:3,3,3,3;" + "thumbInsets:3,3,3,3;" + "background:$Table.background;");
+        // Style settings
+        generalTable.putClientProperty(FlatClientProperties.STYLE, "arc:20; background:$Table.background;");
+        generalTable.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "height:30; hoverBackground:null; pressedBackground:null; separatorColor:$TableHeader.background;");
+        generalTable.putClientProperty(FlatClientProperties.STYLE, "rowHeight:30; showHorizontalLines:true; intercellSpacing:0,1; cellFocusColor:$TableHeader.hoverBackground; selectionBackground:$TableHeader.hoverBackground; selectionInactiveBackground:$TableHeader.hoverBackground; selectionForeground:$Table.foreground;");
+        scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "trackArc:$ScrollBar.thumbArc; trackInsets:3,3,3,3; thumbInsets:3,3,3,3; background:$Table.background;");
 
-        // create header
+        // Create header and separator
         panel.add(createHeaderGeneralTable());
-
         JSeparator separator = new JSeparator();
-        separator.putClientProperty(FlatClientProperties.STYLE, "" + "foreground:$Table.gridColor;");
+        separator.putClientProperty(FlatClientProperties.STYLE, "foreground:$Table.gridColor;");
         panel.add(separator, "height 2");
 
+        // Add the scroll pane with grow constraint
         panel.add(scrollPane, "grow");
 
-
+        // Populate table with data
         buspn.getlist();
         for (dtophieunhap cc : buspn.dspn) {
             model.addRow(cc.toTableRow());
         }
-        
+
         generalTable.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseClicked(java.awt.event.MouseEvent evt) {
-            tableMouseClicked(evt);
-        }
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
+            }
         });
-        return panel;    }
+
+        return panel;
+    }
+
 
     private Component createHeaderGeneralTable() {
         JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,fill]push[][]")); 
