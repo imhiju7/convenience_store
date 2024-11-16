@@ -1,54 +1,54 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dto;
 
-/**
- *
- * @author Hieu PC
- */
 public class dtochucnang {
-
-    private int machucnang;
-    private String tenchucnang;
-    private int madanhmuc;
+    private int maChucNang;
+    private String tenChucNang;
+    private int maDanhMuc;
+    private int isDelete;
     
-    public dtochucnang() {
+
+
+    public dtochucnang(int maChucNang, String tenChucNang, int maDanhMuc,int isDelete) {
+        this.maChucNang = maChucNang;
+        this.tenChucNang = tenChucNang;
+        this.maDanhMuc = maDanhMuc;
+        this.isDelete = isDelete;
+       
     }
 
-    public dtochucnang(int machucnang, String tenchucnang, int madanhmuc) {
-        this.machucnang = machucnang;
-        this.tenchucnang = tenchucnang;
-        this.madanhmuc = madanhmuc;
+    public int getIsDelete() {
+        return isDelete;
     }
 
-    public int getMachucnang() {
-        return machucnang;
+    public void setIsDelete(int isDelete) {
+        this.isDelete = isDelete;
     }
 
-    public void setMachucnang(int machucnang) {
-        this.machucnang = machucnang;
+    public int getMaChucNang() {
+        return maChucNang;
     }
 
-    public String getTenchucnang() {
-        return tenchucnang;
+    public void setMaChucNang(int maChucNang) {
+        this.maChucNang = maChucNang;
     }
 
-    public void setTenchucnang(String tenchucnang) {
-        this.tenchucnang = tenchucnang;
+    public String getTenChucNang() {
+        return tenChucNang;
     }
 
-    public int getMadanhmuc() {
-        return madanhmuc;
+    public void setTenChucNang(String tenChucNang) {
+        this.tenChucNang = tenChucNang;
     }
 
-    public void setMadanhmuc(int madanhmuc) {
-        this.madanhmuc = madanhmuc;
+    public int getMaDanhMuc() {
+        return maDanhMuc;
     }
 
-    @Override
-    public String toString() {
-        return "dtochucnang{" + "machucnang=" + machucnang + ", tenchucnang=" + tenchucnang + ", madanhmuc=" + madanhmuc + '}';
-    }  
+    public void setMaDanhMuc(int maDanhMuc) {
+        this.maDanhMuc = maDanhMuc;
+    }
+
+   
+
+   
 }
