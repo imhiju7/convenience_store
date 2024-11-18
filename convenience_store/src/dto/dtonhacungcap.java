@@ -84,6 +84,11 @@ public class dtonhacungcap {
         this.trangThai = trangThai;
         this.ngayTao = ngayTao;
     }
+
+    @Override
+    public String toString() {
+        return "dtonhacungcap{" + "maNhaCungCap=" + maNhaCungCap + ", tenNhaCungCap=" + tenNhaCungCap + ", SDT=" + SDT + ", Email=" + Email + ", diaChi=" + diaChi + ", trangThai=" + trangThai + ", ngayTao=" + ngayTao + '}';
+    }
     private int maNhaCungCap;
     private String tenNhaCungCap;
     private String SDT;

@@ -27,15 +27,15 @@ public class daosanpham {
     private ArrayList<dtophanloai> listpl = new ArrayList<>();
     private ArrayList<dtophieunhap> list_Pn = new ArrayList<>();
     private ArrayList<dtoctphieunhap> list_Ctpn = new ArrayList<>();
-    
-    
-    public ArrayList<dtosanpham> list() throws SQLException{
-        Connection con = connect.connection();
+
+    public ArrayList<dtosanpham> list() {
+        java.sql.Connection con = connect.connection();
         String sql = "SELECT * FROM sanpham where isHidden = 0";
-        PreparedStatement pst =  con.prepareStatement(sql);
-        ResultSet rs = pst.executeQuery();
-        while(rs.next()){
-            dtosanpham sp = new dtosanpham();
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                dtosanpham sp = new dtosanpham();
             sp.setMaSanPham(rs.getInt("maSanPham"));
             sp.setTenSanPham(rs.getString("tenSanPham"));
             sp.setSoLuong(rs.getInt("soLuong"));
@@ -45,11 +45,18 @@ public class daosanpham {
             sp.setMaNCC(rs.getInt("maNhaCungCap"));
             sp.setHanSD(rs.getString("hanSuDung"));
             list_sp.add(sp);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(daosanpham.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                Logger.getLogger(daosanpham.class.getName()).log(Level.SEVERE, null, e);
+            }
         }
-        con.close();
         return list_sp;
     }
-    
     
     public ArrayList<dtosanpham> getList(){
         return list_sp;
@@ -252,11 +259,42 @@ public class daosanpham {
         return list_Ctpn;
     }
 
+    public ArrayList<dtosanpham> listByNhaCungCapID(int maNhaCungCap) {
+    ArrayList<dtosanpham> list_sp = new ArrayList<>();
+    java.sql.Connection con = connect.connection();
+    String sql = "SELECT * FROM sanpham WHERE isHidden = 0 AND maNhaCungCap = ?";
     
-    
-    
-    
-    
+    try {
+        PreparedStatement pst = con.prepareStatement(sql);
+        pst.setInt(1, maNhaCungCap); // Set the specific supplier ID
+        ResultSet rs = pst.executeQuery();
+        
+        while (rs.next()) {
+            dtosanpham sp = new dtosanpham();
+            sp.setMaSanPham(rs.getInt("maSanPham"));
+            sp.setTenSanPham(rs.getString("tenSanPham"));
+            sp.setSoLuong(rs.getInt("soLuong"));
+            sp.setNgayThem(rs.getDate("ngayThem"));
+            sp.setMaPhanLoai(rs.getInt("maPhanLoai"));
+            sp.setImg(rs.getString("img"));
+            sp.setMaNCC(rs.getInt("maNhaCungCap"));
+            sp.setHanSD(rs.getString("hanSuDung"));
+            list_sp.add(sp); // Add the product to the list
+        }
+    } catch (SQLException e) {
+        Logger.getLogger(daosanpham.class.getName()).log(Level.SEVERE, null, e);
+    } finally {
+        try {
+            if (con != null) {
+                con.close();
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(daosanpham.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+    return list_sp; // Return the filtered list
+}
+
     public static void main(String[] args) throws SQLException {
         daosanpham dao = new daosanpham();
 //        ArrayList<dtophieunhap> l = new ArrayList<>();

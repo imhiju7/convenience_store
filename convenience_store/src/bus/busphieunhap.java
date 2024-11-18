@@ -55,4 +55,8 @@ public class busphieunhap {
         }
         
     }
+
+    public void create(dtophieunhap pn) {
+        dao.create(pn);
+    }
 }

@@ -4,10 +4,23 @@
  */
 package bus;
 import dao.daonhacungcap;
+import dto.dtonhacungcap;
+import java.util.ArrayList;
 /**
  *
  * @author giavi
  */
 public class busnhacungcap {
     private daonhacungcap daoNCC = new daonhacungcap();
+    
+    public dtonhacungcap getById(int id){
+        return daoNCC.getById(id);
+    }
+    public dtonhacungcap getByName(String name){
+        return daoNCC.getByName(name);
+    }
+    
+    public ArrayList <dtonhacungcap> getlist(){
+        return daoNCC.getlist();
+    }
 }

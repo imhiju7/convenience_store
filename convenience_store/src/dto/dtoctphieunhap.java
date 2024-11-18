@@ -4,6 +4,7 @@
  */
 package dto;
 
+import bus.bussanpham;
 import java.util.Date;
 
 /**
@@ -125,7 +126,8 @@ public class dtoctphieunhap {
     private String ghichu;
 
     public String getTenSP(int masp){
-        return "Ten sp";
+        bussanpham sp = new bussanpham();
+        return sp.getById(masp).getTenSanPham();
     }
     @Override
     public String toString() {
@@ -133,6 +135,10 @@ public class dtoctphieunhap {
     }
 
     public Object[] toTableRow() {
-        return new Object[]{maSanPham , getTenSP(maSanPham), soLuong, giaNhap, ngayhethan, giaBan, soluongtonkho};
+        return new Object[]{maSanPham , getTenSP(maSanPham), giaNhap, soLuong, ngayhethan, giaBan, soluongtonkho};
+    }
+    
+    public Object[] toAdditionalTableRow() {
+        return new Object[]{maSanPham , getTenSP(maSanPham), ngayhethan, soluongtonkho};
     }
 }
