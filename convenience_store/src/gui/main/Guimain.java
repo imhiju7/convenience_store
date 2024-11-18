@@ -16,6 +16,7 @@ import gui.form.formthongke;
 import gui.form.formhoadon;
 import gui.form.formphieunhap;
 import gui.form.frmlogin;
+import gui.form.formkhachhang;
 import gui.form.formtaikhoan;
 import gui.form.formthanhtoan;
 import gui.swing.dashboard.MenuItem;
@@ -155,7 +156,20 @@ public class Guimain extends javax.swing.JFrame {
                     }
                      main.showForm(new formchamcong());
                  }
-//                 Danh mục Khách hàng
+                // Danh mục Khách hàng
+                if ((menuIndex == 3) && (subMenuIndex == 0)) { // menuIndex=3: Khách hàng, subMenuIndex=0: danh sách khách hàng
+                    try {
+                        UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        main.showForm(new formkhachhang());
+                    } catch (Exception ex) { // Đổi từ SQLException thành Exception
+                        Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
 
 //                 Danh mục Thống kê
                   if ((menuIndex==4)&&(subMenuIndex==0)) {
