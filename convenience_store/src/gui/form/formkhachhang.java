@@ -25,15 +25,14 @@ public class formkhachhang extends JPanel {
         model = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column != 0 && column != 3;  // Disable editing for MaKH and DiemTichLuy
-            }
+            return false;            }
         };
         table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         table.setGridColor(Color.GRAY);
         table.setShowGrid(true);
-        
+        table.getTableHeader().setReorderingAllowed(false);
         JScrollPane scrollPane = new JScrollPane(table);
 
         // Panel for displaying data details
@@ -127,35 +126,43 @@ public class formkhachhang extends JPanel {
         btnHuy.addActionListener(e -> clearForm());
     }
 
-   private void onAddCustomer() {
+  private void onAddCustomer() {
     // Lấy thông tin từ các trường nhập liệu
     String sdt = txtSDT.getText();
     String tenKH = txtTenKH.getText();
     String diemTichLuyStr = "0";
-//            txtDiemTichLuy.getText();
     String maUuDaiStr = txtMaUuDai.getText();
+        buskhachhang busKH = new buskhachhang();
 
     // Kiểm tra nếu các trường dữ liệu trống
-    if (sdt.isEmpty() || tenKH.isEmpty()|| maUuDaiStr.isEmpty()) {
+    if (sdt.isEmpty() || tenKH.isEmpty() || maUuDaiStr.isEmpty()) {
         JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!");
         return;
     }
-// Kiểm tra số điện thoại phải là số và có đúng 10 chữ số
-        if (!sdt.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(this, "Số điện thoại phải là 10 chữ số!");
-            return;
-        }
 
-        // Kiểm tra tên khách hàng chỉ chứa chữ hoa, thường và khoảng trắng
-        if (!tenKH.matches("[a-zA-Z\\s]+")) {
-            JOptionPane.showMessageDialog(this, "Tên khách hàng chỉ chứa chữ cái và khoảng trắng!");
+    // Kiểm tra số điện thoại phải là số và có đúng 10 chữ số
+    if (!sdt.matches("\\d{10}")) {
+        JOptionPane.showMessageDialog(this, "Số điện thoại phải là 10 chữ số!");
+        return;
+    }
+    if (busKH.checkSDTExist(sdt)) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại đã tồn tại trong hệ thống!");
             return;
         }
+    // Kiểm tra tên khách hàng chỉ chứa chữ cái và khoảng trắng
+    if (!tenKH.matches("[\\p{L}\\s]+")) {
+        JOptionPane.showMessageDialog(this, "Tên khách hàng chỉ chứa chữ cái và khoảng trắng!");
+        return;
+    }
+
+    // Hỏi người dùng xác nhận trước khi thêm khách hàng
+    int confirmation = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn thêm khách hàng?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+    if (confirmation == JOptionPane.NO_OPTION) {
+        return; // Nếu người dùng chọn "No", không thực hiện thêm khách hàng
+    }
 
     try {
-        // Chuyển đổi điểm tích lũy và mã ưu đãi thành số nguyên
-                buskhachhang busKH = new buskhachhang();
-
+//        buskhachhang busKH = new buskhachhang();
         int diemTichLuy = Integer.parseInt(diemTichLuyStr);
         int maUuDai = Integer.parseInt(maUuDaiStr);
         int maKH = busKH.getSoLuongKH() + 1;
@@ -164,7 +171,6 @@ public class formkhachhang extends JPanel {
         dtokhachhang newKhachHang = new dtokhachhang(maKH ,sdt, tenKH, diemTichLuy, maUuDai);
 
         // Thêm khách hàng vào cơ sở dữ liệu
-//        buskhachhang busKH = new buskhachhang();
         boolean result = busKH.addKhachHang(newKhachHang);
 
         if (result) {
@@ -178,7 +184,6 @@ public class formkhachhang extends JPanel {
         JOptionPane.showMessageDialog(this, "Điểm tích lũy và Mã ưu đãi phải là số!");
     }
 }
-
 private void onEditCustomer() {
     try {
         // Lấy thông tin từ các trường nhập liệu
@@ -187,22 +192,35 @@ private void onEditCustomer() {
         String tenKH = txtTenKH.getText();
         String diemTichLuyStr = txtDiemTichLuy.getText();
         String maUuDaiStr = txtMaUuDai.getText();
+        buskhachhang busKH = new buskhachhang();
 
         // Kiểm tra nếu các trường dữ liệu trống
         if (sdt.isEmpty() || tenKH.isEmpty() || diemTichLuyStr.isEmpty() || maUuDaiStr.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!");
             return;
         }
-// Kiểm tra số điện thoại phải là số và có đúng 10 chữ số
+
+        // Kiểm tra số điện thoại phải là số và có đúng 10 chữ số
         if (!sdt.matches("\\d{10}")) {
             JOptionPane.showMessageDialog(this, "Số điện thoại phải là 10 chữ số!");
             return;
         }
-
+       // Kiểm tra nếu số điện thoại mới đã tồn tại nhưng không phải là số điện thoại hiện tại của khách hàng
+        dtokhachhang existingCustomer = busKH.getKhachHangById(maKH);
+        if (existingCustomer != null && !existingCustomer.getSDT().equals(sdt) && busKH.checkSDTExist(sdt)) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại đã tồn tại trong hệ thống!");
+            return;
+        }
         // Kiểm tra tên khách hàng chỉ chứa chữ hoa, thường và khoảng trắng
-        if (!tenKH.matches("[a-zA-Z\\s]+")) {
+        if (!tenKH.matches("[\\p{L}\\s]+")) {
             JOptionPane.showMessageDialog(this, "Tên khách hàng chỉ chứa chữ cái và khoảng trắng!");
             return;
+        }
+
+        // Hỏi người dùng xác nhận trước khi lưu thông tin
+        int confirmation = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn lưu thông tin khách hàng?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        if (confirmation == JOptionPane.NO_OPTION) {
+            return; // Nếu người dùng chọn "No", không thực hiện cập nhật
         }
 
         // Chuyển đổi điểm tích lũy và mã ưu đãi thành số nguyên
@@ -213,7 +231,7 @@ private void onEditCustomer() {
         dtokhachhang customer = new dtokhachhang(maKH, sdt, tenKH, diemTichLuy, maUuDai);
 
         // Cập nhật thông tin khách hàng vào cơ sở dữ liệu
-        buskhachhang busKH = new buskhachhang();
+//        buskhachhang busKH = new buskhachhang();
         boolean result = busKH.updateKhachHang(customer);
 
         if (result) {
@@ -226,6 +244,7 @@ private void onEditCustomer() {
         JOptionPane.showMessageDialog(this, "Vui lòng nhập đúng định dạng số cho các trường Mã KH, Điểm tích lũy, Mã ưu đãi!");
     }
 }
+
 
     private void onDeleteCustomer() {
         int selectedRow = table.getSelectedRow();

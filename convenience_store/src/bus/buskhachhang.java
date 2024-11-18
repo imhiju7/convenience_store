@@ -37,6 +37,13 @@ public class buskhachhang {
      public boolean addKhachHang(dtokhachhang khachHang) {
         return daoKhachHang.addKhachHang(khachHang);  // Gọi phương thức thêm từ DAO
     }
+     
+    public boolean checkSDTExist(String sdt) {
+    return daoKhachHang.checkSDTExist(sdt);  // Check if the phone number exists
+}
+
+
+     
     public boolean updateKhachHang(dtokhachhang khachHang) {
         try {
             return daoKhachHang.updateKhachHang(khachHang);

@@ -65,6 +65,21 @@ public class daokhachhang {
         }
     }
 
+public boolean checkSDTExist(String sdt) {
+     Connection con = connect.connection();
+    String query = "SELECT COUNT(*) FROM khachhang WHERE sdt = ?";
+    try (PreparedStatement stmt = con.prepareStatement(query)) {
+        stmt.setString(1, sdt);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0;  // Nếu số điện thoại đã tồn tại
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;  // Nếu số điện thoại chưa tồn tại
+}
+
 
 
     public boolean updateKhachHang(dtokhachhang khachHang) throws SQLException {
