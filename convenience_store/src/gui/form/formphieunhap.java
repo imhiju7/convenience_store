@@ -148,7 +148,7 @@ public class formphieunhap extends javax.swing.JPanel {
     txtNCCid.setHorizontalAlignment(JTextField.CENTER);
     JComboBox<String> cbNCCname = new JComboBox<>();
     cbNCCname.addItem("");
-    for(dtonhacungcap ncc: busncc.getlist()){
+    for(dtonhacungcap ncc: busncc.list()){
         cbNCCname.addItem(ncc.getTenNhaCungCap());
     }
     txtTotal = new JTextField();

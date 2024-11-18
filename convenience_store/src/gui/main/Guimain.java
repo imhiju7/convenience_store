@@ -27,6 +27,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,12 +47,12 @@ public class Guimain extends javax.swing.JFrame {
     private MainForm main;
     private Animator animator;
     
-    public Guimain(int manv) throws SQLException {
+    public Guimain(int manv) throws SQLException, ParseException {
         initComponents();
         init(manv);
     }
 
-    private void init(int manv) throws SQLException {
+    private void init(int manv) throws SQLException, ParseException {
         layout = new MigLayout("fill", "0[]0[100%, fill]0", "0[fill, top]0");
         bg.setLayout(layout);
         
@@ -144,7 +145,13 @@ public class Guimain extends javax.swing.JFrame {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                     main.showForm(new formchucvu());
+                     try {
+                         main.showForm(new formchucvu());
+                     } catch (SQLException ex) {
+                         Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
+                     } catch (ParseException ex) {
+                         Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
+                     }
                  }
   
                  if ((menuIndex==2)&&(subMenuIndex==3)) {

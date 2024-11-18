@@ -1,16 +1,27 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dto;
 
-import java.util.Date;
-
-/**
- *
- * @author giavi
- */
 public class dtonhacungcap {
+    private int maNhaCungCap;
+    private String tenNhaCungCap;
+    private String SDT;
+    private String Email;
+    private String diaChi;
+    private int isDelete; 
+
+    
+    public dtonhacungcap() {}
+
+
+    public dtonhacungcap(int maNhaCungCap, String tenNhaCungCap, String SDT, String Email, String diaChi, int isDelete) {
+        this.maNhaCungCap = maNhaCungCap;
+        this.tenNhaCungCap = tenNhaCungCap;
+        this.SDT = SDT;
+        this.Email = Email;
+        this.diaChi = diaChi;
+        this.isDelete = isDelete;
+    }
+
+   
     public int getMaNhaCungCap() {
         return maNhaCungCap;
     }
@@ -51,49 +62,11 @@ public class dtonhacungcap {
         this.diaChi = diaChi;
     }
 
-    public int getTrangThai() {
-        return trangThai;
+    public int getIsDelete() {
+        return isDelete;
     }
 
-    public void setTrangThai(int trangThai) {
-        this.trangThai = trangThai;
+    public void setIsDelete(int isDelete) {
+        this.isDelete = isDelete;
     }
-
-    public Date getNgayTao() {
-        return ngayTao;
-    }
-
-    public void setNgayTao(Date ngayTao) {
-        this.ngayTao = ngayTao;
-    }
-    public String trangthaistr(){
-        if(this.trangThai == 1) return "Dừng cung ứng";
-        else return "Đang cung ứng";
-    }
-    public void settrangthaistr(String tt){
-        if(tt.equals("Dừng cung ứng")) this.trangThai = 1;
-        else this.trangThai = 0;
-    }
-    public dtonhacungcap(){}
-    public dtonhacungcap(int maNhaCungCap, String tenNhaCungCap, String SDT, String Email, String diaChi, int trangThai, Date ngayTao) {
-        this.maNhaCungCap = maNhaCungCap;
-        this.tenNhaCungCap = tenNhaCungCap;
-        this.SDT = SDT;
-        this.Email = Email;
-        this.diaChi = diaChi;
-        this.trangThai = trangThai;
-        this.ngayTao = ngayTao;
-    }
-
-    @Override
-    public String toString() {
-        return "dtonhacungcap{" + "maNhaCungCap=" + maNhaCungCap + ", tenNhaCungCap=" + tenNhaCungCap + ", SDT=" + SDT + ", Email=" + Email + ", diaChi=" + diaChi + ", trangThai=" + trangThai + ", ngayTao=" + ngayTao + '}';
-    }
-    private int maNhaCungCap;
-    private String tenNhaCungCap;
-    private String SDT;
-    private String Email;
-    private String diaChi;
-    private int trangThai;
-    private Date ngayTao;
 }

@@ -12,13 +12,16 @@ public class dtochucvu {
 
     private int machucvu;
     private String tenchucvu;
+    private int isDelete;
+
     
     public dtochucvu() {
     }
 
-    public dtochucvu(int machucvu, String tenchucvu) {
+    public dtochucvu(int machucvu, String tenchucvu, int isDelete) {
         this.machucvu = machucvu;
         this.tenchucvu = tenchucvu;
+        this.isDelete = isDelete;
     }
 
     public int getMachucvu() {
@@ -36,9 +39,13 @@ public class dtochucvu {
     public void setTenchucvu(String tenchucvu) {
         this.tenchucvu = tenchucvu;
     }
+    public int getIsDelete() {
+        return isDelete;
+    }
 
-    @Override
-    public String toString() {
-        return "dtochucvu{" + "machucvu=" + machucvu + ", tenchucvu=" + tenchucvu + '}';
-    }    
+    public void setIsDelete(int isDelete) {
+        this.isDelete = isDelete;
+    }
+    
+    
 }
