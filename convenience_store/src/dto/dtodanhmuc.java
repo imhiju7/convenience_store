@@ -1,54 +1,56 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dto;
 
-/**
- *
- * @author Hieu PC
- */
+
 public class dtodanhmuc {
-
-    private int madanhmuc;
-    private String tendanhmuc;
+    private int maDanhMuc;
+    private String tenDanhMuc;
     private String icon;
+    private int isDelete;
+
+   
+
     
-    public dtodanhmuc() {
-    }
-
-    public dtodanhmuc(int madanhmuc, String tendanhmuc, String icon) {
-        this.madanhmuc = madanhmuc;
-        this.tendanhmuc = tendanhmuc;
+    public dtodanhmuc(int maDanhMuc, String tenDanhMuc, String icon, int isDelete) {
+        this.maDanhMuc = maDanhMuc;
+        this.tenDanhMuc = tenDanhMuc;
         this.icon = icon;
+        this.isDelete = isDelete;
     }
 
-    public int getMadanhmuc() {
-        return madanhmuc;
+   
+    public dtodanhmuc() {}
+
+
+    public int getMaDanhMuc() {
+        return maDanhMuc;
     }
 
-    public void setMadanhmuc(int madanhmuc) {
-        this.madanhmuc = madanhmuc;
+    public void setMaDanhMuc(int maDanhMuc) {
+        this.maDanhMuc = maDanhMuc;
     }
 
-    public String getTendanhmuc() {
-        return tendanhmuc;
+    
+    public String getTenDanhMuc() {
+        return tenDanhMuc;
     }
 
-    public void setTendanhmuc(String tendanhmuc) {
-        this.tendanhmuc = tendanhmuc;
+    public void setTenDanhMuc(String tenDanhMuc) {
+        this.tenDanhMuc = tenDanhMuc;
     }
-
-    public String getIcon() {
+     public String getIcon() {
         return icon;
     }
 
     public void setIcon(String icon) {
         this.icon = icon;
     }
-
-    @Override
-    public String toString() {
-        return "dtodanhmuc{" + "madanhmuc=" + madanhmuc + ", tendanhmuc=" + tendanhmuc + ", icon=" + icon + '}';
+     public int getIsDelete() {
+        return isDelete;
     }
+
+    public void setIsDelete(int isDelete) {
+        this.isDelete = isDelete;
+    }
+
+   
 }

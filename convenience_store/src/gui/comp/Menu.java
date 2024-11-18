@@ -20,6 +20,8 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import net.miginfocom.swing.MigLayout;
@@ -61,7 +63,7 @@ public class Menu extends javax.swing.JPanel {
         panel.setLayout(layout);
     }
 
-    public void initMenuItem(int macv) {
+    public void initMenuItem(int macv) throws SQLException, ParseException {
         busdanhmuc busdm = new busdanhmuc();
         buschucnang buscn = new buschucnang();
         busphanquyen buspq = new busphanquyen();
@@ -70,17 +72,17 @@ public class Menu extends javax.swing.JPanel {
         for(dtodanhmuc dm : listdm){
             ArrayList<String> submenu = new ArrayList<>();
             
-            int madanhmuc = dm.getMadanhmuc();
-            ArrayList<dtochucnang> listcn = buscn.getlistchucnangbydanhmuc(madanhmuc);
+            int madanhmuc = dm.getMaDanhMuc();
+            ArrayList<dtochucnang> listcn = buscn.getlistChucNangByDanhMuc(madanhmuc);
             
             for(dtochucnang cn: listcn){
-                if(buspq.checkphanquyen(macv, cn.getMachucnang())){
-                    submenu.add(cn.getTenchucnang());
+                if(buspq.checkphanquyen(macv, cn.getMaChucNang())){
+                    submenu.add(cn.getTenChucNang());
                 }
             }
             
             if(!submenu.isEmpty()){
-                addMenu(new ModelMenu(new ImageIcon(getClass().getResource(dm.getIcon())), dm.getTendanhmuc(),  submenu.toArray(String[]::new)));
+                addMenu(new ModelMenu(new ImageIcon(getClass().getResource(dm.getIcon())), dm.getTenDanhMuc(),  submenu.toArray(String[]::new)));
             }
         }
     }

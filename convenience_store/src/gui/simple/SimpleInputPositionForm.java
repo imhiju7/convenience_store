@@ -1,58 +1,114 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package gui.simple;
+
+import bus.buschucvu; // Thêm import cho bus
 import com.formdev.flatlaf.FlatClientProperties;
+import dto.dtochucvu; // Thêm import cho dto
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-/**
- *
- * @author ASUS
- */
-public class SimpleInputPositionForm extends JPanel{
-    public SimpleInputPositionForm() {
+import java.sql.SQLException;
+
+public class SimpleInputPositionForm extends JPanel {
+    public JTextField txtTenChucVu; // Chỉ giữ lại trường tên chức vụ
+    private buschucvu busChucVu; // Khai báo bus
+
+    public SimpleInputPositionForm() throws SQLException {
+        busChucVu = new buschucvu(); // Khởi tạo bus
         init();
     }
 
     private void init() {
         setLayout(new MigLayout("fillx,wrap,insets 5 35 5 35,width 400", "[fill]", ""));
         
-        JTextField txtMaChucVu = new JTextField();
-        JTextField txtTenChucVu = new JTextField();
-        JTextField txtTenChucNang = new JTextField();
+        txtTenChucVu = new JTextField();
 
         // Add components to panel
         createTitle("Thông tin chức vụ");
         
-        add(new JLabel("Mã chức vụ"), "gapy 5 0");
-        add(txtMaChucVu);
-        
+        // Mã chức vụ sẽ được tạo tự động, không cần trường nhập
         add(new JLabel("Tên chức vụ"), "gapy 5 0");
         add(txtTenChucVu);
-        
-        add(new JLabel("Tên chức năng"), "gapy 5 0");
-        add(txtTenChucNang);
 
         // Listener for Enter key to submit form
-        txtTenChucNang.addKeyListener(new KeyAdapter() {
+        txtTenChucVu.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
                 if (e.isControlDown() && e.getKeyChar() == 10) {
                     // Code to handle form submission
-                    System.out.println("Form submitted");
+                    addChucVu();
                 }
             }
         });
     }
+
+    public void addChucVu() {
+        try {
+            String tenChucVu = txtTenChucVu.getText();
+            if (tenChucVu.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Tên chức vụ không được để trống!");
+                return;
+            }
+
+            dtochucvu chucvu = new dtochucvu(0, tenChucVu, 0); // Mã chức vụ sẽ được tạo tự động
+            busChucVu.addchucvu(chucvu); // Gọi phương thức thêm từ bus
+
+            JOptionPane.showMessageDialog(this, "Chức vụ đã được thêm thành công!");
+            txtTenChucVu.setText(""); // Xóa các trường nhập
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi: " + e.getMessage());
+            e.printStackTrace(); // In ra lỗi để kiểm tra
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi không xác định: " + e.getMessage());
+            e.printStackTrace(); // In ra lỗi để kiểm tra
+        }
+    }
+
+    public dtochucvu getChucVu() throws SQLException {
+        buschucvu bus = new buschucvu(); // Khởi tạo bus
+        dtochucvu chucvu = new dtochucvu();
+
+        // Gán mã chức vụ tự động
+        chucvu.setMachucvu(bus.getSoLuongChucVu() + 1); // Tăng tự động
+        chucvu.setTenchucvu(txtTenChucVu.getText().trim()); // Gán tên chức vụ
+
+        // Đối với tên chức năng, bỏ qua nếu không cần thiết
+        // chucvu.setTenChucNang(txtTenChucNang.getText().trim()); // Nếu bạn có trường tên chức năng
+        return chucvu; // Trả về đối tượng dtochucvu
+    }
+
+
 
     private void createTitle(String title) {
         JLabel lb = new JLabel(title);
         lb.putClientProperty(FlatClientProperties.STYLE, "font:+2");
         add(lb, "gapy 5 0");
         add(new JSeparator(), "height 2!,gapy 0 0");
+    }
+     public static void main(String[] args) {
+        // Thiết lập Look and Feel cho giao diện (FlatLaf)
+        try {
+            UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Tạo JFrame và thêm SimpleInputPositionForm vào JFrame
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Chức năng quản lý chức vụ"); // Tiêu đề của cửa sổ
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Đóng chương trình khi tắt cửa sổ
+
+            try {
+                frame.setContentPane(new SimpleInputPositionForm()); // Thêm panel vào JFrame
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            frame.pack(); // Điều chỉnh kích thước JFrame theo kích thước của các thành phần
+            frame.setLocationRelativeTo(null); // Đặt JFrame ở giữa màn hình
+            frame.setVisible(true); // Hiển thị JFrame
+        });
     }
 }
