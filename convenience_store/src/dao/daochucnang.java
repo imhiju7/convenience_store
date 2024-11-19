@@ -157,106 +157,85 @@ public class daochucnang {
         return count; // Trả về số lượng chức năng
     }
 
-    // Lấy tên chức năng theo mã chức năng
-    public ArrayList<dtochucnang> getlistChucNangByDanhMuc() throws SQLException {
-    ArrayList<dtochucnang> listChucNang = new ArrayList<>();
-    Connection con = null;
-    PreparedStatement pst = null;
-    ResultSet rs = null;
+    // Lấy tên chức năng theo mã danh mục
+    public ArrayList<dtochucnang> getlistChucNangByDanhMuc(int madm) throws SQLException {
+        ArrayList<dtochucnang> listChucNang = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
 
-    try {
-        con = connect.connection(); // Kết nối DB
-        String sql = "SELECT c.maChucNang, c.tenChucNang, c.maDanhMuc, d.tenDanhMuc "
-                   + "FROM chucnang c "
-                   + "INNER JOIN danhmuc d ON c.maDanhMuc = d.maDanhMuc "
-                   + "WHERE c.isDelete = 0";  // Lọc các chức năng chưa bị xóa
+        try {
+            con = connect.connection(); // Kết nối DB
+            String sql = "SELECT c.maChucNang, c.tenChucNang, c.maDanhMuc, d.tenDanhMuc "
+                       + "FROM chucnang c "
+                       + "INNER JOIN danhmuc d ON c.maDanhMuc = d.maDanhMuc "
+                       + "WHERE c.isDelete = 0 and c.maDanhMuc = "+madm;  // Lọc các chức năng chưa bị xóa
 
-        pst = con.prepareStatement(sql);
+            pst = con.prepareStatement(sql);
 
-        rs = pst.executeQuery();
+            rs = pst.executeQuery();
 
-        // Lấy dữ liệu từ ResultSet và lưu vào danh sách
-        while (rs.next()) {
-            dtochucnang cn = new dtochucnang(
-                rs.getInt("maChucNang"),
-                rs.getString("tenChucNang"),
-                rs.getInt("maDanhMuc"), // Lấy mã danh mục
-                0 // isDelete không cần thiết nếu bạn không cần sử dụng
-            );
-            listChucNang.add(cn);
+            // Lấy dữ liệu từ ResultSet và lưu vào danh sách
+            while (rs.next()) {
+                dtochucnang cn = new dtochucnang(
+                    rs.getInt("maChucNang"),
+                    rs.getString("tenChucNang"),
+                    rs.getInt("maDanhMuc"), // Lấy mã danh mục
+                    0 // isDelete không cần thiết nếu bạn không cần sử dụng
+                );
+                listChucNang.add(cn);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Đảm bảo đóng kết nối và các đối tượng sau khi sử dụng
+            if (rs != null) {
+                rs.close();
+            }
+            if (pst != null) {
+                pst.close();
+            }
+            if (con != null) {
+                con.close();
+            }
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    } finally {
-        // Đảm bảo đóng kết nối và các đối tượng sau khi sử dụng
-        if (rs != null) {
-            rs.close();
-        }
-        if (pst != null) {
-            pst.close();
-        }
-        if (con != null) {
-            con.close();
-        }
+        return listChucNang;
     }
-    return listChucNang;
-}
 
 
 
     // Hàm lấy tên danh mục từ mã danh mục
-   public String getTenDanhMucByMa(int maDanhMuc) throws SQLException {
-    String tenDanhMuc = null;
-    Connection con = null;
-    PreparedStatement pst = null;
-    ResultSet rs = null;
+    public String getTenDanhMucByMa(int maDanhMuc) throws SQLException {
+        String tenDanhMuc = null;
+        Connection con = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
 
-    try {
-        con = connect.connection();
-        String sql = "SELECT tenDanhMuc FROM danhmuc WHERE maDanhMuc = ?";
-        pst = con.prepareStatement(sql);
-        pst.setInt(1, maDanhMuc); // Đặt mã danh mục vào câu truy vấn
+        try {
+            con = connect.connection();
+            String sql = "SELECT tenDanhMuc FROM danhmuc WHERE maDanhMuc = ?";
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, maDanhMuc); // Đặt mã danh mục vào câu truy vấn
 
-        rs = pst.executeQuery();
-        if (rs.next()) {
-            tenDanhMuc = rs.getString("tenDanhMuc"); // Lấy tên danh mục từ ResultSet
-        } else {
-            System.out.println("Không tìm thấy tên danh mục với mã: " + maDanhMuc); // Debug nếu không có dữ liệu
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                tenDanhMuc = rs.getString("tenDanhMuc"); // Lấy tên danh mục từ ResultSet
+            } else {
+                System.out.println("Không tìm thấy tên danh mục với mã: " + maDanhMuc); // Debug nếu không có dữ liệu
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (pst != null) {
+                pst.close();
+            }
+            if (con != null) {
+                con.close();
+            }
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    } finally {
-        if (rs != null) {
-            rs.close();
-        }
-        if (pst != null) {
-            pst.close();
-        }
-        if (con != null) {
-            con.close();
-        }
+        return tenDanhMuc; // Trả về tên danh mục
     }
-    return tenDanhMuc; // Trả về tên danh mục
-}
-
-    public static void main(String[] args) throws SQLException {
-    daochucnang dao = new daochucnang();
-    ArrayList<dtochucnang> listChucNang = dao.getlistChucNangByDanhMuc();  // Truy vấn tất cả chức năng
-
-    // In ra kết quả mà không có Mã danh mục
-    System.out.println("Mã chức năng | Tên chức năng | Tên danh mục");
-    for (dtochucnang chucNang : listChucNang) {
-        String tenDanhMuc = dao.getTenDanhMucByMa(chucNang.getMaDanhMuc());  // Lấy tên danh mục từ mã danh mục
-        if (tenDanhMuc != null) {
-            System.out.println(chucNang.getMaChucNang() + " | " 
-                               + chucNang.getTenChucNang() + " | " 
-                               + tenDanhMuc);  // In ra tên danh mục
-        } else {
-            System.out.println("Không có tên danh mục cho mã: " + chucNang.getMaDanhMuc());
-        }
-    }
-}
-
-
-
 }

@@ -4,6 +4,7 @@
  */
 package dao;
 import dto.dtoctphieunhap;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -116,6 +117,30 @@ public class daoctphieunhap {
             }
         }
     }
+        public int updatectphieunhap(dtoctphieunhap ctpn){
+        Connection con = connect.connection();
+        String sql = "UPDATE chitietphieunhap set maPhieuNhap= ?,maSanPham = ? ,soLuong= ?, giaNhap= ?, ngayHetHan = ?, ishidden=?,ghiChu = ?,soLuongTonKho = ?,giaBan = ? WHERE maCTPhieuNhap= ?";
+        PreparedStatement pst;
+        int rowaffect = 0;
+        try {
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, ctpn.getMaPhieuNhap());
+            pst.setInt(2, ctpn.getMaSanPham());
+            pst.setInt(3, ctpn.getSoLuong());
+            pst.setDouble(4, ctpn.getGiaNhap());
+            pst.setTimestamp(5, new java.sql.Timestamp (ctpn.getNgayhethan().getTime()));
+            pst.setInt(6,ctpn.getIshidden());
+            pst.setString(7, ctpn.getGhichu());
+            pst.setInt(8, ctpn.getSoluongtonkho());
+            pst.setDouble(9,ctpn.getGiaBan());
+            pst.setInt(10,ctpn.getMaCTPhieuNhap());
+            rowaffect = pst.executeUpdate();
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daoctphieunhap.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rowaffect;
+    }
     public int maxID() {
         int count = 0;
         java.sql.Connection con = connect.connection();
@@ -139,10 +164,35 @@ public class daoctphieunhap {
 
         return count;
     }
-        public static void main(String[] args) {
-        daoctphieunhap dao = new daoctphieunhap();
-        for (dtoctphieunhap pn:dao.getlist()){
-            System.out.println(pn);
+    public ArrayList<dtoctphieunhap> getalllist(){
+        Connection con = connect.connection();
+        String sql = "SELECT * FROM chitietphieunhap WHERE ngayHetHan < NOW() ";
+        PreparedStatement pst;
+        ArrayList<dtoctphieunhap> list = new ArrayList<>();
+        try {
+            pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                dtoctphieunhap ctpn = new dtoctphieunhap();
+                ctpn.setMaCTPhieuNhap(rs.getInt("maCTPhieuNhap"));
+                ctpn.setMaSanPham(rs.getInt("maSanPham"));
+                ctpn.setMaPhieuNhap(rs.getInt("maPhieuNhap"));
+                ctpn.setGiaNhap(rs.getInt("giaNhap"));
+                ctpn.setGiaBan(rs.getInt("giaBan"));
+                ctpn.setSoLuong(rs.getInt("soLuong"));
+                ctpn.setGhichu(rs.getString("ghiChu"));
+                ctpn.setNgayhethan(rs.getDate("ngayHetHan"));
+                ctpn.setSoluongtonkho(rs.getInt("soLuongTonKho"));
+                list.add(ctpn);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(daoctphieunhap.class.getName()).log(Level.SEVERE, null, ex);
         }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daoctphieunhap.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
     }
 }

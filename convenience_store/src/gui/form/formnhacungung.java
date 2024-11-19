@@ -20,8 +20,11 @@ import gui.table.CheckBoxTableHeaderRenderer;
 import gui.table.TableHeaderAlignment;
 import java.awt.Component;
 import java.awt.Font;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -189,11 +192,15 @@ public class formnhacungung extends JPanel{
         option.getLayoutOption().setSize(-1, 1f)
                  .setLocation(Location.TRAILING, Location.TOP)
                  .setAnimateDistance(0.7f, 0);
-        ModalDialog.showModal(this, new SimpleModalBorder(
-                 new SimpleInputSupplierForm(), "Thêm phân quyền", SimpleModalBorder.YES_NO_OPTION,
-                 (controller, action) -> {
-                     controller.close();
-                 }), option);
+        try {
+            ModalDialog.showModal(this, new SimpleModalBorder(
+                    new SimpleInputSupplierForm(), "Thêm phân quyền", SimpleModalBorder.YES_NO_OPTION,
+                    (controller, action) -> {
+                        controller.close();
+                    }), option);
+        } catch (SQLException ex) {
+            Logger.getLogger(formnhacungung.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     public static void createAndShowSupplierGUI() {
     // Tạo JFrame

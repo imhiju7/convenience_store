@@ -4,14 +4,22 @@
  */
 package bus;
 import dao.daocthoadon;
+import dao.daoctphieunhap;
 import dto.dtocthoadon;
+import dto.dtoctphieunhap;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author giavi
  */
 public class buscthoadon {
     private daocthoadon daoCTHD = new daocthoadon();
+    private daoctphieunhap daoCTPN = new daoctphieunhap();
     public ArrayList <dtocthoadon> dscthd;
     
     public buscthoadon() {
@@ -29,14 +37,37 @@ public class buscthoadon {
     public void add (dtocthoadon detail) {
         daoCTHD.add(detail);
     }
-    
-    public static void main(String[] args) {
-        // Create an instance of the BUS class
-        buscthoadon bus = new buscthoadon();
-
-        // Print each dtocthoadon object in the list
-        for (dtocthoadon detail : bus.dscthd) {
-            System.out.println(detail);
+    public dtoctphieunhap getspganhh(int masp){
+        ArrayList<dtoctphieunhap> list = daoCTPN.getalllist();
+        dtoctphieunhap sp= new dtoctphieunhap();
+        int day = 100000;
+        for(dtoctphieunhap i : list){
+            if(i.getMaSanPham() == masp){
+                int han = isganhh(i.getNgayhethan().toString());
+                if(han < day){
+                    day = han;
+                    sp = i;
+                }
+            }
         }
+        return sp;
+    }
+        public int isganhh(String birthday) {
+        // Định dạng ngày tháng từ chuỗi
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate birthDate = LocalDate.parse(birthday, formatter);
+        // Tính tuổi hiện tại
+        LocalDate currentDate = LocalDate.now();
+        Period age = Period.between(currentDate,birthDate);
+        return age.getDays();
+    }
+    public double gettongtien(ArrayList<dtocthoadon> spOrder){
+        double tongtien = 0;
+        for (dtocthoadon cthd : spOrder) {
+            dtoctphieunhap ctpn = getspganhh(cthd.getMaSanPham());
+            double giaban = ctpn.getGiaBan();
+            tongtien+=giaban*cthd.getSoLuong();
+        }
+        return tongtien;
     }
 }

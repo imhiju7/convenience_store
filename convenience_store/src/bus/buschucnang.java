@@ -22,7 +22,7 @@ public class buschucnang {
 
     // Lấy danh sách chức năng theo mã danh mục và hiển thị tên danh mục
     public ArrayList<dtochucnang> getlistChucNangByDanhMuc(int maDanhMuc) throws SQLException {
-        return daoCN.getlistChucNangByDanhMuc(); // Gọi phương thức từ DAO để lấy danh sách theo mã danh mục
+        return daoCN.getlistChucNangByDanhMuc(maDanhMuc); // Gọi phương thức từ DAO để lấy danh sách theo mã danh mục
     }
 
     // Thêm mới chức năng

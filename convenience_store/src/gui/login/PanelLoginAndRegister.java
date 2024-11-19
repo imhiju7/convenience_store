@@ -20,6 +20,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -284,7 +285,11 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
             return;
         }
         int manv = bustk.getmanhanvien(tendangnhap);
-        new Guimain(manv).setVisible(true);
+        try {
+            new Guimain(manv).setVisible(true);
+        } catch (ParseException ex) {
+            Logger.getLogger(PanelLoginAndRegister.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

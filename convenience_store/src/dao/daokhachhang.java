@@ -51,6 +51,29 @@ public class daokhachhang {
         }
         return list;
     }
+    
+    public int updatediemtichluy(dtokhachhang kh){
+        Connection con = connect.connection();
+        String sql = "UPDATE khachhang set diemTichLuy= ?, maUuDai = ? WHERE maKhachHang= ?";
+        PreparedStatement pst;
+        int rowaffect = 0;
+        try {
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, kh.getDiemTichLuy());
+            pst.setInt(2, kh.getMaUuDai());
+            pst.setInt(3, kh.getMaKhachHang());
+            rowaffect = pst.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(daokhachhang.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daokhachhang.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rowaffect;
+    }
+    
     public int getSoLuongKH() {
         int result=0;
         String query = """
@@ -68,16 +91,55 @@ public class daokhachhang {
         }
         return result;
     }
-    public static void main(String[] args) {
-        // Create an instance of the DAO class
-        daokhachhang dao = new daokhachhang();
-
-        // Retrieve the list of details
-        ArrayList<dtokhachhang> list = dao.getlist();
-
-        // Print each dtokhachhang object in the list
-        for (dtokhachhang detail : list) {
-            System.out.println(detail);
+    
+    public dtokhachhang getkhbyphone(String phone){
+        java.sql.Connection con = connect.connection();
+        String sql = "SELECT * FROM khachhang WHERE SDT = ?";
+        PreparedStatement pst;
+        dtokhachhang kh = new dtokhachhang();
+        try {
+            pst = con.prepareStatement(sql);
+            pst.setString(1, phone);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                kh.setMaKhachHang(rs.getInt("maKhachHang"));
+                kh.setTenKhachHang(rs.getString("tenKhachHang"));
+                kh.setSDT(rs.getString("SDT"));
+                kh.setDiemTichLuy(rs.getInt("diemTichLuy"));
+                kh.setMaUuDai(rs.getInt("maUuDai"));
+            }
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daokhachhang.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return kh;
     }
+    
+    public boolean checkphone(String phone){
+        java.sql.Connection con = connect.connection();
+        int i = 0;
+        boolean key = false;
+        String sql = "SELECT * FROM khachhang where SDT = ? ";
+        PreparedStatement pst;
+        try {
+            pst = con.prepareStatement(sql);
+            pst.setString(1, phone);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                i++;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(daokhachhang.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daokhachhang.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(i > 0 ){
+            key = false;
+        }
+        else key = true;
+        return key;
+    }    
 }

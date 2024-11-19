@@ -34,10 +34,13 @@ public class buskhachhang {
     public int getSoLuongKH () {
         return dao.getSoLuongKH();
     }
-    public static void main(String[] args) {
-        // Create an instance of the BUS class
-        buskhachhang bus = new buskhachhang();
-        System.out.print(bus.getkhachhangbyid(4));
+    public int updatediemtichluy(dtokhachhang i){
+        return dao.updatediemtichluy(i);
     }
-    
+    public dtokhachhang getkhbyphone(String phone){
+        return dao.getkhbyphone(phone);
+    }
+    public boolean checkphone(String phone){
+        return dao.checkphone(phone);
+    } 
 }
