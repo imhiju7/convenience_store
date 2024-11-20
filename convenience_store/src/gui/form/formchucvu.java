@@ -595,7 +595,7 @@ public class formchucvu extends javax.swing.JPanel {
         buschucnang bus = new buschucnang();  // Tạo đối tượng bus
         for (dtochucnang cn : bus.getList()) {  // Giả sử bus.getList() trả về danh sách các chức năng
             // Lấy tên danh mục từ mã danh mục
-            String tenDanhMuc = bus.getTenChucNang(cn.getMaDanhMuc());  // Phương thức này cần trả về tên danh mục từ mã danh mục
+            String tenDanhMuc = bus.getTenDanhMuc(cn.getMaDanhMuc());  // Phương thức này cần trả về tên danh mục từ mã danh mục
             chucNangModel.addRow(new Object[]{false, cn.getMaChucNang(), cn.getTenChucNang(), tenDanhMuc});
         }
         // Tạo bảng với model
@@ -682,6 +682,7 @@ public class formchucvu extends javax.swing.JPanel {
 
         // Xử lý Sửa
         cmdEdit.addActionListener(e -> {
+            JTable chucNangTable = new JTable(chucNangModel);
             int row = chucNangTable.getSelectedRow(); // Lấy dòng được chọn
             if (row == -1) {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn một chức năng để chỉnh sửa.");
@@ -701,6 +702,7 @@ public class formchucvu extends javax.swing.JPanel {
 
         // Xử lý Xóa
         cmdDelete.addActionListener(e -> {
+              JTable chucNangTable = new JTable(chucNangModel);
             DefaultTableModel model = (DefaultTableModel) chucNangTable.getModel();
             int rowCount = chucNangTable.getRowCount();
             // Xác nhận xóa
@@ -876,7 +878,8 @@ public class formchucvu extends javax.swing.JPanel {
         }
     }
    public void loadDataToFunctionTable() throws SQLException {
-    // Xóa hết các hàng cũ trong bảng chức năng
+  
+    JTable chucNangTable = new JTable(chucNangModel);
     DefaultTableModel model = (DefaultTableModel) chucNangTable.getModel();
     model.setRowCount(0);
 
@@ -887,7 +890,7 @@ public class formchucvu extends javax.swing.JPanel {
     // Duyệt qua danh sách chức năng và thêm vào bảng
     for (dtochucnang chucNang : functionList) {
         // Lấy tên danh mục từ mã danh mục (hoặc có thể lấy dữ liệu này từ một đối tượng busDanhMuc nếu cần)
-        String tenDanhMuc = busChucNang.getTenChucNang(chucNang.getMaDanhMuc());
+        String tenDanhMuc = busChucNang.getTenDanhMuc(chucNang.getMaDanhMuc());
 
         // Thêm dòng mới vào bảng
         model.addRow(new Object[]{false, chucNang.getMaChucNang(), chucNang.getTenChucNang(), tenDanhMuc});
