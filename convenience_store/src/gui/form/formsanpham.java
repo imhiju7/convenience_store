@@ -123,13 +123,7 @@ public class formsanpham extends Form {
     public void formInit() {
         busSP = new bussanpham();
         panelCard.removeAll();
-
-        try {
-            list_SP = busSP.list(); // Fetch list of products
-        } catch (SQLException ex) {
-            Logger.getLogger(formmenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        list_SP = busSP.list(); // Fetch list of products
         for (dtosanpham sp : list_SP) {
             try {
                 list_PN = busSP.listPN(sp.getMaNCC()); // Get list of purchase orders for each product's supplier
@@ -521,20 +515,13 @@ public class formsanpham extends Form {
 
         JButton cmdDelete = new JButton("Xoá");
         
-        
-        
-        
-        
+
         btnSearch.addActionListener(e -> {
             boolean found = false; 
             panelCard.removeAll(); // Xóa các card cũ khỏi panelCard
             String searchText = txtSearch.getText().toLowerCase().trim(); // Lấy chuỗi tìm kiếm và loại bỏ khoảng trắng thừa
             String tenmpl = (String) comboMaPL.getSelectedItem();
-            try {
-                list_SP = busSP.list();
-            } catch (SQLException ex) {
-                Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            list_SP = busSP.list();
             if(!tenmpl.equals("Mặc định")){
                 ArrayList<dtosanpham> list_sp_tmp = new ArrayList<>();
                 for(dtosanpham sp : list_SP){

@@ -121,13 +121,16 @@ public class dtohoadon {
     }
 
     public void setTenkhachhang(int ma) {
-        buskhachhang bus = new buskhachhang();
-        if(bus.getkhachhangbyid(ma) == null) {
-            this.tenkhachhang ="";
-            return;
-        }
-        this.tenkhachhang = bus.getkhachhangbyid(ma).getTenKhachHang();
+    buskhachhang bus = new buskhachhang();
+    dtokhachhang khachHang = bus.getKhachHangById(ma);
+    
+    if (khachHang == null) {
+        this.tenkhachhang = "";
+    } else {
+        this.tenkhachhang = khachHang.getTenKhachHang();
     }
+}
+
 
     public void setTennhanvien(int manhanvien) throws SQLException {
         busnhanvien busnv = new busnhanvien();

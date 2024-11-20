@@ -91,11 +91,7 @@ public class formmenu extends Form {
         busSP = new bussanpham();
         panelCard.removeAll();
 
-        try {
-            list_Sp = busSP.list(); 
-        } catch (SQLException ex) {
-            Logger.getLogger(formmenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        list_Sp = busSP.list();
 
         for (dtosanpham sp : list_Sp) {
             try {
@@ -446,12 +442,9 @@ public class formmenu extends Form {
             panelCard.removeAll(); // Xóa các card cũ khỏi panelCard
             String searchText = txtSearch.getText().toLowerCase().trim(); // Lấy chuỗi tìm kiếm và loại bỏ khoảng trắng thừa
             String tenmpl = (String) comboMaPL.getSelectedItem();
-            boolean found = false; 
-            try {
-                list_Sp = busSP.list();
-            } catch (SQLException ex) {
-                Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            boolean found = false;
+
+            list_Sp = busSP.list();
             if(!tenmpl.equals("Mặc định")){
                 ArrayList<dtosanpham> list_sp_tmp = new ArrayList<>();
                 for(dtosanpham sp : list_Sp){

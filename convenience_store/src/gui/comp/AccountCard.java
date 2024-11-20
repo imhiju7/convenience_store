@@ -75,7 +75,7 @@ public class AccountCard extends JPanel {
         if (defaultIcon) {
             return new ImageIcon(System.getProperty("user.dir") + "/src/source/image/nhanvien/" + name);
         } else {
-            AvatarIcon avatarIcon = new AvatarIcon(getClass().getResource("/src/source/image/nhanvien/" + name), 55, 55, 3f);
+            AvatarIcon avatarIcon = new AvatarIcon(getClass().getResource("/source/image/nhanvien/" + name), 55, 55, 3f);
             avatarIcon.setType(AvatarIcon.Type.MASK_SQUIRCLE);
             return avatarIcon;
         }

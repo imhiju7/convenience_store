@@ -45,13 +45,28 @@ public class busctphieunhap {
     public int maxID(){
         return daoHD.maxID();
     }
+    public void needToFillList(int maNCC) {
+        daoHD = new daoctphieunhap();
+        dsctpn =  daoHD.needToFillList(maNCC);
+    }
+    
     public static void main(String[] args) {
         // Create an instance of the BUS class
         busctphieunhap bus = new busctphieunhap();
             System.out.println(bus.maxID());
+           bus.needToFillList();
         // Print each dtoctphieunhap object in the list
         for (dtoctphieunhap HD : bus.dsctpn) {
             System.out.println(HD);
         }
+    }
+
+    public void needToFillList() {
+        daoHD = new daoctphieunhap();
+        dsctpn =  daoHD.needToFillList();
+    }
+
+    public void create(dtoctphieunhap ct) {
+        daoHD.create(ct);
     }
 }

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dto;
 
 /**
@@ -9,11 +5,22 @@ package dto;
  * @author giavi
  */
 public class dtophanloai {
-     public dtophanloai(int maPhanLoai, String tenPhanLoai) {
+
+    private int maPhanLoai;
+    private String tenPhanLoai;
+    private int isDelete; // Thêm trường isDelete
+
+    // Constructor với tham số isDelete
+    public dtophanloai(int maPhanLoai, String tenPhanLoai, int isDelete) {
         this.maPhanLoai = maPhanLoai;
         this.tenPhanLoai = tenPhanLoai;
+        this.isDelete = isDelete; // Khởi tạo isDelete
     }
-    public dtophanloai(){}
+
+    // Constructor mặc định
+    public dtophanloai() {}
+
+    // Getter và Setter cho maPhanLoai
     public int getMaPhanLoai() {
         return maPhanLoai;
     }
@@ -22,6 +29,7 @@ public class dtophanloai {
         this.maPhanLoai = maPhanLoai;
     }
 
+    // Getter và Setter cho tenPhanLoai
     public String getTenPhanLoai() {
         return tenPhanLoai;
     }
@@ -29,6 +37,13 @@ public class dtophanloai {
     public void setTenPhanLoai(String tenPhanLoai) {
         this.tenPhanLoai = tenPhanLoai;
     }
-    private int maPhanLoai;
-    private String tenPhanLoai;
+
+    // Getter và Setter cho isDelete
+    public int getIsDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(int isDelete) {
+        this.isDelete = isDelete;
+    }
 }
