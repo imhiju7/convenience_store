@@ -6,14 +6,19 @@ import java.awt.*;
 import java.util.ArrayList;
 import dto.dtokhachhang;
 import bus.buskhachhang;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class formkhachhang extends JPanel {
 
     private JTable table;
     private DefaultTableModel model;
     private JTextField txtMaKH, txtSDT, txtTenKH, txtDiemTichLuy, txtMaUuDai;
-    private JButton btnThem, btnSua, btnXoa, btnHuy;
-    
+    private JButton btnThem, btnSua, btnHuy;
+    private JTextField txtTimKiem;
+    private JComboBox<String> cbTimKiem;
+
     public formkhachhang() {
         initUI();
         loadDataToTable();
@@ -25,7 +30,8 @@ public class formkhachhang extends JPanel {
         model = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-            return false;            }
+                return false;
+            }
         };
         table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -56,38 +62,103 @@ public class formkhachhang extends JPanel {
         txtMaUuDai = new JTextField();
         panelDetails.add(txtMaUuDai);
 
-        // Panel for buttons
-        JPanel panelButtons = createButtonPanel();
+        // Panel for buttons and search
+        JPanel panelTop = createTopPanel();
 
+        // Set layout to BorderLayout
         setLayout(new BorderLayout());
+
+        // Add panel at the top
+        add(panelTop, BorderLayout.NORTH);
+
+        // Add table and details panels
         add(scrollPane, BorderLayout.CENTER);
         add(panelDetails, BorderLayout.SOUTH);
-        add(panelButtons, BorderLayout.NORTH);
     }
 
-    private JPanel createButtonPanel() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        panel.setPreferredSize(new Dimension(100, 40));  // Adjust height of button panel
+    private JPanel createTopPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
 
+        // Search field and combo box
+        txtTimKiem = new JTextField(20);
+        cbTimKiem = new JComboBox<>(new String[]{"Mã KH", "Tên KH", "SĐT"});
+        JButton btnTimKiem = new JButton("Tìm kiếm");
+        btnTimKiem.addActionListener(e -> onSearchCustomer());
+
+        // Action buttons
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
-        btnXoa = new JButton("Xóa");
         btnHuy = new JButton("Reset");
 
         // Set button size
         btnThem.setPreferredSize(new Dimension(70, 30));
         btnSua.setPreferredSize(new Dimension(70, 30));
-        btnXoa.setPreferredSize(new Dimension(70, 30));
         btnHuy.setPreferredSize(new Dimension(70, 30));
 
-        // Add buttons to panel
+        // Add components to panel
+        panel.add(new JLabel("Tìm kiếm:"));
+        panel.add(txtTimKiem);
+        panel.add(cbTimKiem);
+        panel.add(btnTimKiem);
         panel.add(btnThem);
         panel.add(btnSua);
-        panel.add(btnXoa);
         panel.add(btnHuy);
 
         addEventHandlers();  // Attach event handlers
+
         return panel;
+    }
+
+    private void onSearchCustomer() {
+        String keyword = txtTimKiem.getText().trim();
+        String criteria = cbTimKiem.getSelectedItem().toString();
+
+        if (keyword.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập từ khóa tìm kiếm!");
+            return;
+        }
+
+        buskhachhang busKH = new buskhachhang();
+        ArrayList<dtokhachhang> searchResults = new ArrayList<>();
+
+        switch (criteria) {
+            case "Mã KH":
+                try {
+                    int maKH = Integer.parseInt(keyword);
+                    dtokhachhang kh = busKH.getKhachHangById(maKH);
+                    if (kh != null) {
+                        searchResults.add(kh);
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Mã khách hàng phải là số!");
+                    return;
+                }
+                break;
+
+            case "Tên KH":
+                searchResults = busKH.searchKhachHangByName(keyword);
+                break;
+
+            case "SĐT":
+                searchResults = busKH.searchKhachHangBySDT(keyword);
+                break;
+        }
+
+        // Hiển thị kết quả tìm kiếm
+        model.setRowCount(0);
+        for (dtokhachhang kh : searchResults) {
+            model.addRow(new Object[]{
+                kh.getMaKhachHang(),
+                kh.getSDT(),
+                kh.getTenKhachHang(),
+                kh.getDiemTichLuy(),
+                kh.getMaUudai()
+            });
+        }
+
+        if (searchResults.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng!");
+        }
     }
 
     private void loadDataToTable() {
@@ -96,7 +167,7 @@ public class formkhachhang extends JPanel {
         ArrayList<dtokhachhang> listKH = busKH.getAllKhachHang();
 
         for (dtokhachhang kh : listKH) {
-            model.addRow(new Object[] {
+            model.addRow(new Object[]{
                 kh.getMaKhachHang(),
                 kh.getSDT(),
                 kh.getTenKhachHang(),
@@ -107,24 +178,30 @@ public class formkhachhang extends JPanel {
     }
 
     private void addEventHandlers() {
-        // Table row selection handler
-        table.getSelectionModel().addListSelectionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if (selectedRow >= 0) {
-                txtMaKH.setText(model.getValueAt(selectedRow, 0).toString());
-                txtSDT.setText(model.getValueAt(selectedRow, 1).toString());
-                txtTenKH.setText(model.getValueAt(selectedRow, 2).toString());
-                txtDiemTichLuy.setText(model.getValueAt(selectedRow, 3).toString());
-                txtMaUuDai.setText(model.getValueAt(selectedRow, 4).toString());
-            }
-        });
+    // Table row selection handler
+    table.getSelectionModel().addListSelectionListener(e -> {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow >= 0) {
+            txtMaKH.setText(model.getValueAt(selectedRow, 0).toString());
+            txtSDT.setText(model.getValueAt(selectedRow, 1).toString());
+            txtTenKH.setText(model.getValueAt(selectedRow, 2).toString());
+            txtDiemTichLuy.setText(model.getValueAt(selectedRow, 3).toString());
+            txtMaUuDai.setText(model.getValueAt(selectedRow, 4).toString());
+        }
+    });
 
-        // Button handlers
-        btnThem.addActionListener(e -> onAddCustomer());
-        btnSua.addActionListener(e -> onEditCustomer());
-        btnXoa.addActionListener(e -> onDeleteCustomer());
-        btnHuy.addActionListener(e -> clearForm());
-    }
+    // Button handlers
+    btnThem.addActionListener(e -> onAddCustomer());
+    btnSua.addActionListener(e -> {
+        try {
+            onEditCustomer();
+        } catch (SQLException ex) {
+            Logger.getLogger(formkhachhang.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    });
+    btnHuy.addActionListener(e -> onReset());  // Gọi onReset khi nhấn Hủy
+}
+
 
   private void onAddCustomer() {
     // Lấy thông tin từ các trường nhập liệu
@@ -184,7 +261,7 @@ public class formkhachhang extends JPanel {
         JOptionPane.showMessageDialog(this, "Điểm tích lũy và Mã ưu đãi phải là số!");
     }
 }
-private void onEditCustomer() {
+private void onEditCustomer() throws SQLException {
     try {
         // Lấy thông tin từ các trường nhập liệu
         int maKH = Integer.parseInt(txtMaKH.getText());
@@ -246,31 +323,31 @@ private void onEditCustomer() {
 }
 
 
-    private void onDeleteCustomer() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow >= 0) {
-            int confirmation = JOptionPane.showConfirmDialog(this,
-                    "Bạn chắc chắn muốn xóa khách hàng này?", 
-                    "Xác nhận xóa", 
-                    JOptionPane.YES_NO_OPTION);
-
-            if (confirmation == JOptionPane.YES_OPTION) {
-                int maKH = Integer.parseInt(txtMaKH.getText());
-
-                buskhachhang busKH = new buskhachhang();
-                boolean result = busKH.deleteKhachHang(maKH);
-
-                if (result) {
-                    model.removeRow(selectedRow);
-                    JOptionPane.showMessageDialog(this, "Xóa khách hàng thành công!");
-                } else {
-                    JOptionPane.showMessageDialog(this, "Xóa khách hàng thất bại!");
-                }
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn khách hàng cần xóa!");
-        }
-    }
+//    private void onDeleteCustomer() {
+//        int selectedRow = table.getSelectedRow();
+//        if (selectedRow >= 0) {
+//            int confirmation = JOptionPane.showConfirmDialog(this,
+//                    "Bạn chắc chắn muốn xóa khách hàng này?", 
+//                    "Xác nhận xóa", 
+//                    JOptionPane.YES_NO_OPTION);
+//
+//            if (confirmation == JOptionPane.YES_OPTION) {
+//                int maKH = Integer.parseInt(txtMaKH.getText());
+//
+//                buskhachhang busKH = new buskhachhang();
+//                boolean result = busKH.deleteKhachHang(maKH);
+//
+//                if (result) {
+//                    model.removeRow(selectedRow);
+//                    JOptionPane.showMessageDialog(this, "Xóa khách hàng thành công!");
+//                } else {
+//                    JOptionPane.showMessageDialog(this, "Xóa khách hàng thất bại!");
+//                }
+//            }
+//        } else {
+//            JOptionPane.showMessageDialog(this, "Vui lòng chọn khách hàng cần xóa!");
+//        }
+//    }
 
     private int generateNewCustomerCode() {
         buskhachhang busKH = new buskhachhang();
@@ -278,15 +355,24 @@ private void onEditCustomer() {
         return newCustomerCode;
     }
 
-    private void clearForm() {
-        txtMaKH.setText("");
-        txtSDT.setText("");
-        txtTenKH.setText("");
-        txtDiemTichLuy.setText("");
-        txtMaUuDai.setText("");
-        table.clearSelection();
-//        enableEditing(false);
-    }
+   // Thêm vào hàm clearForm() để reset các trường tìm kiếm và bảng
+private void clearForm() {
+    txtMaKH.setText("");
+    txtSDT.setText("");
+    txtTenKH.setText("");
+    txtDiemTichLuy.setText("");
+    txtMaUuDai.setText("");
+    txtTimKiem.setText("");  // Reset ô tìm kiếm
+    cbTimKiem.setSelectedIndex(0);  // Đặt lại combo box về giá trị mặc định (Mã KH)
+    table.clearSelection();  // Xóa lựa chọn bảng
+    loadDataToTable();  // Hiển thị lại toàn bộ dữ liệu trong bảng
+}
+
+// Thêm một hàm xử lý sự kiện cho nút Reset
+private void onReset() {
+    clearForm();  // Gọi clearForm để reset các trường và bảng
+}
+
 
     private void enableEditing(boolean enable) {
         txtSDT.setEnabled(enable);
