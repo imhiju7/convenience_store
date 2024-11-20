@@ -128,7 +128,7 @@ public class formhopdong extends javax.swing.JPanel {
                 "background:$Table.background;");
 
         // create title
-        JLabel title = new JLabel("Danh sách hợp đồng", SwingConstants.CENTER);
+        JLabel title = new JLabel("Danh sách hợp đồng");
         title.putClientProperty(FlatClientProperties.STYLE, "font:bold +2");
         panel.add(title, "align center, gapx 20");
 

@@ -17,9 +17,9 @@ public class connect {
     }
     
     public static Connection connection(){
-        String url = "jdbc:mysql://127.0.0.1:3306/qlcuahangtienloi"; // tao database trong mysql ten qlcuahangtienloi
+        String url = "jdbc:mysql://localhost/qlcuahang"; // tao database trong mysql ten qlcuahangtienloi
         String username = "root";
-        String password = "anhtuan123"; // password tuy moi nguoi dat cho cai connect trong mysql
+        String password = "HoaiNam3001"; // password tuy moi nguoi dat cho cai connect trong mysql
         Connection con = null;
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -27,5 +27,12 @@ public class connect {
         }catch(ClassNotFoundException | SQLException e){
         }
         return con;
+    }
+    
+    public static void main(String[] args) {
+        Connection con = connection();
+        if(con!=null){
+            System.out.println("dao.connect.main()");
+        }
     }
 }

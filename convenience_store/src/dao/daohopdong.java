@@ -44,30 +44,30 @@ public class daohopdong {
     }
     
     
-    public ArrayList<dtohopdong> getlist(){
-        ArrayList<dtohopdong> list = new ArrayList<>();
-        try (java.sql.Connection con = connect.connection()) {
-            String sql = "select * from hopdonglaodong where isDelete=0 ";
-            PreparedStatement pst = con.prepareStatement(sql);
-            ResultSet rs = pst.executeQuery();
-            while(rs.next()){
-                int mahd = rs.getInt("mahopdong");
-                String tungay = rs.getDate("tungay")+"";
-                String denngay = rs.getDate("denngay")+"";
-                float luongcb = rs.getFloat("luongcoban");
-                int manv = rs.getInt("maNhanVien");
-                int isDelete = rs.getInt("isDelete");
-                dtohopdong hd = new dtohopdong(mahd, tungay, denngay, luongcb, manv, isDelete);
-                list.add(hd);
+        public ArrayList<dtohopdong> getlist(){
+            ArrayList<dtohopdong> list = new ArrayList<>();
+            try (java.sql.Connection con = connect.connection()) {
+                String sql = "select * from hopdonglaodong where isDelete=0 ";
+                PreparedStatement pst = con.prepareStatement(sql);
+                ResultSet rs = pst.executeQuery();
+                while(rs.next()){
+                    int mahd = rs.getInt("mahopdong");
+                    String tungay = rs.getDate("tungay")+"";
+                    String denngay = rs.getDate("denngay")+"";
+                    float luongcb = rs.getFloat("luongcoban");
+                    int manv = rs.getInt("maNhanVien");
+                    int isDelete = rs.getInt("isDelete");
+                    dtohopdong hd = new dtohopdong(mahd, tungay, denngay, luongcb, manv, isDelete);
+                    list.add(hd);
+                }
             }
+            catch(SQLException e){
+                e.printStackTrace();
+            }
+            return list;
         }
-        catch(SQLException e){
-            e.printStackTrace();
-        }
-        return list;
-    }
-    
-    
+
+
     public ArrayList<dtohopdong> getlistConditon(String columnName, String conditonValue){
         ArrayList<dtohopdong> list = new ArrayList<>();
         try (java.sql.Connection con = connect.connection()) {
@@ -172,9 +172,8 @@ public class daohopdong {
 
         try (java.sql.Connection con = connect.connection();
             PreparedStatement pst = con.prepareStatement(sql)) {
-
             pst.setString(1, hd.getTuNgay());
-            pst.setString(2, hd.denNgay);
+            pst.setString(2, hd.getDenNgay());
             pst.setFloat(3,hd.getLuongCoBan());
             pst.setInt(4,hd.getMaNV());
             pst.setInt(5,hd.getMaHopDong());
@@ -191,7 +190,10 @@ public class daohopdong {
     
     
     public static void main(String[] args){
-        dtohopdong hd = new dtohopdong(13, "2022-01-01", "2023-02-02", 123, 6);
-        System.out.println(new daohopdong().Update(hd));
+        
+        ArrayList<dtohopdong> list = new daohopdong().getlistConditon("tungay", "2024-01-09 ");
+        for(dtohopdong hd : list){
+            System.out.println(hd.toString());
+        }
     }
 }

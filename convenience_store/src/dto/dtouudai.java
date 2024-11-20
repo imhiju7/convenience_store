@@ -9,45 +9,57 @@ package dto;
  * @author giavi
  */
 public class dtouudai {
-    public int getMaUuDai() {
-        return maUuDai;
+   private int maUuDai;
+   private int mocUuDai;
+   private int tiLeGiam;
+   private int isDelete;
+
+    public dtouudai() {
     }
 
-    public void setMaUuDai(int maUuDai) {
+    public dtouudai(int maUuDai, int mocUuDai, int tiLeGiam, int isDelete) {
         this.maUuDai = maUuDai;
+        this.mocUuDai = mocUuDai;
+        this.tiLeGiam = tiLeGiam;
+        this.isDelete = isDelete;
+    }
+
+    public int getMaUuDai() {
+        return maUuDai;
     }
 
     public int getMocUuDai() {
         return mocUuDai;
     }
 
-    public void setMocUuDai(int mocUuDai) {
-        this.mocUuDai = mocUuDai;
-    }
-
     public int getTiLeGiam() {
         return tiLeGiam;
+    }
+
+    public int getIsDelete() {
+        return isDelete;
+    }
+
+    public void setMaUuDai(int maUuDai) {
+        this.maUuDai = maUuDai;
+    }
+
+    public void setMocUuDai(int mocUuDai) {
+        this.mocUuDai = mocUuDai;
     }
 
     public void setTiLeGiam(int tiLeGiam) {
         this.tiLeGiam = tiLeGiam;
     }
-    public dtouudai(){}
-    public dtouudai(int maUuDai, int mocUuDai, int tiLeGiam,int isHidden) {
-        this.maUuDai = maUuDai;
-        this.mocUuDai = mocUuDai;
-        this.tiLeGiam = tiLeGiam;
-    }
-    private int maUuDai;
-    private int mocUuDai;
-    private int tiLeGiam;
 
-    public int getIsHidden() {
-        return isHidden;
+    public void setIsDelete(int isDelete) {
+        this.isDelete = isDelete;
     }
 
-    public void setIsHidden(int isHidden) {
-        this.isHidden = isHidden;
+    @Override
+    public String toString() {
+        return "dtouudai{" + "maUuDai=" + maUuDai + ", mocUuDai=" + mocUuDai + ", tiLeGiam=" + tiLeGiam + ", isDelete=" + isDelete + '}';
     }
-    private int isHidden;
+   
+    
 }
