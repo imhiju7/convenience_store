@@ -132,6 +132,52 @@ public class daouudai {
         return list;
     }
     
+    
+    public dtouudai getud(dtouudai i){
+        Connection con = connect.connection();
+        String sql = "SELECT * FROM uudai WHERE maUuDai = ?";
+        PreparedStatement pst;
+        dtouudai ud = new dtouudai();
+        try {
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, i.getMaUuDai());
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                ud.setMaUuDai(rs.getInt("maUuDai"));
+                ud.setMocUuDai(rs.getInt("mocUuDai"));
+                ud.setTiLeGiam(rs.getInt("tiLeGiam"));
+                ud.setIsDelete(rs.getInt("isDelete"));
+            }
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daouudai.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ud;
+    }
+    public ArrayList<dtouudai> getlist(){
+        Connection con = connect.connection();
+        String sql = "SELECT * FROM uudai WHERE isDelete = 0";
+        PreparedStatement pst;
+        ArrayList<dtouudai> list = new ArrayList<>();
+        try {
+            pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                dtouudai ud = new dtouudai();
+                ud.setMaUuDai(rs.getInt("maUuDai"));
+                ud.setMocUuDai(rs.getInt("mocUuDai"));
+                ud.setTiLeGiam(rs.getInt("tiLeGiam"));
+                ud.setIsDelete(rs.getInt("isDelete"));
+                list.add(ud);
+            }
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daouudai.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Collections.sort(list, (dtouudai person1, dtouudai person2) -> Integer.compare(person1.getMocUuDai(), person2.getMocUuDai()));
+        return list;
+    }
+    
     public static void main(String[] args) {
         new daouudai().Update(new dtouudai(12,1200,12,0));
     }

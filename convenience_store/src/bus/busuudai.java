@@ -37,4 +37,21 @@ public class busuudai {
     public int getMaxMaUuDai(){
         return daoUuDai.getMaxMaUuDai();
     }
+    
+    public dtouudai getud(dtouudai i){
+        return daoUuDai.getud(i);
+    }
+    public dtouudai setudbydiem(int diem){
+        ArrayList<dtouudai> list = daoUuDai.getlist();
+        dtouudai ud = new dtouudai();
+        for(dtouudai i : list){
+            if(diem > i.getMocUuDai()){
+                ud = i;
+            }
+            else{
+                break;
+            }
+        }
+        return ud;
+    }
 }

@@ -143,7 +143,7 @@ public class formuudaivakhuyenmai extends javax.swing.JPanel {
 
         // create table model
         columnsKM = new Object[]{"Mã khuyến mãi", "Tên khuyến mãi", "Ngày bắt đầu", "Ngày hết hạn", "Số lượng", "Phần trăm giảm", "Số lượng đã dùng"};
-        modelKM = setDataTableKhuyenMai(columnsKM, buskm.getList());
+        modelKM = setDataTableKhuyenMai(columnsKM, buskm.getlist());
 
         // create table and assign to generalTable
         generalTableKM = new JTable(modelKM);
@@ -209,7 +209,7 @@ public class formuudaivakhuyenmai extends javax.swing.JPanel {
                 
                 if(txtSearch.getText().equals("")){
                     modelKM.setRowCount(0);
-                    modelKM = setDataTableKhuyenMai(columnsKM, buskm.getList());
+                    modelKM = setDataTableKhuyenMai(columnsKM, buskm.getlist());
                     generalTableKM.setModel(modelKM);
                 }
             }
@@ -308,7 +308,7 @@ public class formuudaivakhuyenmai extends javax.swing.JPanel {
         JButton btnReset = new JButton("Reset");
         btnReset.addActionListener(e->{
             modelKM.setRowCount(0);
-            modelKM = setDataTableKhuyenMai(columnsKM, buskm.getList());
+            modelKM = setDataTableKhuyenMai(columnsKM, buskm.getlist());
             generalTableKM.setModel(modelKM);
             txtSearch.setText("");
         });
@@ -543,7 +543,7 @@ public class formuudaivakhuyenmai extends javax.swing.JPanel {
                     JOptionPane.showMessageDialog(null, "Vui lòng nhập tên khuyến mãi!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     return;
                 }else if(checkForm.equals("Thêm khuyến mãi")){
-                    for(dtokhuyenmai tmp : buskm.getList()){
+                    for(dtokhuyenmai tmp : buskm.getlist()){
                         if(tmp.getTenKhuyenMai().equals(txtTenKM.getText())){
                             JOptionPane.showMessageDialog(null, "Tên khuyến mãi đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                             return;
@@ -590,13 +590,13 @@ public class formuudaivakhuyenmai extends javax.swing.JPanel {
                 // Nếu tất cả dữ liệu hợp lệ, tiếp tục thêm khuyến mãi
                 int ma = Integer.parseInt(txtMaKM.getText());
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                String ngayBD = sdf.format(dateNgayBD.getDate());
-                String ngayHH = sdf.format(dateNgayHetHan.getDate());
+                Date ngayBD = dateNgayBD.getDate();
+                Date ngayHH = dateNgayHetHan.getDate();
 
                 // Tạo đối tượng khuyến mãi
                 dtokhuyenmai km = new dtokhuyenmai(ma, ten, ngayBD, ngayHH, soLuong, phanTram);
                 if(checkForm.equals("Sửa khuyến mãi")){
-                    for(dtokhuyenmai tmp : buskm.getList()){
+                    for(dtokhuyenmai tmp : buskm.getlist()){
                         if(km.getTenKhuyenMai().equals(tmp.getTenKhuyenMai()) && km.getMaKhuyenMai()!=tmp.getMaKhuyenMai() ){
                             JOptionPane.showMessageDialog(null, "Tên khuyến mãi đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                             return;
@@ -660,11 +660,11 @@ public class formuudaivakhuyenmai extends javax.swing.JPanel {
 
     void resetDataTableKhuyenMai(){
         modelKM.setRowCount(0); // Xóa tất cả hàng hiện tại
-        modelKM = setDataTableKhuyenMai(columnsKM, buskm.getList()); // Lấy lại dữ liệu gốc từ cơ sở dữ liệu
+        modelKM = setDataTableKhuyenMai(columnsKM, buskm.getlist()); // Lấy lại dữ liệu gốc từ cơ sở dữ liệu
         generalTableKM.setModel(modelKM); // Cập nhật lại JTable với mô hình mới
     }
     
-    void resetDataTableUuDai(){;
+    void resetDataTableUuDai(){
         model.setRowCount(0); // Xóa tất cả hàng hiện tại
         model = setDataTableUuDai(columns, busuudai.getList()); // Lấy lại dữ liệu gốc từ cơ sở dữ liệu
         generalTable.setModel(model); // Cập nhật lại JTable với mô hình mới

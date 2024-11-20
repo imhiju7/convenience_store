@@ -6,6 +6,7 @@ package bus;
 import dao.daokhuyenmai;
 import dto.dtokhuyenmai;
 import java.util.ArrayList;
+import java.util.Date;
 /**
  *
  * @author giavi
@@ -14,10 +15,6 @@ public class buskhuyenmai {
     public buskhuyenmai(){};
     
     private daokhuyenmai daokm = new daokhuyenmai();
-    
-    public ArrayList<dtokhuyenmai> getList(){
-        return daokm.getList();
-    }
     
     public int getMaxMaKhuyenMai(){
         return daokm.getMaxMaKhuyenMai();
@@ -49,5 +46,26 @@ public class buskhuyenmai {
     
     public ArrayList<dtokhuyenmai> getListByDate(String date){
         return daokm.getListByDate(date);
+    }
+    
+    public dtokhuyenmai getkmbyname(String name){
+        return daokm.getkmbyname(name);
+    }
+    public int updatekhuyenmai(dtokhuyenmai km){
+        return daokm.updateKhuyenMai(km);
+    }
+    public ArrayList<dtokhuyenmai> getlist(){
+        return daokm.getlist();
+    }
+    public ArrayList<dtokhuyenmai> getkhuyenmaitoday(){
+        ArrayList<dtokhuyenmai> list = getlist();
+        ArrayList<dtokhuyenmai> result = new ArrayList<>();
+        Date day = new Date();
+        for(dtokhuyenmai i: list){
+            if(i.getNgayBatDau().before(day) && i.getNgayHetHan().after(day)){
+                result.add(i);
+            }
+        }
+        return result;
     }
 }

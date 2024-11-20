@@ -4,6 +4,8 @@
  */
 package dto;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -13,8 +15,8 @@ import java.util.Date;
 public class dtokhuyenmai {
     private int maKhuyenMai;
     private String tenKhuyenMai;
-    private String ngayBatDau;
-    private String ngayHetHan;
+    private Date ngayBatDau;
+    private Date ngayHetHan;
     private int soLuong;
     private double phanTram;
     private int ishidden;
@@ -23,7 +25,7 @@ public class dtokhuyenmai {
     public dtokhuyenmai() {
     }
 
-    public dtokhuyenmai(int maKhuyenMai, String tenKhuyenMai, String ngayBatDau, String ngayHetHan, int soLuong, double phanTram) {
+    public dtokhuyenmai(int maKhuyenMai, String tenKhuyenMai, Date ngayBatDau, Date ngayHetHan, int soLuong, double phanTram) {
         this.maKhuyenMai = maKhuyenMai;
         this.tenKhuyenMai = tenKhuyenMai;
         this.ngayBatDau = ngayBatDau;
@@ -36,7 +38,7 @@ public class dtokhuyenmai {
 
     
     
-    public dtokhuyenmai(int maKhuyenMai, String tenKhuyenMai, String ngayBatDau, String ngayHetHan, int soLuong, double phanTram, int ishidden, int soLuongDaDung) {
+    public dtokhuyenmai(int maKhuyenMai, String tenKhuyenMai, Date ngayBatDau, Date ngayHetHan, int soLuong, double phanTram, int ishidden, int soLuongDaDung) {
         this.maKhuyenMai = maKhuyenMai;
         this.tenKhuyenMai = tenKhuyenMai;
         this.ngayBatDau = ngayBatDau;
@@ -55,11 +57,11 @@ public class dtokhuyenmai {
         return tenKhuyenMai;
     }
 
-    public String getNgayBatDau() {
+    public Date getNgayBatDau() {
         return ngayBatDau;
     }
 
-    public String getNgayHetHan() {
+    public Date getNgayHetHan() {
         return ngayHetHan;
     }
 
@@ -87,11 +89,11 @@ public class dtokhuyenmai {
         this.tenKhuyenMai = tenKhuyenMai;
     }
 
-    public void setNgayBatDau(String ngayBatDau) {
+    public void setNgayBatDau(Date ngayBatDau) {
         this.ngayBatDau = ngayBatDau;
     }
 
-    public void setNgayHetHan(String ngayHetHan) {
+    public void setNgayHetHan(Date ngayHetHan) {
         this.ngayHetHan = ngayHetHan;
     }
 
@@ -116,5 +118,19 @@ public class dtokhuyenmai {
         return "dtokhuyenmai{" + "maKhuyenMai=" + maKhuyenMai + ", tenKhuyenMai=" + tenKhuyenMai + ", ngayBatDau=" + ngayBatDau + ", ngayHetHan=" + ngayHetHan + ", soLuong=" + soLuong + ", phanTram=" + phanTram + ", ishidden=" + ishidden + ", soLuongDaDung=" + soLuongDaDung + '}';
     }
     
-    
+    public static void main(String[] args) {
+        try {
+            // Chuyển chuỗi thành kiểu Date
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date ngayBatDau = sdf.parse("2024-11-01");
+            Date ngayHetHan = sdf.parse("2024-12-01");
+
+            // Tạo đối tượng dtokhuyenmai
+            dtokhuyenmai km = new dtokhuyenmai(1, "Nammm", ngayBatDau, ngayHetHan, 10, 15.0, 0, 0);
+
+            // In ra đối tượng
+            System.out.println(km);
+        } catch (ParseException e) {
+        }
+    }
 }

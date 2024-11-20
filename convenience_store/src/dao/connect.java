@@ -17,7 +17,7 @@ public class connect {
     }
     
     public static Connection connection(){
-        String url = "jdbc:mysql://localhost/qlcuahang"; // tao database trong mysql ten qlcuahangtienloi
+        String url = "jdbc:mysql://localhost/qlcuahangtienloi"; // tao database trong mysql ten qlcuahangtienloi
         String username = "root";
         String password = "HoaiNam3001"; // password tuy moi nguoi dat cho cai connect trong mysql
         Connection con = null;
