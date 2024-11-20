@@ -138,6 +138,51 @@ public boolean checkSDTExist(String sdt) {
 //        return soLuong;
 //    }
     
+
+   public ArrayList<dtokhachhang> searchKhachHangByName(String name) {
+    ArrayList<dtokhachhang> list = new ArrayList<>();
+    String query = "SELECT * FROM khachhang WHERE tenKhachHang LIKE ?";
+    try (Connection con = connect.connection();
+         PreparedStatement pstmt = con.prepareStatement(query)) {
+        pstmt.setString(1, "%" + name + "%");
+        ResultSet rs = pstmt.executeQuery();
+        while (rs.next()) {
+            dtokhachhang kh = new dtokhachhang();
+            kh.setMaKhachHang(rs.getInt("maKhachHang"));
+            kh.setTenKhachHang(rs.getString("tenKhachHang"));
+            kh.setSDT(rs.getString("SDT"));
+            kh.setDiemTichLuy(rs.getInt("diemTichLuy"));
+            kh.setMaUudai(rs.getInt("maUuDai"));
+            list.add(kh);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return list;
+}
+
+public ArrayList<dtokhachhang> searchKhachHangBySDT(String sdt) {
+    ArrayList<dtokhachhang> list = new ArrayList<>();
+    String query = "SELECT * FROM khachhang WHERE SDT LIKE ?";
+    try (Connection con = connect.connection();
+         PreparedStatement pstmt = con.prepareStatement(query)) {
+        pstmt.setString(1, "%" + sdt + "%");
+        ResultSet rs = pstmt.executeQuery();
+        while (rs.next()) {
+            dtokhachhang kh = new dtokhachhang();
+            kh.setMaKhachHang(rs.getInt("maKhachHang"));
+            kh.setTenKhachHang(rs.getString("tenKhachHang"));
+            kh.setSDT(rs.getString("SDT"));
+            kh.setDiemTichLuy(rs.getInt("diemTichLuy"));
+            kh.setMaUudai(rs.getInt("maUuDai"));
+            list.add(kh);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return list;
+}
+
     public int updatediemtichluy(dtokhachhang kh){
         Connection con = connect.connection();
         String sql = "UPDATE khachhang set diemTichLuy= ?, maUuDai = ? WHERE maKhachHang= ?";
