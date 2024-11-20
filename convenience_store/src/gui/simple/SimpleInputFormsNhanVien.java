@@ -131,7 +131,7 @@ public class SimpleInputFormsNhanVien extends JPanel {
 
         
         if (nv.getTennhanvien()== null || nv.getTennhanvien().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Tên nhân viên không để trống");
+            JOptionPane.showMessageDialog(null, "Tên nhân viên không được để trống");
             return false;
         }
         if(!nv.getTennhanvien().matches(regexTenNV)){

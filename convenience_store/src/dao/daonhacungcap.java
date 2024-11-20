@@ -1,7 +1,6 @@
 package dao;
 
 import dto.dtonhacungcap;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,10 +10,79 @@ import java.util.logging.Logger;
 
 public class daonhacungcap {
 
+    public daonhacungcap() {
+    }
+    
+    public dtonhacungcap getById(int maNhaCungCap) {
+        dtonhacungcap nhaCungCap = null;
+        java.sql.Connection con = connect.connection();
+        String sql = "SELECT * FROM nhacungcap WHERE maNhaCungCap = ? AND trangThai = 0";
+
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, maNhaCungCap);  // Set the supplier ID parameter
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                dtonhacungcap ncc = new dtonhacungcap(
+                    rs.getInt("maNhaCungCap"),
+                    rs.getString("tenNhaCungCap"),
+                    rs.getString("SDT"),
+                    rs.getString("email"),
+                    rs.getString("diaChi"),
+                    rs.getInt("isDelete") // Lấy giá trị isDelete
+                );
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(daonhacungcap.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                Logger.getLogger(daonhacungcap.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+
+        return nhaCungCap;
+    }
+    
+    public dtonhacungcap getByName(String tenNhaCungCap) {
+        dtonhacungcap nhaCungCap = null;
+        java.sql.Connection con = connect.connection();
+        String sql = "SELECT * FROM nhacungcap WHERE tenNhaCungCap = ? AND trangThai = 0";
+
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, tenNhaCungCap);  // Set the supplier ID parameter
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                dtonhacungcap ncc = new dtonhacungcap(
+                    rs.getInt("maNhaCungCap"),
+                    rs.getString("tenNhaCungCap"),
+                    rs.getString("SDT"),
+                    rs.getString("email"),
+                    rs.getString("diaChi"),
+                    rs.getInt("isDelete") // Lấy giá trị isDelete
+                );
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(daonhacungcap.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                Logger.getLogger(daonhacungcap.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+
+        return nhaCungCap;
+    }
+
     // Lấy danh sách tất cả nhà cung cấp (không bị xóa)
     public ArrayList<dtonhacungcap> getlist() {
         ArrayList<dtonhacungcap> list = new ArrayList<>();
-        Connection con = connect.connection(); // Kết nối đến cơ sở dữ liệu
+        java.sql.Connection con = connect.connection();
         String sql = "SELECT * FROM nhacungcap WHERE isDelete = 0"; // Chỉ lấy nhà cung cấp không bị xóa
         
         try {
@@ -48,7 +116,7 @@ public class daonhacungcap {
     // Thêm nhà cung cấp mới
     public void add(dtonhacungcap ncc) {
         String sql = "INSERT INTO nhacungcap (tenNhaCungCap, SDT, email, diaChi, isDelete) VALUES (?, ?, ?, ?, ?)";
-        Connection con = connect.connection();
+        java.sql.Connection con = connect.connection();
 
         try {
             PreparedStatement pst = con.prepareStatement(sql);
@@ -72,7 +140,7 @@ public class daonhacungcap {
     // Cập nhật nhà cung cấp
     public void update(dtonhacungcap ncc) {
         String sql = "UPDATE nhacungcap SET tenNhaCungCap = ?, SDT = ?, email = ?, diaChi = ? WHERE maNhaCungCap = ?";
-        Connection con = connect.connection();
+        java.sql.Connection con = connect.connection();
 
         try {
             PreparedStatement pst = con.prepareStatement(sql);
@@ -96,7 +164,7 @@ public class daonhacungcap {
     // Xóa nhà cung cấp (đánh dấu isDelete = 1)
     public void delete(int maNhaCungCap) {
         String sql = "UPDATE nhacungcap SET isDelete = 1 WHERE maNhaCungCap = ?";
-        Connection con = connect.connection();
+        java.sql.Connection con = connect.connection();
 
         try {
             PreparedStatement pst = con.prepareStatement(sql);
@@ -117,7 +185,7 @@ public class daonhacungcap {
     public String getTenNhaCungCap(int maNhaCungCap) {
         String tenNhaCungCap = null;
         String sql = "SELECT tenNhaCungCap FROM nhacungcap WHERE maNhaCungCap = ? AND isDelete = 0";
-        Connection con = connect.connection();
+        java.sql.Connection con = connect.connection();
 
         try {
             PreparedStatement pst = con.prepareStatement(sql);
@@ -142,7 +210,7 @@ public class daonhacungcap {
     public int getCountNhaCungCap() {
         int count = 0;
         String sql = "SELECT COUNT(*) FROM nhacungcap WHERE isDelete = 0";
-        Connection con = connect.connection();
+        java.sql.Connection con = connect.connection();
 
         try {
             PreparedStatement pst = con.prepareStatement(sql);

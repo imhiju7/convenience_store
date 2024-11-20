@@ -65,6 +65,22 @@ public class busctphieunhap {
         }
         return sp;
     }
+    public void needToFillList(int maNCC) {
+        daoHD = new daoctphieunhap();
+        dsctpn =  daoHD.needToFillList(maNCC);
+    }
+    
+    public static void main(String[] args) {
+        // Create an instance of the BUS class
+        busctphieunhap bus = new busctphieunhap();
+            System.out.println(bus.maxID());
+           bus.needToFillList();
+        // Print each dtoctphieunhap object in the list
+        for (dtoctphieunhap HD : bus.dsctpn) {
+            System.out.println(HD);
+        }
+        return sp;
+    }
     public int isganhh(String birthday) {
         // Định dạng ngày tháng từ chuỗi
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -73,5 +89,14 @@ public class busctphieunhap {
         LocalDate currentDate = LocalDate.now();
         Period age = Period.between(currentDate,birthDate);
         return age.getDays();
+    }
+
+    public void needToFillList() {
+        daoHD = new daoctphieunhap();
+        dsctpn =  daoHD.needToFillList();
+    }
+
+    public void create(dtoctphieunhap ct) {
+        daoHD.create(ct);
     }
 }

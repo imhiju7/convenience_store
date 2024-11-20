@@ -19,11 +19,7 @@ public class NVCard extends JPanel {
     private Consumer<dtonhanvien> nv_event;
     private int s;
     
-//    public NVCard(ModelEmployee employee, Consumer<ModelEmployee> event) {
-//        this.employee = employee;
-//        this.event = event;
-//        init();
-//    }
+
     public NVCard(dtonhanvien nv, Consumer<dtonhanvien> event , int s) {
         this.nv = nv;
         this.nv_event = event;
@@ -70,9 +66,9 @@ public class NVCard extends JPanel {
     }
     private Icon getProfileIcon1(String name, boolean defaultIcon) {
         if (defaultIcon) {
-            return new ImageIcon(getClass().getResource("/source/image/nhanvien/" + name));
+            return new ImageIcon(System.getProperty("user.dir") + "/src/source/image/nhanvien/" + name);
         } else {
-            AvatarIcon avatarIcon = new AvatarIcon(getClass().getResource("/src/source/image/nhanvien/" + name), 55, 55, 3f);
+            AvatarIcon avatarIcon = new AvatarIcon(getClass().getResource("/source/image/nhanvien/" + name), 55, 55, 3f);
             avatarIcon.setType(AvatarIcon.Type.MASK_SQUIRCLE);
             return avatarIcon;
         }

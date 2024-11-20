@@ -195,6 +195,8 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
             } catch (SQLException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
+            } catch (ParseException ex) {
+                Logger.getLogger(PanelLoginAndRegister.class.getName()).log(Level.SEVERE, null, ex);
             } 
                 }
             }
@@ -220,6 +222,8 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
                 } catch (SQLException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
+                } catch (ParseException ex) {
+                    Logger.getLogger(PanelLoginAndRegister.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -240,7 +244,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         }
     }
     
-    public void dangNhap() throws SQLException {
+    public void dangNhap() throws SQLException, ParseException {
         bustaikhoan bustk = new bustaikhoan();
         String tendangnhap = txtUsername.getText();
         String matkhau = String.valueOf(txtPass.getPassword());

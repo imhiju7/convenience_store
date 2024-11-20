@@ -23,6 +23,8 @@ public class Convenience_store {
         } catch (ParseException ex) {
             Logger.getLogger(Convenience_store.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+    public static void main(String[] args) throws SQLException, ParseException {
+       //new frmlogin().setVisible(true);
+       new Guimain(1).setVisible(true);
     }
 }

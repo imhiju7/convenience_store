@@ -5,40 +5,76 @@
 package gui.form;
 import bus.busphieunhap;
 import javax.swing.*;
+import com.toedter.calendar.JDateChooser;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import bus.busphieunhap;
 import bus.busctphieunhap;
+import bus.busnhacungcap;
 import bus.busnhanvien;
+import bus.bussanpham;
 import dto.dtophieunhap;
 import dto.dtoctphieunhap;
+import dto.dtonhacungcap;
 import dto.dtophieunhap;
 import dto.dtonhanvien;
-
+import dto.dtosanpham;
+import gui.comp.Combobox;
+import gui.modal.ModalDialog;
+import gui.modal.component.SimpleModalBorder;
+import gui.modal.option.Location;
+import gui.modal.option.Option;
+import gui.simple.SimpleInputForms;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 import net.miginfocom.swing.MigLayout;
 
 import gui.table.TableHeaderAlignment;
+import java.awt.event.ActionEvent;
 
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import org.apache.xmlbeans.impl.jam.JPackage;
 /**
  *
  * @author PHUONG ANH
  */
 public class formphieunhap extends javax.swing.JPanel {
-    private JTable generalTable;
+    private JTable generalTable, additionalTable;
     private busphieunhap buspn = new busphieunhap();
     private busctphieunhap busctpn = new busctphieunhap();
+    private bussanpham bussp = new bussanpham();
     private JButton btnDetail;
     private int manv;
+    boolean activate = false;
+    JTextField txtNCCid, txtSL, txtGiaNhap, txtGiaBan, txtSPid, txtTotal;
+    JTextArea txtNote;
+    JDateChooser dateChooser;
+    private ArrayList<dtoctphieunhap> nhapHangList= new ArrayList<>();
+    AtomicBoolean dialogShown = new AtomicBoolean(false);
+    DefaultTableModel modelNhapHang;
     //private busnhanvien busnv = new busnhanvien();
     /**
      * Creates new form phieunhap
@@ -76,8 +112,8 @@ public class formphieunhap extends javax.swing.JPanel {
     private Component createTab() {
         JTabbedPane tabb = new JTabbedPane();
         tabb.putClientProperty(FlatClientProperties.STYLE, "tabType:card");
-        tabb.addTab("Danh sách phiếu nhập", createBorder(createGeneralTable()));
         tabb.addTab("Nhập hàng", createBorder(nhapHangTab()));
+        tabb.addTab("Danh sách phiếu nhập", createBorder(createGeneralTable()));
         tabb.setPreferredSize(new Dimension(1070, 700)); // Set preferred size of the tabbed pane
         return tabb;
     }
@@ -99,53 +135,88 @@ public class formphieunhap extends javax.swing.JPanel {
         panel.add(createMidRightPanel(), "cell 1 1, grow");
 
         // Add detail table at the bottom
-        panel.add(createDetailTable(), "span, growx, dock south");
-
+        panel.add(nhapHangTable(), "span, growx, dock south");
     return panel;
     }
 
 
     private JPanel createMidLeftPanel() {
-        JPanel midLeft = new JPanel(new MigLayout("fillx, wrap 2", "[fill][grow]"));
-
-        // Middle Left: Input fields
-        JTextField txtNVid = new JTextField();
-        txtNVid.setEditable(false);
-        JTextField txtNVname = new JTextField();
-        txtNVname.setEditable(false);
-        JTextField txtNCCid = new JTextField();
-        txtNCCid.setEditable(false);
-        JComboBox cbNCCname = new JComboBox();
-        JTextField txtTotal = new JTextField();
-        txtTotal.setEditable(false);
-        JTextArea txtNote = new JTextArea();
-        txtNote.setWrapStyleWord(true);
-        txtNote.setLineWrap(true);
-        JScrollPane scroll = new JScrollPane(txtNote);
-
-        dtophieunhap pn = new dtophieunhap();
-        int nvid = pn.getMaNhanVien();
-        txtNVid.setText(String.valueOf(nvid));
-
-        // Add components to midLeft section with improved constraints
-        midLeft.add(new JLabel("Nhân viên nhập hàng"));
-        midLeft.add(txtNVid,"split 2, gapy 5 0,wmin 50");  // Small width for txtNVid
-
-        midLeft.add(txtNVname, "growx, wrap"); // txtNVname will take remaining space
-
-        midLeft.add(new JLabel("Chọn nhà cung cấp"));
-        midLeft.add(txtNCCid, "split 2, gapy 5 0,wmin 50");  // Small width for txtNCCid
-
-        midLeft.add(cbNCCname, "growx, wrap");
-
-        midLeft.add(new JLabel("Ghi chú"), "gapy 5 0");
-        midLeft.add(scroll, "growx, hmin 35, hmax 50, wrap");
-
-        midLeft.add(new JLabel("Tổng tiền"), "gapy 5 0");
-        midLeft.add(txtTotal, "growx, wrap");
-
-        return midLeft;
+        
+    busnhacungcap busncc = new busnhacungcap();
+    JPanel midLeft = new JPanel(new MigLayout("fillx, wrap 2", "[fill][grow]"));
+    txtNCCid = new JTextField();
+    txtNCCid.setHorizontalAlignment(JTextField.CENTER);
+    JComboBox<String> cbNCCname = new JComboBox<>();
+    cbNCCname.addItem("");
+    for(dtonhacungcap ncc: busncc.list()){
+        cbNCCname.addItem(ncc.getTenNhaCungCap());
     }
+    txtTotal = new JTextField();
+    txtTotal.setHorizontalAlignment(JTextField.CENTER);
+    txtTotal.setEditable(false);
+    txtNote = new JTextArea();
+    txtNote.setWrapStyleWord(true);
+    txtNote.setLineWrap(true);
+    JScrollPane scroll = new JScrollPane(txtNote);
+    
+    dtophieunhap pn = new dtophieunhap();
+
+    midLeft.add(new JLabel("Chọn nhà cung cấp"));
+    midLeft.add(txtNCCid, "split 2, gapy 5 0,wmin 50");  
+    midLeft.add(cbNCCname, "growx, wrap");
+    midLeft.add(new JLabel("Ghi chú"), "gapy 5 0");
+    midLeft.add(scroll, "growx, hmin 80, wrap");
+    midLeft.add(new JLabel("Tổng tiền"), "gapy 5 0");
+    midLeft.add(txtTotal, "growx, wrap");
+
+    // Focus listener for txtNCCid
+    txtNCCid.addFocusListener(new FocusAdapter() {
+        @Override
+        public void focusLost(FocusEvent e) {
+            
+            String id = txtNCCid.getText().trim();
+            if (!id.isEmpty()) {
+
+                if(busncc.getById(Integer.parseInt(id)) == null && activate){
+                    JOptionPane.showMessageDialog(null, "Không tìm thấy mã Nhà cung cấp đã nhập");
+                    activate = false;
+                    return;
+                }
+                String providerName = busncc.getById(Integer.parseInt(id)).getTenNhaCungCap(); 
+                cbNCCname.setSelectedItem(providerName);
+            }
+        }
+    });
+    txtNCCid.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String id = txtNCCid.getText().trim();
+            if (!id.isEmpty()) {
+                if(busncc.getById(Integer.parseInt(id)) == null){
+                    JOptionPane.showMessageDialog(null, "Không tìm thấy mã Nhà cung cấp đã nhập");
+                    activate = true;
+                    return;
+                }
+                String providerName = busncc.getById(Integer.parseInt(id)).getTenNhaCungCap(); 
+                cbNCCname.setSelectedItem(providerName);
+            }
+        }
+    });
+    // Action listener for cbNCCname
+    cbNCCname.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String selectedName = (String) cbNCCname.getSelectedItem();
+            if (selectedName != null) {
+                int providerId = busncc.getByName(selectedName).getMaNhaCungCap(); // Replace with actual method to get ID
+                txtNCCid.setText(String.valueOf(providerId));
+            }
+        }
+    });
+
+    return midLeft;
+}
+
 
     private JPanel createMidRightPanel() {
     JPanel midRight = new JPanel(new MigLayout("fillx, wrap"));
@@ -153,77 +224,468 @@ public class formphieunhap extends javax.swing.JPanel {
     // Add the additional table with growth constraints
     midRight.add(createAdditionalTable(), "growx, growy, wrap");
 
-    // Create buttons
-    JButton btnAdd = new JButton("Add");
-    JButton btnDelete = new JButton("Delete");
-
-    // Add buttons to the bottom right
-    midRight.add(btnAdd, "tag right, split 2, sg 1");
-    midRight.add(btnDelete, "sg 1");
-
     return midRight;
 }
 
     private Component createAdditionalTable() {
     JPanel panel = new JPanel();
+    panel.setLayout(new BorderLayout()); // Use BorderLayout for easier alignment of components
+
+    // Creating a label and aligning it to the right
+    JLabel label = new JLabel("Danh sách sản phẩm cần nhập");
+    label.setHorizontalAlignment(SwingConstants.CENTER); // Align to the right
+    label.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 10)); // Add padding for spacing
+    panel.add(label, BorderLayout.SOUTH); // Add the label to the top
+
     // Creating a sample table with some data for demonstration
-    String[] columnNames = {"Column 1", "Column 2", "Column 3"};
-    Object[][] data = {
-        {"Row1-Col1", "Row1-Col2", "Row1-Col3"},
-        {"Row2-Col1", "Row2-Col2", "Row2-Col3"},
-        {"Row3-Col1", "Row3-Col2", "Row3-Col3"}
+    String[] columns = {"Mã SP", "Tên", "Ngày hết hạn", "Số lượng tồn kho"};
+    DefaultTableModel model = new DefaultTableModel(columns, 0) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
     };
-    
-    JTable additionalTable = new JTable(data, columnNames);
+    additionalTable = new JTable(model);
     additionalTable.setFillsViewportHeight(true);
 
-    // Put the table in a scroll pane
+    // Put the additionalTable in a scroll pane
     JScrollPane scrollPane = new JScrollPane(additionalTable);
-    scrollPane.setPreferredSize(new Dimension(200, 100)); // Adjust size as needed
+    scrollPane.setPreferredSize(new Dimension(500, 150)); // Adjust size as needed
+    scrollPane.setMinimumSize(new Dimension(500, 150));   // Set minimum size
+    scrollPane.setBorder(BorderFactory.createEmptyBorder()); // Remove default border
 
-    panel.add(scrollPane);
+    // Table header alignment
+    additionalTable.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(additionalTable) {
+        protected int getAlignment() {
+            return SwingConstants.CENTER; // Center align headers
+        }
+    });
+
+    // Add scrollPane to the center of the panel
+    panel.add(scrollPane, BorderLayout.CENTER);
+
+    // Populate the table with data
+    busctpn.needToFillList();
+    for (dtoctphieunhap cc : busctpn.dsctpn) {
+        model.addRow(cc.toAdditionalTableRow());
+    }
+
     return panel;
 }
 
     private Component nhapHangTable() {
-        Object columns[] = new Object[]{"SELECT", "Mã SP", "Tên SP", "", "SALARY", "POSITION", "DESCRIPTION"};
-        DefaultTableModel model = new DefaultTableModel(columns, 0) {
+        JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
+
+        // Create table model
+        Object columns[] = new Object[]{"Mã SP", "Tên sản phẩm", "Giá nhập", "Số lượng", "Ngày hết hạn", "Giá bán"};
+        modelNhapHang = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
-
         };
-        JTable table = new JTable(model);
+
+        // Create table and assign to table
+        JTable table = new JTable(modelNhapHang);
+
+        // Table scroll with size adjustments
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.setMinimumSize(new Dimension(400, 500));   // Set minimum size if needed
 
-        // alignment table header
+        // Table header alignment
         table.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(table) {
             protected int getAlignment() {
                 return SwingConstants.CENTER;
             }
         });
 
-        // style
-        table.putClientProperty(FlatClientProperties.STYLE, "" + "arc:20;" + "background:$Table.background;");
-        table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" + "height:30;" + "hoverBackground:null;" + "pressedBackground:null;" + "separatorColor:$TableHeader.background;");
-        table.putClientProperty(FlatClientProperties.STYLE, "" + "rowHeight:30;" + "showHorizontalLines:true;" + "intercellSpacing:0,1;" + "cellFocusColor:$TableHeader.hoverBackground;" + "selectionBackground:$TableHeader.hoverBackground;" + "selectionInactiveBackground:$TableHeader.hoverBackground;" + "selectionForeground:$Table.foreground;");
-        scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" + "trackArc:$ScrollBar.thumbArc;" + "trackInsets:3,3,3,3;" + "thumbInsets:3,3,3,3;" + "background:$Table.background;");
-        return table;
+        // Style settings for nhapHangTable
+        table.putClientProperty(FlatClientProperties.STYLE, "" +
+                "arc:20;" +
+                "background:$Table.background;");
+        table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
+                "height:30;" +
+                "hoverBackground:null;" +
+                "pressedBackground:null;" +
+                "separatorColor:$TableHeader.background;");
+        table.putClientProperty(FlatClientProperties.STYLE, "" +
+                "rowHeight:30;" +
+                "showHorizontalLines:true;" +
+                "intercellSpacing:0,1;" +
+                "cellFocusColor:$TableHeader.hoverBackground;" +
+                "selectionBackground:$TableHeader.hoverBackground;" +
+                "selectionInactiveBackground:$TableHeader.hoverBackground;" +
+                "selectionForeground:$Table.foreground;");
+        scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
+                "trackArc:$ScrollBar.thumbArc;" +
+                "trackInsets:3,3,3,3;" +
+                "thumbInsets:3,3,3,3;" +
+                "background:$Table.background;");
+
+        // Adding separator
+        JSeparator separator = new JSeparator();
+        separator.putClientProperty(FlatClientProperties.STYLE, "" + "foreground:$Table.gridColor;");
+        panel.add(separator, "height 2");
+
+        panel.add(createNhapHangListHeader());
+        // Add scrollPane to the panel
+        panel.add(scrollPane, "growx"); // Adjust with growx to expand width
+
+        reloadDataToNhapHangTable(modelNhapHang);
+        return panel;
     }
+    
+    private void reloadDataToNhapHangTable(DefaultTableModel model){
+
+        model.setRowCount(0);
+        for (dtoctphieunhap cc: nhapHangList){
+            model.addRow(cc.toTableRow());
+        }
+    }
+    private Component createNhapHangListHeader() {
+        JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,fill]push[][]")); 
+
+        JButton btnAdd = new JButton("Thêm sản phẩm nhập");
+        btnAdd.addActionListener(e -> {
+            if(txtNCCid.getText().isEmpty()){
+                JOptionPane.showMessageDialog(panel, "Vui lòng chọn Nhà cung cấp để thực hiện nhập hàng", "Invalid ID", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            showModal();
+            }
+        );
+        
+        JButton btnDelete = new JButton("Delete");
+        btnDelete.addActionListener(e -> {
+            
+        });
+                
+
+        panel.add(btnAdd);
+        panel.add(btnDelete);             
+
+        panel.putClientProperty(FlatClientProperties.STYLE, "background:null;");
+        return panel;
+    }
+    private void showModal() {
+    Option option = ModalDialog.createOption();
+    option.getLayoutOption()
+          .setSize(-1, 1f)
+          .setLocation(Location.TRAILING, Location.TOP)
+          .setAnimateDistance(0.7f, 0);
+
+    ModalDialog.showModal(
+        this,
+        new SimpleModalBorder(
+            SimpleInputForms(), 
+            "Nhập thông tin sản phẩm",
+            SimpleModalBorder.YES_NO_OPTION, // Ensure this is the option you want
+            (controller, action) -> {
+                if (action == SimpleModalBorder.YES_OPTION) {
+                    
+                    double total = txtTotal.getText().isEmpty() ? 0 : doubleValueofTextField(txtTotal);
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                    dtoctphieunhap ct;
+                    LocalDate localDate = dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    try {
+                        ct = new dtoctphieunhap(
+                            busctpn.maxID() + 1,
+                            intValueofTextField(txtSL),
+                            doubleValueofTextField(txtGiaNhap),
+                            buspn.maxID() + 1,
+                            intValueofTextField(txtSPid),
+                            java.sql.Date.valueOf(localDate), // Use java.sql.Date for database compatibility
+                            intValueofTextField(txtSL),
+                            "", // Update the logic here
+                            doubleValueofTextField(txtGiaBan)
+                        );
+                        nhapHangList.add(ct);
+                        total += intValueofTextField(txtSL)*doubleValueofTextField(txtGiaNhap);
+                        txtTotal.setText(String.valueOf(total));
+                    } catch (Exception ex) {
+                        Logger.getLogger(formphieunhap.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                reloadDataToNhapHangTable(modelNhapHang);
+                
+                }
+                controller.close();
+            }
+        ),
+        option
+    );
+}
+
+    
+    private int intValueofTextField(JTextField t){
+        return Integer.parseInt(String.valueOf(t.getText()));
+    }
+    private double doubleValueofTextField(JTextField t){
+        return Double.parseDouble(String.valueOf(t.getText()));
+    }
+    private Component SimpleInputForms() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new MigLayout("fillx,wrap,insets 5 35 5 35,width 400", "[fill]", ""));
+        ArrayList<dtosanpham> products = bussp.listByNhaCungCapID(Integer.parseInt(txtNCCid.getText()));
+                // Create TextField and ComboBox
+        txtSPid = new JTextField();
+        JComboBox<String> txtSPname = new JComboBox<>();
+        txtSPname.addItem(""); // Add a blank item
+        for (dtosanpham sp : products) {
+                txtSPname.addItem(sp.getTenSanPham());
+            }
+        // Populate ComboBox with product names based on supplier ID
+                // Shared flag to prevent duplicate JOptionPane calls
+
+        // Add FocusListener to txtSPid
+        txtSPid.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (dialogShown.get()) {
+                return; // Prevent duplicate dialogs
+            }
+
+            for (dtosanpham sp : products) {
+                txtSPname.addItem(sp.getTenSanPham());
+                if (String.valueOf(sp.getMaSanPham()).equals(txtSPid.getText())) {
+                    txtSPname.setSelectedItem(sp.getTenSanPham());
+                    return; // Stop further processing if product is found
+                }
+            }
+            // Show dialog if no product matches
+            dialogShown.set(true);
+            JOptionPane.showMessageDialog(null, "Không tìm thấy sản phẩm trong danh sách bán hàng của Nhà cung cấp");
+            dialogShown.set(false);
+            }
+        });
+
+        // Add KeyListener to txtSPid
+        txtSPid.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    if (dialogShown.get()) {
+                return; // Prevent duplicate dialogs
+            }
+
+            for (dtosanpham sp : products) {
+                txtSPname.addItem(sp.getTenSanPham());
+                if (String.valueOf(sp.getMaSanPham()).equals(txtSPid.getText())) {
+                    txtSPname.setSelectedItem(sp.getTenSanPham());
+                    return; // Stop further processing if product is found
+                }
+            }
+            // Show dialog if no product matches
+            dialogShown.set(true);
+            JOptionPane.showMessageDialog(null, "Không tìm thấy sản phẩm trong danh sách bán hàng của Nhà cung cấp");
+            dialogShown.set(false);
+                }
+            }
+        });
+
+        // Shared method to handle product selection logic
+
+
+        // Update txtSPid when ComboBox selection changes
+        txtSPname.addActionListener(e -> {
+            String selectedName = (String) txtSPname.getSelectedItem();
+            if (selectedName != null && !selectedName.isEmpty()) {
+                txtSPid.setText(String.valueOf(bussp.getByName(selectedName).getMaSanPham()));
+            }
+        });
+
+        JPanel p = quantity();
+        p.setMaximumSize(new Dimension(100, 28));
+         dateChooser = new JDateChooser();
+        dateChooser.setMaximumSize(new Dimension(180, 28));
+         txtGiaNhap = new JTextField();
+        txtGiaNhap.setMaximumSize(new Dimension(120, 28));
+        JTextField txtLoiNhuan = new JTextField();
+        txtLoiNhuan.setMaximumSize(new Dimension(100, 28));
+        JComboBox<String> unit = new JComboBox<>(new String[]{"Đồng", "%"});
+        unit.setMaximumSize(new Dimension(80, 28));
+         txtGiaBan = new JTextField();
+        txtGiaBan.setEditable(false);
+        JTextArea txtAddress = new JTextArea("ảnh sp hiện ở đây, nhưng chưa làm=)");
+        txtAddress.setWrapStyleWord(true);
+        txtAddress.setLineWrap(true);
+        JScrollPane scroll = new JScrollPane(txtAddress);
+
+        // Placeholder styling (use your placeholder library)
+        txtSPid.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "First");
+        txtSPname.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Last");
+        txtSL.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "e.g. Tesla Motors");
+
+        // Input validation for txtSPid
+        txtSPid.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if (!Character.isDigit(c)) {
+                    e.consume(); // Reject non-numeric characters
+                }
+            }
+        });
+
+        // Input validation for txtGiaNhap and txtLoiNhuan
+        txtGiaNhap.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if (!Character.isDigit(c)) {
+                    e.consume();
+                }
+            }
+        });
+        txtLoiNhuan.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if (!Character.isDigit(c)) {
+                    e.consume();
+                }
+            }
+        });
+
+        // Prevent past dates in dateChooser
+        dateChooser.getDateEditor().addPropertyChangeListener(evt -> {
+            if ("date".equals(evt.getPropertyName())) {
+                Date selectedDate = dateChooser.getDate();
+                if (selectedDate != null && selectedDate.before(new Date())) {
+                    JOptionPane.showMessageDialog(panel, "Ngày đã chọn không hợp lệ", "Invalid Date", JOptionPane.WARNING_MESSAGE);
+                    dateChooser.setDate(null); // Reset invalid date
+                }
+            }
+        });
+
+        // Add components to the panel
+        panel.add(new JLabel("Mã SP "), "gapy 5 0, split 2");
+        panel.add(new JLabel("Tên SP "));
+        panel.add(txtSPid, "split 2");
+        panel.add(txtSPname);
+        panel.add(new JLabel("Số lượng"), "gapy 5 0, split 2");
+        panel.add(new JLabel("Ngày hết hạn"));
+        panel.add(p, "gapy 10, grow, alignx center, split 2");
+        panel.add(dateChooser, "gapy 10, grow, alignx center, wrap");
+        panel.add(new JLabel("Giá nhập"), "gapy 5 0, split 2");
+        panel.add(new JLabel("Lợi nhuận"));
+        panel.add(txtGiaNhap, "split 3");
+        panel.add(txtLoiNhuan, "gapright 0, alignx right");
+        panel.add(unit, "gapleft 0");
+        panel.add(new JLabel("Giá bán"), "gapy 5 0, split 2");
+        panel.add(txtGiaBan);
+        panel.add(new JLabel("Hình ảnh sản phẩm "), "gapy 5 0");
+        panel.add(scroll, "height 150,grow,pushy");
+        
+            // Unit selection and txtGiaBan calculation
+        unit.addActionListener(e -> {
+            String selectedItem = (String) unit.getSelectedItem();
+            try {
+                double giaNhap = Double.parseDouble(txtGiaNhap.getText().isEmpty() ? "0" : txtGiaNhap.getText());
+                double loiNhuan = Double.parseDouble(txtLoiNhuan.getText().isEmpty() ? "0" : txtLoiNhuan.getText());
+
+                if ("Đồng".equals(selectedItem)) {
+                    // If unit is "Đồng", simply add the profit to the base price
+                    txtGiaBan.setText(String.valueOf(giaNhap + loiNhuan));
+                } else if ("%".equals(selectedItem)) {
+                    // If unit is "%", calculate as a percentage increase
+                    txtGiaBan.setText(String.valueOf(giaNhap * (1 + loiNhuan / 100)));
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(panel, "Please enter valid numbers for Giá nhập and Lợi nhuận.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        // Input validation for GiaNhap and LoiNhuan fields to recompute GiaBan on text change
+        KeyAdapter recalculateGiaBan = new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+                unit.getActionListeners()[0].actionPerformed(null); // Trigger unit ActionListener for recalculation
+            }
+        };
+        txtGiaNhap.addKeyListener(recalculateGiaBan);
+        txtLoiNhuan.addKeyListener(recalculateGiaBan);
+
+
+        return panel;
+    }
+
+
+    private JPanel quantity() {
+        JPanel panel = new JPanel(new GridLayout(0, 3, 0, 5));
+
+        txtSL = new JTextField("1");
+        txtSL.setHorizontalAlignment(JTextField.CENTER);
+
+
+        JButton plusButton = new JButton("+");
+        JButton minusButton = new JButton("-");
+
+        // Set font size
+        Font buttonFont = new Font("Arial", Font.BOLD, 12); // Smaller font size
+        plusButton.setFont(buttonFont);
+        minusButton.setFont(buttonFont);
+
+        // Set preferred sizes
+        txtSL.setPreferredSize(new Dimension(40, 30)); 
+        plusButton.setPreferredSize(new Dimension(30, 30));
+        minusButton.setPreferredSize(new Dimension(30, 30));
+
+        // Adjust insets for proper padding
+        plusButton.setMargin(new Insets(2, 2, 2, 2));
+        minusButton.setMargin(new Insets(2, 2, 2, 2));
+
+        // Button Actions
+        plusButton.addActionListener(e -> {
+            try {
+                int quantity = Integer.parseInt(txtSL.getText());
+                txtSL.setText(String.valueOf(quantity + 1));
+            } catch (NumberFormatException ex) {
+                txtSL.setText("1"); // Reset to default
+            }
+        });
+
+        minusButton.addActionListener(e -> {
+            try {
+                int quantity = Integer.parseInt(txtSL.getText());
+                if (quantity > 1) {
+                    txtSL.setText(String.valueOf(quantity - 1));
+                }
+            } catch (NumberFormatException ex) {
+                txtSL.setText("1"); // Reset to default
+            }
+        });
+
+        plusButton.setToolTipText("Increase quantity");
+        minusButton.setToolTipText("Decrease quantity");
+
+        panel.add(minusButton);
+        panel.add(txtSL);
+        panel.add(plusButton);
+
+    return panel;
+}
+
     private Component createNhapHangHeader() {
-        JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[grow,fill]push[][]")); 
+        JPanel panel = new JPanel(new MigLayout("insets 5 0 5 20", "[grow,fill]push[][]")); 
         // create title
         JLabel title = new JLabel("Tạo phiếu nhập hàng");
         title.putClientProperty(FlatClientProperties.STYLE, ""
                 + "font:bold +2");
         
-        JButton btnFill = new JButton("Xác nhận");
-        btnFill.addActionListener(e -> {
-            
+        JButton btnConfirm = new JButton("Xác nhận");
+        btnConfirm.addActionListener(e -> {
+            if(nhapHangList == null || txtNCCid.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Chưa đủ thông tin để tạo phiếu nhập");
+            return;
             }
-        );
+            dtophieunhap pn = new dtophieunhap(buspn.maxID() + 1, Timestamp.valueOf(LocalDateTime.now().withNano((LocalDateTime.now().getNano() / 1_000_000) * 1_000_000)), doubleValueofTextField(txtTotal), intValueofTextField(txtNCCid), manv, String.valueOf(txtNote.getText()));
+            buspn.create(pn);
+            //System.out.println(pn);
+
+            for(dtoctphieunhap ct : nhapHangList){
+                busctpn.create(ct);
+                //System.out.println(ct);
+            }
+            
+        });
         
         JButton btnClear = new JButton("Clear all");
         btnClear.addActionListener(e -> {
@@ -231,7 +693,7 @@ public class formphieunhap extends javax.swing.JPanel {
         });              
         panel.add(title, "gapx 20");
         panel.add(btnClear, "split 2");
-        panel.add(btnFill);             
+        panel.add(btnConfirm);             
 
         panel.putClientProperty(FlatClientProperties.STYLE, "background:null;");
         return panel;
@@ -420,6 +882,7 @@ public class formphieunhap extends javax.swing.JPanel {
         return panel;
     }
 
+
     
     private void searching(JTextField txtSearch, JComboBox cbmonth, JComboBox cbyear) {
         String searchText = txtSearch.getText().trim();
@@ -507,7 +970,7 @@ public class formphieunhap extends javax.swing.JPanel {
         JTextField txtDate = new JTextField();
         txtDate.setEditable(false);
 
-        JTextField txtNCCid = new JTextField();
+        txtNCCid = new JTextField();
         txtNCCid.setEditable(false);
 
         JTextField txtNCCname = new JTextField();

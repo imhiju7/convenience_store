@@ -107,6 +107,8 @@ public class formsanpham extends Form {
             }
         });
     }
+    
+    
     private void init() throws SQLException {
         cards = new ArrayList<>();
         setLayout(new MigLayout("wrap,fill,insets 7 15 7 15", "[fill]", "[grow 0][fill]"));
@@ -121,13 +123,7 @@ public class formsanpham extends Form {
     public void formInit() {
         busSP = new bussanpham();
         panelCard.removeAll();
-
-        try {
-            list_SP = busSP.list(); // Fetch list of products
-        } catch (SQLException ex) {
-            Logger.getLogger(formmenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        list_SP = busSP.list(); // Fetch list of products
         for (dtosanpham sp : list_SP) {
             try {
                 list_PN = busSP.listPN(sp.getMaNCC()); // Get list of purchase orders for each product's supplier
@@ -337,7 +333,7 @@ public class formsanpham extends Form {
         imageDisplayLabel = new JLabel();
         imageDisplayLabel.setPreferredSize(new Dimension(170, 210));
         if(!imgPath.isEmpty()){
-            ImageIcon curImg = new ImageIcon(getClass().getResource("/source/image/sanpham/" + imgPath));
+            ImageIcon curImg = new ImageIcon(System.getProperty("user.dir") + "/src/source/image/sanpham/" + imgPath);
             Image scaledImg = curImg.getImage().getScaledInstance(170, 230, Image.SCALE_SMOOTH);
             ImageIcon editImg = new ImageIcon(scaledImg);
             imageDisplayLabel.setIcon(editImg);
@@ -519,19 +515,13 @@ public class formsanpham extends Form {
 
         JButton cmdDelete = new JButton("Xoá");
         
-        
-        
-        
-        
+
         btnSearch.addActionListener(e -> {
+            boolean found = false; 
             panelCard.removeAll(); // Xóa các card cũ khỏi panelCard
             String searchText = txtSearch.getText().toLowerCase().trim(); // Lấy chuỗi tìm kiếm và loại bỏ khoảng trắng thừa
             String tenmpl = (String) comboMaPL.getSelectedItem();
-            try {
-                list_SP = busSP.list();
-            } catch (SQLException ex) {
-                Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            list_SP = busSP.list();
             if(!tenmpl.equals("Mặc định")){
                 ArrayList<dtosanpham> list_sp_tmp = new ArrayList<>();
                 for(dtosanpham sp : list_SP){
@@ -544,6 +534,10 @@ public class formsanpham extends Form {
                         SPCard card = new SPCard(sp, createEventCard1());
                         cards.add(card);
                         panelCard.add(card);
+                        found = true;
+                    }
+                    if (!found) {
+                       JOptionPane.showMessageDialog(null, "Không tìm thấy nhân viên tương ứng.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     }
                     panelCard.repaint();
                     panelCard.revalidate();
@@ -554,7 +548,11 @@ public class formsanpham extends Form {
                             SPCard card = new SPCard(sp, createEventCard1());
                             cards.add(card);
                             panelCard.add(card);
+                            found = true;
                         }
+                    }
+                    if (!found) {
+                        JOptionPane.showMessageDialog(null, "Không tìm thấy nhân viên tương ứng.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     }
                     panelCard.repaint();
                     panelCard.revalidate();
@@ -566,7 +564,6 @@ public class formsanpham extends Form {
                     return;
                 }
 
-                boolean found = false; 
 
                 for (dtosanpham sp : list_SP) {
                     String tenSanPham = sp.getTenSanPham().toLowerCase();
@@ -586,6 +583,9 @@ public class formsanpham extends Form {
         });
 
 
+        txtSearch.addActionListener( e -> {
+            btnSearch.doClick();
+        });
         
         btnReset.addActionListener( e -> {
             txtSearch.setText("");

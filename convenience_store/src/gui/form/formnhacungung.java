@@ -76,7 +76,13 @@ public class formnhacungung extends JPanel{
         JButton cmdEdit = new JButton("Sửa");
         JButton cmdDelete = new JButton("Xóa");
 
-        cmdCreate.addActionListener(e -> showSupplierModal());
+        cmdCreate.addActionListener(e -> {
+            try {
+                showSupplierModal();
+            } catch (SQLException ex) {
+                Logger.getLogger(formnhacungung.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
         panel.add(txtSearch);
         panel.add(cmdCreate);
         panel.add(cmdEdit);
@@ -187,7 +193,7 @@ public class formnhacungung extends JPanel{
         return panel;
     }
 
-    private void showSupplierModal() {
+    private void showSupplierModal() throws SQLException {
         Option option = ModalDialog.createOption();
         option.getLayoutOption().setSize(-1, 1f)
                  .setLocation(Location.TRAILING, Location.TOP)

@@ -34,6 +34,7 @@ import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -257,7 +258,7 @@ public class formnhanvien extends Form {
         };
     }
 
-
+    
     private void addImageField(JPanel panel, GridBagConstraints gbc, String imgPath, JDialog showDialog) {
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -273,7 +274,7 @@ public class formnhanvien extends Form {
         imageDisplayLabel = new JLabel();
         imageDisplayLabel.setPreferredSize(new Dimension(170, 210));
         if(!imgPath.isEmpty()){
-            ImageIcon curImg = new ImageIcon(getClass().getResource("/source/image/nhanvien/" + imgPath));
+            ImageIcon curImg = new ImageIcon(System.getProperty("user.dir") + "/src/source/image/nhanvien/" + imgPath);
             Image scaledImg = curImg.getImage().getScaledInstance(170, 230, Image.SCALE_SMOOTH);
             ImageIcon editImg = new ImageIcon(scaledImg);
             imageDisplayLabel.setIcon(editImg);
@@ -569,6 +570,83 @@ public class formnhanvien extends Form {
         }   
         JOptionPane.showMessageDialog(this, deletedNames.toString());
     }
+    
+    
+    public boolean check_NV(dtonhanvien nv) throws SQLException{
+        String regexTenNV = "^[A-Za-zÀ-ỹ]+( [A-Za-zÀ-ỹ]+)*$";
+        String regexSDT = "^0\\d{9}$";
+        String regexEmail = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+
+        busNV = new busnhanvien();
+        
+        if (nv.getTennhanvien()== null || nv.getTennhanvien().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Tên nhân viên không được để trống");
+            return false;
+        }
+        if(!nv.getTennhanvien().matches(regexTenNV)){
+            JOptionPane.showMessageDialog(null, "Tên nhân viên không chứa ký tự đặc biệt");
+            return false;
+        }
+        
+        if (nv.getSdt() == null || nv.getSdt().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Số điện thoại không được để trống");
+            return false;
+        }
+        
+        if(busNV.checkExistSdt(nv.getSdt())) {
+            JOptionPane.showMessageDialog(null, "Số điện thoại đã tồn tại");
+            return false;
+        }
+        
+        if(!nv.getSdt().matches(regexSDT)){
+            JOptionPane.showMessageDialog(null, "Số điện thoại phải bắt đầu bằng số 0 và đủ 10 số");
+            return false;
+        }
+        
+        if (nv.getEmail() == null || !nv.getEmail().matches(regexEmail)) {
+            JOptionPane.showMessageDialog(null, "Email không hợp lệ");
+            return false;
+        }
+        
+        if(busNV.checkExistEmail(nv.getEmail())) {
+            JOptionPane.showMessageDialog(null, "Email này đã tồn tại");
+            return false;
+        }
+        
+        
+
+        
+        
+        Date ngaysinh = nv.getNgaysinh();
+        if (ngaysinh != null) {
+            Calendar calNgaySinh = Calendar.getInstance();
+            calNgaySinh.setTime(ngaysinh);
+
+            int namSinh = calNgaySinh.get(Calendar.YEAR);
+            int namHienTai = Calendar.getInstance().get(Calendar.YEAR);
+            int tuoi = namHienTai - namSinh;
+
+            // Kiểm tra tuổi, nếu nhỏ hơn 18 tuổi thì báo lỗi
+            if (tuoi < 18 || (tuoi == 18 && calNgaySinh.after(Calendar.getInstance()))) {
+                JOptionPane.showMessageDialog(null, "Nhân viên phải lớn hơn 18 tuổi");
+                return false;
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Không được để trống năm sinh nhân viên");
+            return false;
+        }
+
+        if(nv.getImg().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn hình ảnh cần thêm");
+            return false;
+        }
+
+        
+        
+        return true;
+    }
+
+    
     private void showModal() throws SQLException {
     Option option = ModalDialog.createOption();
     option.getLayoutOption().setSize(-1, 1f)
@@ -590,20 +668,21 @@ public class formnhanvien extends Form {
 
                     try {
                         dtonhanvien nv = form.getNhanVien();
-                        if (form.check_NV(nv)) {
+                        if (check_NV(nv)) {
                             selectedFile = form.getSelectedFile();
                             String root_dir = System.getProperty("user.dir") + "/src/source/image/nhanvien/";
-                            saveImageToDirectory(root_dir);
                             busNV.AddNhanVien(nv);
+                            saveImageToDirectory(root_dir);
                             JOptionPane.showMessageDialog(null, "Thêm nhân viên thành công");
-                            formInit();
-                            isSuccessful = true; // Đặt flag thành công nếu mọi thứ hoàn tất
-                        } 
+                            isSuccessful = true;
+                        }else{
+                            controller.close(); 
+                        }
+                        formInit();
                     } catch (ParseException | SQLException ex) {
                         Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, null, ex);
                         JOptionPane.showMessageDialog(null, "Có lỗi xảy ra trong quá trình thêm nhân viên");
                     }
-
                     if (isSuccessful) {
                         controller.close(); // Chỉ đóng modal nếu tất cả các bước thành công
                     }
