@@ -25,24 +25,46 @@ public class bussanpham {
     private ArrayList<dtoctphieunhap> list_CTPN = new ArrayList<>();
 
     
-    public ArrayList<dtosanpham> list () throws SQLException{
+    public ArrayList<dtosanpham> list (){
         daoSanPham = new daosanpham();
         list_sp = daoSanPham.list();
         return list_sp;
     }
-    
-    
+    public ArrayList<dtosanpham> listByNhaCungCapID (int maNCC){
+        daoSanPham = new daosanpham();
+        list_sp = daoSanPham.listByNhaCungCapID(maNCC);
+        return list_sp;
+    }
+
     public ArrayList<dtosanpham> getList(){
         return list_sp;
     }
     
+    public dtosanpham getById(int maSp){
+        list();
+        for (dtosanpham sp: list_sp){
+            if(sp.getMaSanPham() == maSp) 
+                return sp;
+        }
+        return null;
+    }
+
+    public dtosanpham getByName(String tensp){
+        list();
+        for (dtosanpham sp: list_sp){
+            if(sp.getTenSanPham().equals(tensp))
+                return sp;
+        }
+        return null;
+    }
+
     
     public boolean addSanPham(dtosanpham sp){
         daoSanPham = new daosanpham();
         return daoSanPham.addSanpham(sp);
     }
     
-    public void updateSanPham(dtosanpham sp) throws SQLException{
+    public void updateSanPham(dtosanpham sp){
         daoSanPham = new daosanpham();
         daoSanPham.updateSanPham(sp);
     }
@@ -52,6 +74,9 @@ public class bussanpham {
         daoSanPham.deleteSanPham(masp);
     }
     
+    public dtosanpham getsp(dtosanpham i){
+        return daoSanPham.getsp(i);
+    }
     public Integer getCountSanPham(){
         daoSanPham = new daosanpham();
         Integer count = daoSanPham.getCountSanPham();

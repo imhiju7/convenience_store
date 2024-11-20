@@ -25,6 +25,9 @@ public class bushoadon {
         daoHD.add(HD);
     }
     
+    public dtohoadon gethdgannhat() {
+        return daoHD.getlist().get(0);
+    }
     public dtohoadon get(int mahoadon){
         for(dtohoadon hd: dshd){
             if(hd.getMaHoaDon() == mahoadon){

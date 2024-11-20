@@ -10,6 +10,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author giavi
@@ -131,4 +135,5 @@ public class daouudai {
     public static void main(String[] args) {
         new daouudai().Update(new dtouudai(12,1200,12,0));
     }
+
 }

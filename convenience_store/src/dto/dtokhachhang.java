@@ -9,13 +9,20 @@ package dto;
  * @author giavi
  */
 public class dtokhachhang {
-    public dtokhachhang(){}
-    public dtokhachhang(int maKhachHang, String tenKhachHang, String SDT, int diemTichLuy, int maUuDai) {
+    private int maKhachHang;
+    private String SDT;
+    private String tenKhachHang;
+    private int diemTichLuy;
+    private int maUudai;
+
+    public dtokhachhang() {}
+
+    public dtokhachhang(int maKhachHang, String SDT, String tenKhachHang, int diemTichLuy, int maUudai) {
         this.maKhachHang = maKhachHang;
-        this.tenKhachHang = tenKhachHang;
         this.SDT = SDT;
+        this.tenKhachHang = tenKhachHang;
         this.diemTichLuy = diemTichLuy;
-        this.maUuDai = maUuDai;
+        this.maUudai = maUudai;
     }
 
     public int getMaKhachHang() {
@@ -26,20 +33,20 @@ public class dtokhachhang {
         this.maKhachHang = maKhachHang;
     }
 
-    public String getTenKhachHang() {
-        return tenKhachHang;
-    }
-
-    public void setTenKhachHang(String tenKhachHang) {
-        this.tenKhachHang = tenKhachHang;
-    }
-
     public String getSDT() {
         return SDT;
     }
 
     public void setSDT(String SDT) {
         this.SDT = SDT;
+    }
+
+    public String getTenKhachHang() {
+        return tenKhachHang;
+    }
+
+    public void setTenKhachHang(String tenKhachHang) {
+        this.tenKhachHang = tenKhachHang;
     }
 
     public int getDiemTichLuy() {
@@ -50,23 +57,11 @@ public class dtokhachhang {
         this.diemTichLuy = diemTichLuy;
     }
 
-    public int getMaUuDai() {
-        return maUuDai;
+    public int getMaUudai() {
+        return maUudai;
     }
 
-    public void setMaUuDai(int maUuDai) {
-        this.maUuDai = maUuDai;
+    public void setMaUudai(int maUudai) {
+        this.maUudai = maUudai;
     }
-
-    private int maKhachHang;
-    private String tenKhachHang;
-    private String SDT;
-    private int diemTichLuy;
-    private int maUuDai;
-    
-    @Override
-    public String toString() {
-        return "dtokhachhang{" + "maKhachHang=" + maKhachHang + ", tenKhachHang=" + tenKhachHang + ", SDT=" + SDT + ", diemTichLuy=" + diemTichLuy + ", maUuDai=" + maUuDai + '}';
-    }
-    
 }

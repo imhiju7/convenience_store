@@ -67,7 +67,7 @@ public class MenuCard extends JPanel {
      
     private Icon getProfileIcon(String name) {
         if(!name.equals("")){
-            return new ImageIcon(getClass().getResource("/source/image/sanpham/" + name));
+            return new ImageIcon(System.getProperty("user.dir") + "/src/source/image/sanpham/" + name);
         }else{
             return new ImageIcon(getClass().getResource("/source/image/sanpham/Americano-nong-10oz-01-1-400x400.jpg"));
         }

@@ -21,11 +21,9 @@ import java.util.Date;
  * @author giavi
  */
 public class daokhuyenmai {
-
     public daokhuyenmai() {
     }
 
-    ;
     
     public ArrayList<dtokhuyenmai> getList() {
         ArrayList<dtokhuyenmai> list = new ArrayList<>();

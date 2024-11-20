@@ -134,4 +134,10 @@ public class dtosanpham {
     public void setGiaNhap(double giaNhap) {
         this.giaNhap = giaNhap;
     }
+
+    @Override
+    public String toString() {
+        return "dtosanpham{" + "maPhanLoai=" + maPhanLoai + ", maSanPham=" + maSanPham + ", tenSanPham=" + tenSanPham + ", giaBan=" + giaBan + ", soLuong=" + soLuong + ", ngayThem=" + ngayThem + ", img=" + img + ", ishidden=" + ishidden + ", maNCC=" + maNCC + ", hanSD=" + hanSD + ", giaNhap=" + giaNhap + '}';
+    }
+    
 }

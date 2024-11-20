@@ -12,10 +12,20 @@ import java.util.ArrayList;
  * @author giavi
  */
 public class busnhacungcap {
-    private daonhacungcap daoNCC = new daonhacungcap(); // Tạo một đối tượng dao
     public ArrayList<dtonhacungcap> dsncc; // Danh sách nhà cung cấp
-
-   public busnhacungcap() {
+    private daonhacungcap daoNCC = new daonhacungcap();
+    
+    public dtonhacungcap getById(int id){
+        return daoNCC.getById(id);
+    }
+    public dtonhacungcap getByName(String name){
+        return daoNCC.getByName(name);
+    }
+    
+    public ArrayList <dtonhacungcap> list(){
+        return daoNCC.getlist();
+    }
+    public busnhacungcap() {
         getlist(); // Lấy danh sách khi khởi tạo
     }
 
@@ -72,4 +82,8 @@ public class busnhacungcap {
             System.out.println(ncc);
         }
     }
-}    
+}
+
+
+   
+   
