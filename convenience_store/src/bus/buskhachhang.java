@@ -56,13 +56,13 @@ public class buskhachhang {
         return daoKhachHang.getSoLuongKH();
     }
     public int updatediemtichluy(dtokhachhang i){
-        return dao.updatediemtichluy(i);
+        return daoKhachHang.updatediemtichluy(i);
     }
     public dtokhachhang getkhbyphone(String phone){
-        return dao.getkhbyphone(phone);
+        return daoKhachHang.getkhbyphone(phone);
     }
     public boolean checkphone(String phone){
-        return dao.checkphone(phone);
+        return daoKhachHang.checkphone(phone);
     } 
       public int getNextCustomerCode() {
         return daoKhachHang.getNextCustomerCode();

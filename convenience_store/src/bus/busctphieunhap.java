@@ -79,7 +79,6 @@ public class busctphieunhap {
         for (dtoctphieunhap HD : bus.dsctpn) {
             System.out.println(HD);
         }
-        return sp;
     }
     public int isganhh(String birthday) {
         // Định dạng ngày tháng từ chuỗi

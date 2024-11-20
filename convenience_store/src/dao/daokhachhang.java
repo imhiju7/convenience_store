@@ -122,21 +122,21 @@ public boolean checkSDTExist(String sdt) {
 
         return nextCode;  // Trả về mã khách hàng tiếp theo
     }
-public int getSoLuongKH() {
-        int soLuong = 0;
-                        Connection con = connect.connection();
-
-        String query = "SELECT COUNT(*) AS total FROM khachhang";
-        try (PreparedStatement pstmt = con.prepareStatement(query)) {
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                soLuong = rs.getInt("total");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return soLuong;
-    }
+//public int getSoLuongKH() {
+//        int soLuong = 0;
+//                        Connection con = connect.connection();
+//
+//        String query = "SELECT COUNT(*) AS total FROM khachhang";
+//        try (PreparedStatement pstmt = con.prepareStatement(query)) {
+//            ResultSet rs = pstmt.executeQuery();
+//            if (rs.next()) {
+//                soLuong = rs.getInt("total");
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return soLuong;
+//    }
     
     public int updatediemtichluy(dtokhachhang kh){
         Connection con = connect.connection();
@@ -146,7 +146,7 @@ public int getSoLuongKH() {
         try {
             pst = con.prepareStatement(sql);
             pst.setInt(1, kh.getDiemTichLuy());
-            pst.setInt(2, kh.getMaUuDai());
+            pst.setInt(2, kh.getMaUudai());
             pst.setInt(3, kh.getMaKhachHang());
             rowaffect = pst.executeUpdate();
         } catch (SQLException ex) {
@@ -215,7 +215,7 @@ public dtokhachhang getKhachHangById(int maKhachHang) {
                 kh.setTenKhachHang(rs.getString("tenKhachHang"));
                 kh.setSDT(rs.getString("SDT"));
                 kh.setDiemTichLuy(rs.getInt("diemTichLuy"));
-                kh.setMaUuDai(rs.getInt("maUuDai"));
+                kh.setMaUudai(rs.getInt("maUuDai"));
             }
             con.close();
         } catch (SQLException ex) {
