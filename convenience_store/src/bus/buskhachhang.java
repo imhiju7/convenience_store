@@ -55,10 +55,19 @@ public class buskhachhang {
      public int getSoLuongKH() {
         return daoKhachHang.getSoLuongKH();
     }
+    public int updatediemtichluy(dtokhachhang i){
+        return dao.updatediemtichluy(i);
+    }
+    public dtokhachhang getkhbyphone(String phone){
+        return dao.getkhbyphone(phone);
+    }
+    public boolean checkphone(String phone){
+        return dao.checkphone(phone);
+    } 
       public int getNextCustomerCode() {
         return daoKhachHang.getNextCustomerCode();
     }
-public dtokhachhang getKhachHangById(int maKhachHang) {
+    public dtokhachhang getKhachHangById(int maKhachHang) {
         return daoKhachHang.getKhachHangById(maKhachHang);
     }
     public boolean deleteKhachHang(int maKhachHang) {

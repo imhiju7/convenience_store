@@ -64,7 +64,7 @@ public class bussanpham {
         return daoSanPham.addSanpham(sp);
     }
     
-    public void updateSanPham(dtosanpham sp) throws SQLException{
+    public void updateSanPham(dtosanpham sp){
         daoSanPham = new daosanpham();
         daoSanPham.updateSanPham(sp);
     }
@@ -74,6 +74,9 @@ public class bussanpham {
         daoSanPham.deleteSanPham(masp);
     }
     
+    public dtosanpham getsp(dtosanpham i){
+        return daoSanPham.getsp(i);
+    }
     public Integer getCountSanPham(){
         daoSanPham = new daosanpham();
         Integer count = daoSanPham.getCountSanPham();

@@ -5,15 +5,112 @@ package gui.form;
  *
  * @author AD
  */
+import bus.*;
+import dto.*;
 import gui.comp.Combobox;
 import gui.comp.TableSorter;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
+import java.awt.print.Printable;
+import static java.awt.print.Printable.NO_SUCH_PAGE;
+import static java.awt.print.Printable.PAGE_EXISTS;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
+
 public class formthanhtoan extends javax.swing.JPanel {
 
     /**
      * Creates new form formthanhtoan
      */
-    public formthanhtoan() {
+    static ArrayList<dtosanpham> list = new ArrayList<>();
+    static int manv =0;
+    int mnv;
+    buskhuyenmai khuyenmai = new buskhuyenmai();
+    bushoadon hoadon = new bushoadon();
+    bussanpham sanpham = new bussanpham();
+    busuudai uudai = new busuudai();
+    bustichdiem tichdiem = new bustichdiem();
+    buskhachhang khachhang = new buskhachhang();
+    busnhanvien nhanvien = new busnhanvien();
+    buscthoadon cthoadon = new buscthoadon();
+    busctphieunhap ctphieunhap = new busctphieunhap();
+    ArrayList<dtocthoadon> limenu;
+    
+    dtokhachhang kh = new dtokhachhang();
+    dtouudai ud = new dtouudai();
+    dtokhuyenmai km = new dtokhuyenmai();
+    dtotichdiem td = new dtotichdiem();
+    dtonhanvien nv = new dtonhanvien();
+    dtohoadon hd = new dtohoadon();
+    
+    double tongtien;
+    double tongtienkm;
+    double tongtienud;
+    double tongtienfi;
+    int diem;
+    public void arr_jt (JTable jTable, ArrayList<dtocthoadon> spOrder) {
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("ID");
+        model.addColumn("Tên SP");
+        model.addColumn("SL");
+        model.addColumn("Giá");
+        model.addColumn("Thành tiền");
+        int i = 0;
+        for (dtocthoadon cthd : spOrder) {
+            i++;
+            dtosanpham sp = new dtosanpham();
+            sp.setMaSanPham(cthd.getMaSanPham());
+            sp = sanpham.getsp(sp);
+            
+            int soluong = cthd.getSoLuong();
+            
+            dtoctphieunhap ctpn = ctphieunhap.getspganhh(cthd.getMaSanPham());
+            double giaban = ctpn.getGiaBan();
+            model.addRow(new Object[]{i, sp.getTenSanPham(), cthd.getSoLuong(),giaban, soluong*giaban});
+        }
+        jTable.setModel(model);
+    }
+    public void cbimport(JComboBox jcb,ArrayList<dtokhuyenmai> list){
+        jcb.removeAllItems();
+        jcb.addItem("Phân loại");
+        for(dtokhuyenmai i: list){
+            jcb.addItem(i.getTenKhuyenMai());
+        }
+    }
+    public formthanhtoan(ArrayList<dtocthoadon> list,int ma_nv) {
         init();
+        // loading
+        nv.setManhanvien(ma_nv);
+        nv = nhanvien.getnv(nv);
+        arr_jt(paymentTable, list);
+        
+        double total = cthoadon.gettongtien(list);
+        discountValue.setText(Double.toString(total));
+        
+        cbimport(khuyenMai,khuyenmai.getkhuyenmaitoday());
+        tongtien = total;
+        totalValue.setText(Double.toString(total));
+        
+        tongtienfi = total;
+        hd.setMaNhanVien(ma_nv);
+        hd.setTennhanvien(ma_nv);
+        
+        limenu =  list;
     }
 
     public void init() {
@@ -291,6 +388,95 @@ public class formthanhtoan extends javax.swing.JPanel {
                 .addGap(0, 0, Short.MAX_VALUE))
         );  
     }
+    double bHeight = 0.0;
+    
+    public PageFormat getPageFormat(PrinterJob pj) {
+        PageFormat pf = pj.defaultPage();
+        Paper paper = pf.getPaper();
+        
+        double bodyHeight = bHeight;
+        double headerHeight = 5.0;
+        double footerHeight = 5.0;
+        double width = cm_to_pp(14.5);
+        double height = cm_to_pp(14.8);
+        paper.setSize(width, height);
+        paper.setImageableArea(0, 5, width, height);
+        
+        pf.setOrientation(PageFormat.PORTRAIT);
+        pf.setPaper(paper);
+        return pf;
+    }
+    
+    protected static double cm_to_pp(double cm) {
+        return toPPI(cm * 0.393600787);
+    }
+    
+    protected static double toPPI(double inch) {
+        return inch* 72d;
+    }
+    
+    public class BillPrintable implements Printable {
+           
+        @Override
+        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+            int r = 10;
+            int result = NO_SUCH_PAGE;
+            if(pageIndex == 0) {
+                Graphics2D g2d = (Graphics2D) graphics;
+                double width = pageFormat.getImageableWidth();
+                g2d.translate((int) pageFormat.getImageableX(),(int) pageFormat.getImageableY());
+                
+                try{
+                    int y = 20;
+                    int yShift = 10;
+                    int headerRectHeight = 15;
+                    int a = 125;
+                    int stt=0;
+                    g2d.setFont(new Font("Times New Roman",Font.PLAIN,9));
+//                    g2d.drawImage(s);
+                    g2d.drawString("-------------------------------------------------------------", a, y);y+=yShift;
+                    g2d.drawString("            CỬA HÀNG TIỆN LỢI Mimi                           ", a, y);y+=yShift;
+                    g2d.drawString("       ĐỊA CHỈ: xxxxxxxxxxxxxxxxxx                          ", a, y);y+=yShift;
+                    g2d.drawString("       SĐT: xxxxxxxxxxxxxxxxxx                              ", a, y);y+=yShift;
+                    g2d.drawString("       Ngày mua: "+hd.getNgayMua()+"                         ", a, y);y+=yShift;
+                    g2d.drawString("       Mã hóa đơn: "+hd.getMaHoaDon()+"                         ", a, y);y+=yShift;
+                    g2d.drawString("       Tên Nhân viên: "+nv.getTennhanvien()+"                       ", a, y);y+=yShift;
+                    g2d.drawString("       Tên khách hàng: "+kh.getTenKhachHang()+"                  ", a, y);y+=yShift;
+                    g2d.drawString("-------------------------------------------------------------", a, y);y+=headerRectHeight;
+                    
+                    g2d.drawString("   Tên sản phẩm                              Tổng tiền(VND)   ", a, y);y+=yShift;
+                    g2d.drawString("-------------------------------------------------------------", a, y);y+=headerRectHeight;
+
+                    for (dtocthoadon i : limenu) {
+                        stt++;
+                        dtoctphieunhap ctpn = ctphieunhap.getspganhh(i.getMaSanPham());
+                        g2d.drawString("    "+stt+" "+i.getTensanpham()+"                                        ", a, y);y+=headerRectHeight;
+                        g2d.drawString("        "+ctpn.getGiaBan()+"      *"+i.getSoLuong()+"                            "+i.getSoLuong()*ctpn.getGiaBan(), a, y);y+=yShift;
+                        
+                    }
+                    g2d.drawString("-------------------------------------------------------------", a, y);y+=yShift;
+                    g2d.drawString("    Tổng tiền mua:                                     "+tongtien, a, y);y+=yShift;
+                    g2d.drawString("-------------------------------------------------------------", a, y);y+=yShift;
+                    g2d.drawString("    Áp dụng Khuyến mãi:                                -"+tongtienkm, a, y);y+=yShift;
+                    g2d.drawString("-------------------------------------------------------------", a, y);y+=yShift;
+                    g2d.drawString("    Ưu đãi khách hàng:                                   -"+tongtienud, a, y);y+=yShift;
+                    g2d.drawString("-------------------------------------------------------------", a, y);y+=yShift;
+                    g2d.drawString("    Thành tiền:                                           "+tongtienfi, a, y);y+=yShift;
+                    
+                    g2d.drawString("*******************************************", a, y);y+=yShift;
+                    g2d.drawString("                       CẢM ƠN QUÝ KHÁCH                      ", a, y);y+=yShift;
+                    g2d.drawString("*******************************************", a, y);y+=yShift;
+                    
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+                result = PAGE_EXISTS;
+            }
+            return result;
+        }
+        
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -513,15 +699,17 @@ public class formthanhtoan extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(7, 7, 7)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(phonejLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(phoneTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(checkPhoneBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(checkPhoneBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(phonejLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(phoneTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(namejLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(newCustomerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(newCustomerBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(namejLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -566,10 +754,37 @@ public class formthanhtoan extends javax.swing.JPanel {
 
     private void newCustomerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newCustomerBtnActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_newCustomerBtnActionPerformed
 
     private void checkPhoneBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkPhoneBtnActionPerformed
         // TODO add your handling code here:
+        if(!phoneTextField.getText().isEmpty()){
+            String phone = phoneTextField.getText();
+            if(!khachhang.checkphone(phone)){
+                JOptionPane.showMessageDialog(jPanel2, "Đã tìm thấy!");
+                
+                kh = khachhang.getkhbyphone(phone);
+                hd.setMaKhachHang(kh.getMaKhachHang());
+                ud.setMaUuDai(kh.getMaUuDai());
+                ud = uudai.getud(ud);
+                double tienud = (tongtien*ud.getTiLeGiam())/100;
+                td = tichdiem.gettdbytien(tongtien);
+                hd.setMaTichDiem(td.getMaTichDiem());
+                diem = td.getDiemTichLuy();
+                tongtienfi = tongtienfi - tienud;
+                tongtienud = tienud;
+                saleValue.setText("- "+Integer.toString((int)tienud)+" đ "+Integer.toString(ud.getTiLeGiam())+" %");
+                creditPointValue.setText(Integer.toString(diem));
+                totalValue.setText(Integer.toString((int)tongtienfi));
+            }
+            else{
+                JOptionPane.showMessageDialog(jPanel2, "Không tìm thấy!");
+            }
+        }
+        else{
+            JOptionPane.showMessageDialog(jPanel2, "Chưa nhập số điện thoại cần kiểm tra!");
+        }
     }//GEN-LAST:event_checkPhoneBtnActionPerformed
 
     private void nameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameTextFieldActionPerformed
@@ -582,6 +797,18 @@ public class formthanhtoan extends javax.swing.JPanel {
 
     private void khuyenMaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_khuyenMaiActionPerformed
         // TODO add your handling code here:
+        if(khuyenMai.getSelectedItem() != null){
+            if(!khuyenMai.getSelectedItem().equals("Khuyến mãi")){
+                String tenkhuyenmai = khuyenMai.getSelectedItem().toString();
+                km = khuyenmai.getkmbyname(tenkhuyenmai);
+                hd.setMaKhuyenMai(km.getMaKhuyenMai());
+                double tienkm = (tongtien*km.getPhanTram())/100;
+                tongtienkm = tienkm;
+                discountValue.setText("-"+Integer.toString((int)tienkm)+" đ "+Integer.toString(km.getPhanTram())+" %");
+                tongtienfi = tongtienfi - tongtienkm;
+                totalValue.setText(Integer.toString((int)tongtienfi));
+            }
+        }
     }//GEN-LAST:event_khuyenMaiActionPerformed
 
     private void discountValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_discountValueActionPerformed
@@ -602,6 +829,54 @@ public class formthanhtoan extends javax.swing.JPanel {
 
     private void thanhToanBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thanhToanBtnActionPerformed
         // TODO add your handling code here:
+        hd.setGhiChu(note.getText());
+        hd.setNgayMua((Timestamp) new Date());
+        hd.setTongTien(tongtienfi);
+        
+        hoadon.add(hd);
+        hd = hoadon.gethdgannhat();
+        
+        if(hd.getMaKhuyenMai() != 0){
+            km.setSoLuongDaDung(km.getSoLuongDaDung()+1);
+            khuyenmai.updatekhuyenmai(km);
+        }
+        if(hd.getMaKhachHang() != 0){
+            kh.setDiemTichLuy(kh.getDiemTichLuy()+diem);
+            kh.setMaUuDai(uudai.setudbydiem(kh.getDiemTichLuy()).getMaUuDai());
+            khachhang.updatediemtichluy(kh);
+        }
+        
+        int mahd = hd.getMaHoaDon();
+        // add chi tiet hoa don
+        for(dtocthoadon i: limenu){
+            dtocthoadon cthd = new dtocthoadon();
+            i.setMaHoaDon(mahd);
+            dtoctphieunhap ctpn = ctphieunhap.getspganhh(i.getMaSanPham());
+            cthd.setDonGia(ctpn.getGiaBan());
+            cthoadon.add(cthd);
+            
+            int masp = cthd.getMaSanPham();
+            int soluong = ctpn.getSoluongtonkho() - cthd.getSoLuong();
+            ctpn.setSoluongtonkho(soluong);
+            ctphieunhap.update(ctpn);
+            
+            dtosanpham sp = new dtosanpham();
+            sp.setMaSanPham(masp);
+            sp = sanpham.getsp(sp);
+            int soluongsanpham = sp.getSoLuong() - cthd.getSoLuong();
+            sanpham.updateSanPham(sp);
+        }
+        JOptionPane.showMessageDialog(this, "Thanh toán thành công! In hóa đơn");
+
+        bHeight = Double.valueOf(limenu.size());
+
+        PrinterJob pj = PrinterJob.getPrinterJob();
+        pj.setPrintable(new BillPrintable(), getPageFormat(pj));
+         try {
+            pj.print();
+        } catch (PrinterException ex) {
+            ex.printStackTrace();
+        }
     }//GEN-LAST:event_thanhToanBtnActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

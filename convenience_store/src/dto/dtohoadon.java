@@ -79,7 +79,7 @@ public class dtohoadon {
     }
     
     public dtohoadon(){}
-    public dtohoadon(int maHoaDon, int maNhanVien, double tongTien, int maKhachHang, int maKhuyenMai, Timestamp ngayMua, String ghiChu, int maTichDiem) throws SQLException {
+    public dtohoadon(int maHoaDon, int maNhanVien, double tongTien, int maKhachHang, int maKhuyenMai, Timestamp ngayMua, String ghiChu, int maTichDiem){
         this.maHoaDon = maHoaDon;
         this.maNhanVien = maNhanVien;
         this.tongTien = tongTien;
@@ -132,7 +132,7 @@ public class dtohoadon {
 }
 
 
-    public void setTennhanvien(int manhanvien) throws SQLException {
+    public void setTennhanvien(int manhanvien){
         busnhanvien busnv = new busnhanvien();
         this.tennhanvien = busnv.gettennvbymanv(manhanvien);
     }

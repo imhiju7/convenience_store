@@ -62,6 +62,32 @@ public class daosanpham {
         return list_sp;
     }
     
+    public dtosanpham getsp(dtosanpham i){
+        Connection con = connect.connection();
+        String sql = "SELECT * FROM sanpham WHERE maSanPham = ? ";
+        PreparedStatement pst;
+        dtosanpham sp = new dtosanpham();
+        try {
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, i.getMaSanPham());
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                sp.setMaSanPham(rs.getInt("maSanPham"));
+                sp.setTenSanPham(rs.getString("tenSanPham"));
+                sp.setSoLuong(rs.getInt("soLuong"));
+                sp.setGiaBan(rs.getDouble("giaBan"));
+                sp.setGiaNhap(rs.getDouble("giaNhap"));
+                sp.setNgayThem(rs.getTimestamp("ngayThem"));
+                sp.setMaPhanLoai(rs.getInt("maPhanLoai"));
+                sp.setautoishidden();
+                sp.setImg(rs.getString("img"));
+            }
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daosanpham.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return sp;
+    }
     
     public boolean addSanpham(dtosanpham sp) {
         String sql = "INSERT INTO sanpham (maPhanLoai, maSanPham, tenSanPham, soLuong, ngayThem, img, ishidden, maNhaCungCap, hanSuDung) "
@@ -89,7 +115,7 @@ public class daosanpham {
             return false;
         }
     }
-    public void updateSanPham(dtosanpham sp) throws SQLException {
+    public void updateSanPham(dtosanpham sp) {
         String sql = "UPDATE sanpham SET tenSanPham = ?, maPhanLoai = ?, maNhaCungCap = ?, img = ? WHERE maSanPham = ?";
         Connection con = null;
         PreparedStatement pst = null;
@@ -111,14 +137,26 @@ public class daosanpham {
             }
         } catch (SQLException e) {
             System.err.println("Lỗi khi cập nhật sản phẩm: " + e.getMessage());
-            throw e; // Ném lại ngoại lệ để xử lý ở nơi gọi phương thức
+            try {
+                throw e; // Ném lại ngoại lệ để xử lý ở nơi gọi phương thức
+            } catch (SQLException ex) {
+                Logger.getLogger(daosanpham.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             // Đóng tài nguyên
             if (pst != null) {
-                pst.close();
+                try {
+                    pst.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(daosanpham.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             if (con != null) {
-                con.close();
+                try {
+                    con.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(daosanpham.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }

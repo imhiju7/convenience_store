@@ -289,7 +289,11 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
             return;
         }
         int manv = bustk.getmanhanvien(tendangnhap);
-        new Guimain(manv).setVisible(true);
+        try {
+            new Guimain(manv).setVisible(true);
+        } catch (ParseException ex) {
+            Logger.getLogger(PanelLoginAndRegister.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

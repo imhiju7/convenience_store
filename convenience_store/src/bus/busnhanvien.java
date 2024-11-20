@@ -116,7 +116,9 @@ public class busnhanvien {
     }
     
     
-    
+    public dtonhanvien getnv(dtonhanvien i){
+        return daonv.getnv(i);
+    }
     
     
     public static void main(String args[]) throws SQLException {

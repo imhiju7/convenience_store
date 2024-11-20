@@ -104,15 +104,4 @@ public class daohoadon {
             }
         }
     }
-
-    public static void main(String[] args) {
-        // Create an instance of the DAO class
-        daohoadon dao = new daohoadon();
-
-        // Retrieve the list of details
-        ArrayList<dtohoadon> list = dao.getlist();
-        for (dtohoadon detail : list) {
-            System.out.println(detail);
-        }
-    }
 }
