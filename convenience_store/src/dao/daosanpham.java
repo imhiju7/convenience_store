@@ -208,11 +208,11 @@ public class daosanpham {
 
 
     public ArrayList<dtophieunhap> listPN(Integer maNCC) {
-        ArrayList<dtophieunhap> list = new ArrayList<>();
         java.sql.Connection con = connect.connection();
         String sql = "SELECT * FROM phieunhap WHERE maNhaCungCap = ?";
         try {
             PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1 , maNCC);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
                 dtophieunhap pn = new dtophieunhap();
@@ -229,11 +229,12 @@ public class daosanpham {
                 Logger.getLogger(daophieunhap.class.getName()).log(Level.SEVERE, null, e);
             }
         }
-        return list;
+        return list_Pn;
     }
+    
     public ArrayList<dtoctphieunhap> listCTPN(Integer mapn) throws SQLException {
         String sql = "SELECT * FROM chitietphieunhap WHERE maPhieuNhap = ? AND ishidden = 0";
-       Connection  con = connect.connection();
+        Connection  con = connect.connection();
         PreparedStatement pst = con.prepareStatement(sql);
         pst.setInt(1, mapn);
         ResultSet rs = pst.executeQuery();

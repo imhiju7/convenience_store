@@ -113,7 +113,7 @@ public class formmenu extends Form {
                             if(ctpn.getSoluongtonkho() != 0){
                                 sp.setGiaBan(ctpn.getGiaBan());
                                 sp.setSoLuong(ctpn.getSoluongtonkho());
-                                System.out.println("Giá bán : " + sp.getGiaBan());
+//                                System.out.println("Giá bán : " + sp.getGiaBan());
                                 MenuCard card = new MenuCard(sp, createEventCard());
                                 cards.add(card);
                                 panelCard.add(card);
@@ -129,11 +129,11 @@ public class formmenu extends Form {
                         break; 
                     }
                 }
-                if(!checkTwice){
-                    MenuCard card = new MenuCard(sp, createEventCard());
-                    cards.add(card);
-                    panelCard.add(card);
-                }
+//                if(!checkTwice){
+//                    MenuCard card = new MenuCard(sp, createEventCard());
+//                    cards.add(card);
+//                    panelCard.add(card);
+//                }
             } catch (SQLException ex) {
                 Logger.getLogger(formmenu.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -251,7 +251,7 @@ public class formmenu extends Form {
                     dh.setMa(e.getMaSanPham());
                     dh.setTen(e.getTenSanPham());
 //                    dh.setTt(e.getGiaBan());
-                    dh.setTt(25000.0);
+                    dh.setTt(e.getGiaBan());
                     dh.setSl(Integer.parseInt(quantityField.getText()));
                     addListGioHang(dh,e.getSoLuong());
                     showDialog.setVisible(false);
@@ -283,7 +283,7 @@ public class formmenu extends Form {
         for(dtodonhang dh1 : list_donhang){
             if(dh1.getMa() == dh.getMa()){
                 if(sl < dh1.getSl() + dh.getSl()){
-                    JOptionPane.showMessageDialog(null, "Số lượng muốn thêm trong giỏ hàng đã vượt quá số lượng trong kho");
+                    JOptionPane.showMessageDialog(null, "Số lượng hiện có trong giỏ hàng và số lượng muốn thêm đã vượt quá số lượng trong kho");
                     return;
                 }
                 dh1.setSl(dh1.getSl() + dh.getSl());
@@ -313,7 +313,7 @@ public class formmenu extends Form {
         imageDisplayLabel = new JLabel();
         imageDisplayLabel.setPreferredSize(new Dimension(170, 210));
         if (!imgPath.isEmpty()) {
-            ImageIcon curImg = new ImageIcon(getClass().getResource("/source/image/sanpham/" + imgPath));
+            ImageIcon curImg = new ImageIcon(System.getProperty("user.dir") + "/src/source/image/sanpham/" + imgPath);
             Image scaledImg = curImg.getImage().getScaledInstance(170, 230, Image.SCALE_SMOOTH);
             ImageIcon editImg = new ImageIcon(scaledImg);
             imageDisplayLabel.setIcon(editImg);
@@ -446,6 +446,7 @@ public class formmenu extends Form {
             panelCard.removeAll(); // Xóa các card cũ khỏi panelCard
             String searchText = txtSearch.getText().toLowerCase().trim(); // Lấy chuỗi tìm kiếm và loại bỏ khoảng trắng thừa
             String tenmpl = (String) comboMaPL.getSelectedItem();
+            boolean found = false; 
             try {
                 list_Sp = busSP.list();
             } catch (SQLException ex) {
@@ -463,6 +464,10 @@ public class formmenu extends Form {
                         MenuCard card = new MenuCard(sp, createEventCard());
                         cards.add(card);
                         panelCard.add(card);
+                        found = true;
+                    }
+                    if (!found) {
+                        JOptionPane.showMessageDialog(null, "Không tìm thấy sản phẩm tương ứng.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     }
                     panelCard.repaint();
                     panelCard.revalidate();
@@ -473,7 +478,12 @@ public class formmenu extends Form {
                             MenuCard card = new MenuCard(sp, createEventCard());
                             cards.add(card);
                             panelCard.add(card);
+                            found = true;
+
                         }
+                    }
+                    if (!found) {
+                        JOptionPane.showMessageDialog(null, "Không tìm thấy sản phẩm tương ứng.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     }
                     panelCard.repaint();
                     panelCard.revalidate();
@@ -485,7 +495,6 @@ public class formmenu extends Form {
                     return;
                 }
 
-                boolean found = false; 
 
                 for (dtosanpham sp : list_Sp) {
                     String tenSanPham = sp.getTenSanPham().toLowerCase();
@@ -497,13 +506,16 @@ public class formmenu extends Form {
                     }
                 }
                 if (!found) {
-                    JOptionPane.showMessageDialog(null, "Không tìm thấy nhân viên tương ứng.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Không tìm thấy sản phẩm tương ứng.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }
                 panelCard.repaint();
                 panelCard.revalidate();
             }
         });
 
+        txtSearch.addActionListener(e -> {
+            btnSearch.doClick(); // 
+        });
 
         
         btnReset.addActionListener( e -> {
@@ -658,13 +670,15 @@ public class formmenu extends Form {
             cartTable.setAutoCreateRowSorter(true);
             cartTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
             cartTable.setFillsViewportHeight(true);
+            cartTable.getTableHeader().setReorderingAllowed(false);
 
-            cartTable.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    int row = cartTable.getSelectedRow();
-                }
-            });
+
+//            cartTable.addMouseListener(new MouseAdapter() {
+//                @Override
+//                public void mouseClicked(MouseEvent e) {
+//                    int row = cartTable.getSelectedRow();
+//                }
+//            });
 
             
             TableColumnModel columnModel = cartTable.getColumnModel();
