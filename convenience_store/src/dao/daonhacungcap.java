@@ -10,13 +10,10 @@ import java.util.logging.Logger;
 
 public class daonhacungcap {
 
-    public daonhacungcap() {
-    }
-    
     public dtonhacungcap getById(int maNhaCungCap) {
         dtonhacungcap nhaCungCap = null;
         java.sql.Connection con = connect.connection();
-        String sql = "SELECT * FROM nhacungcap WHERE maNhaCungCap = ? AND trangThai = 0";
+        String sql = "SELECT * FROM nhacungcap WHERE maNhaCungCap = ? AND isDelete = 0";
 
         try {
             PreparedStatement pst = con.prepareStatement(sql);
@@ -24,7 +21,7 @@ public class daonhacungcap {
             ResultSet rs = pst.executeQuery();
 
             if (rs.next()) {
-                dtonhacungcap ncc = new dtonhacungcap(
+                nhaCungCap = new dtonhacungcap(
                     rs.getInt("maNhaCungCap"),
                     rs.getString("tenNhaCungCap"),
                     rs.getString("SDT"),
@@ -49,7 +46,7 @@ public class daonhacungcap {
     public dtonhacungcap getByName(String tenNhaCungCap) {
         dtonhacungcap nhaCungCap = null;
         java.sql.Connection con = connect.connection();
-        String sql = "SELECT * FROM nhacungcap WHERE tenNhaCungCap = ? AND trangThai = 0";
+        String sql = "SELECT * FROM nhacungcap WHERE tenNhaCungCap = ? AND isDelete = 0";
 
         try {
             PreparedStatement pst = con.prepareStatement(sql);
@@ -57,7 +54,7 @@ public class daonhacungcap {
             ResultSet rs = pst.executeQuery();
 
             if (rs.next()) {
-                dtonhacungcap ncc = new dtonhacungcap(
+                nhaCungCap = new dtonhacungcap(
                     rs.getInt("maNhaCungCap"),
                     rs.getString("tenNhaCungCap"),
                     rs.getString("SDT"),
@@ -234,17 +231,7 @@ public class daonhacungcap {
     public static void main(String[] args) {
         daonhacungcap dao = new daonhacungcap();
 
-        // Lấy danh sách nhà cung cấp
-        ArrayList<dtonhacungcap> list = dao.getlist();
-        for (dtonhacungcap ncc : list) {
-            System.out.println(ncc);
-        }
+        System.out.println(dao.getById(1));
 
-        // Thêm một nhà cung cấp mới (ví dụ)
-        dtonhacungcap newNCC = new dtonhacungcap(0, "Nhà Cung Cấp Mới", "0912345678", "nccmoi@example.com", "Đà Nẵng", 0);
-        dao.add(newNCC);
-
-        // Đếm số lượng nhà cung cấp
-        System.out.println("Số lượng nhà cung cấp: " + dao.getCountNhaCungCap());
     }
 }

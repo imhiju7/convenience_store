@@ -169,24 +169,6 @@ public class formphieunhap extends javax.swing.JPanel {
     midLeft.add(new JLabel("Tổng tiền"), "gapy 5 0");
     midLeft.add(txtTotal, "growx, wrap");
 
-    // Focus listener for txtNCCid
-    txtNCCid.addFocusListener(new FocusAdapter() {
-        @Override
-        public void focusLost(FocusEvent e) {
-            
-            String id = txtNCCid.getText().trim();
-            if (!id.isEmpty()) {
-
-                if(busncc.getById(Integer.parseInt(id)) == null && activate){
-                    JOptionPane.showMessageDialog(null, "Không tìm thấy mã Nhà cung cấp đã nhập");
-                    activate = false;
-                    return;
-                }
-                String providerName = busncc.getById(Integer.parseInt(id)).getTenNhaCungCap(); 
-                cbNCCname.setSelectedItem(providerName);
-            }
-        }
-    });
     txtNCCid.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -194,7 +176,6 @@ public class formphieunhap extends javax.swing.JPanel {
             if (!id.isEmpty()) {
                 if(busncc.getById(Integer.parseInt(id)) == null){
                     JOptionPane.showMessageDialog(null, "Không tìm thấy mã Nhà cung cấp đã nhập");
-                    activate = true;
                     return;
                 }
                 String providerName = busncc.getById(Integer.parseInt(id)).getTenNhaCungCap(); 
@@ -507,6 +488,7 @@ public class formphieunhap extends javax.swing.JPanel {
         unit.setMaximumSize(new Dimension(80, 28));
          txtGiaBan = new JTextField();
         txtGiaBan.setEditable(false);
+        txtGiaBan.setMinimumSize(new Dimension(150, 28));
         JTextArea txtAddress = new JTextArea("ảnh sp hiện ở đây, nhưng chưa làm=)");
         txtAddress.setWrapStyleWord(true);
         txtAddress.setLineWrap(true);

@@ -766,7 +766,7 @@ public class formthanhtoan extends javax.swing.JPanel {
                 
                 kh = khachhang.getkhbyphone(phone);
                 hd.setMaKhachHang(kh.getMaKhachHang());
-                ud.setMaUuDai(kh.getMaUuDai());
+                ud.setMaUuDai(kh.getMaUudai());
                 ud = uudai.getud(ud);
                 double tienud = (tongtien*ud.getTiLeGiam())/100;
                 td = tichdiem.gettdbytien(tongtien);
@@ -804,7 +804,7 @@ public class formthanhtoan extends javax.swing.JPanel {
                 hd.setMaKhuyenMai(km.getMaKhuyenMai());
                 double tienkm = (tongtien*km.getPhanTram())/100;
                 tongtienkm = tienkm;
-                discountValue.setText("-"+Integer.toString((int)tienkm)+" đ "+Integer.toString(km.getPhanTram())+" %");
+                discountValue.setText("-"+Integer.toString((int)tienkm)+" đ "+Double.toString(km.getPhanTram())+" %");
                 tongtienfi = tongtienfi - tongtienkm;
                 totalValue.setText(Integer.toString((int)tongtienfi));
             }
@@ -842,7 +842,7 @@ public class formthanhtoan extends javax.swing.JPanel {
         }
         if(hd.getMaKhachHang() != 0){
             kh.setDiemTichLuy(kh.getDiemTichLuy()+diem);
-            kh.setMaUuDai(uudai.setudbydiem(kh.getDiemTichLuy()).getMaUuDai());
+            kh.setMaUudai(uudai.setudbydiem(kh.getDiemTichLuy()).getMaUuDai());
             khachhang.updatediemtichluy(kh);
         }
         

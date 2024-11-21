@@ -81,6 +81,10 @@ public class busnhacungcap {
         for (dtonhacungcap ncc : bus.dsncc) {
             System.out.println(ncc);
         }
+        
+        
+                
+        System.out.println(bus.getById(1));
     }
 }
 
