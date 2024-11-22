@@ -32,7 +32,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 
-public class formthanhtoan extends javax.swing.JPanel {
+public class formthanhtoan extends javax.swing.JFrame {
 
     /**
      * Creates new form formthanhtoan

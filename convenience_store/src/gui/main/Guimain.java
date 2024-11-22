@@ -17,6 +17,7 @@ import gui.form.formhoadon;
 import gui.form.formphieunhap;
 import gui.form.frmlogin;
 import gui.form.formkhachhang;
+import gui.form.formnhacungcap;
 import gui.form.formtaikhoan;
 import gui.form.formthanhtoan;
 import gui.swing.dashboard.MenuItem;
@@ -78,7 +79,7 @@ public class Guimain extends javax.swing.JFrame {
                         e.printStackTrace();
                     }
                      try {
-                         main.showForm(new formmenu());
+                         main.showForm(new formmenu(manv));
                      } catch (SQLException ex) {
                          Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
                      }
@@ -104,6 +105,14 @@ public class Guimain extends javax.swing.JFrame {
                      } catch (SQLException ex) {
                          Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
                      }
+                 }
+                if ((menuIndex==1)&&(subMenuIndex==1)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     main.showForm(new formnhacungcap());
                  }
                 if ((menuIndex==1)&&(subMenuIndex==2)) {
                      try {
