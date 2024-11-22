@@ -14,12 +14,14 @@ import gui.form.formmenu;
 import gui.form.formsanpham;
 import gui.form.formthongke;
 import gui.form.formhoadon;
+import gui.form.formhopdong;
 import gui.form.formphieunhap;
 import gui.form.frmlogin;
 import gui.form.formkhachhang;
 import gui.form.formnhacungcap;
 import gui.form.formtaikhoan;
 import gui.form.formthanhtoan;
+import gui.form.formuudaivakhuyenmai;
 import gui.swing.dashboard.MenuItem;
 import gui.swing.dashboard.PopupMenu;
 import gui.swing.icon.GoogleMaterialDesignIcons;
@@ -172,7 +174,31 @@ public class Guimain extends javax.swing.JFrame {
                     }
                      main.showForm(new formchamcong());
                  }
+                 
+//                  if ((menuIndex==2)&&(subMenuIndex==4)) {
+//                     try {
+//                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                     main.showForm(new formluong());
+//                 }
+
+                  if ((menuIndex==2)&&(subMenuIndex==5)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     try {
+                         main.showForm(new formhopdong());
+                     } catch (SQLException ex) {
+                         Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
+                     }
+                 }
+  
                 // Danh mục Khách hàng
+                //Thông tin khách hàng
                 if ((menuIndex == 3) && (subMenuIndex == 0)) { // menuIndex=3: Khách hàng, subMenuIndex=0: danh sách khách hàng
                     try {
                         UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
@@ -185,8 +211,19 @@ public class Guimain extends javax.swing.JFrame {
                         Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-
-
+                //Thông tin ưu đãi, khuyến mãi
+                if ((menuIndex == 3) && (subMenuIndex == 1)) { // menuIndex=3: Khách hàng, subMenuIndex=0: danh sách khách hàng
+                                   try {
+                                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                                   } catch (Exception e) {
+                                       e.printStackTrace();
+                                   }
+                                   try {
+                                       main.showForm(new formuudaivakhuyenmai());
+                                   } catch (Exception ex) { // Đổi từ SQLException thành Exception
+                                       Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
+                                   }
+                               }
 //                 Danh mục Thống kê
                   if ((menuIndex==4)&&(subMenuIndex==0)) {
                      try {
