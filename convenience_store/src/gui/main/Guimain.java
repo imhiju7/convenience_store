@@ -81,7 +81,7 @@ public class Guimain extends javax.swing.JFrame {
                         e.printStackTrace();
                     }
                      try {
-                         main.showForm(new formmenu());
+                         main.showForm(new formmenu(manv));
                      } catch (SQLException ex) {
                          Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
                      }
