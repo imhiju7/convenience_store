@@ -19,7 +19,7 @@ public class connect {
     public static Connection connection(){
         String url = "jdbc:mysql://127.0.0.1:3306/qlcuahangtienloi";  // tao database trong mysql ten qlcuahangtienloi
         String username = "root";
-        String password = "ToilaHieuday7"; // password tuy moi nguoi dat cho cai connect trong mysql
+        String password = "anhtuan123"; // password tuy moi nguoi dat cho cai connect trong mysql
         Connection con = null;
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
