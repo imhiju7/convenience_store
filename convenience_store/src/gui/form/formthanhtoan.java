@@ -93,6 +93,7 @@ public class formthanhtoan extends javax.swing.JFrame {
         }
     }
     public formthanhtoan(ArrayList<dtocthoadon> list,int ma_nv) {
+        System.out.print("dfds");
         init();
         // loading
         nv.setManhanvien(ma_nv);

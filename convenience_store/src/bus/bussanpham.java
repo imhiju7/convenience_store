@@ -75,6 +75,7 @@ public class bussanpham {
     }
     
     public dtosanpham getsp(dtosanpham i){
+        daoSanPham = new daosanpham();
         return daoSanPham.getsp(i);
     }
     public Integer getCountSanPham(){

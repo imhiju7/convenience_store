@@ -744,12 +744,14 @@ public class formmenu extends Form {
                         a.setMaSanPham(i.getMa());
                         a.setSoLuong(i.getSl());
                         a.setTensanpham(i.getMa());
+                        list.add(a);
+
                     }
                     new formthanhtoan(list,manv).setVisible(true);
                     giohangDialog.dispose();
                 }
                 else{
-                    
+
                 }
             });
 
