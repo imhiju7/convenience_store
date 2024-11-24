@@ -32,7 +32,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 
-public class formthanhtoan extends javax.swing.JPanel {
+public class formthanhtoan extends javax.swing.JFrame {
 
     /**
      * Creates new form formthanhtoan
@@ -93,6 +93,7 @@ public class formthanhtoan extends javax.swing.JPanel {
         }
     }
     public formthanhtoan(ArrayList<dtocthoadon> list,int ma_nv) {
+        System.out.print("dfds");
         init();
         // loading
         nv.setManhanvien(ma_nv);

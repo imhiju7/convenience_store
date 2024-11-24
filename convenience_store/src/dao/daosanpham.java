@@ -75,8 +75,6 @@ public class daosanpham {
                 sp.setMaSanPham(rs.getInt("maSanPham"));
                 sp.setTenSanPham(rs.getString("tenSanPham"));
                 sp.setSoLuong(rs.getInt("soLuong"));
-                sp.setGiaBan(rs.getDouble("giaBan"));
-                sp.setGiaNhap(rs.getDouble("giaNhap"));
                 sp.setNgayThem(rs.getTimestamp("ngayThem"));
                 sp.setMaPhanLoai(rs.getInt("maPhanLoai"));
                 sp.setautoishidden();

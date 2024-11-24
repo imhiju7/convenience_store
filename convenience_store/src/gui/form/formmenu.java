@@ -8,6 +8,7 @@ import net.miginfocom.swing.MigLayout;
 import gui.layout.ResponsiveLayout;
 import gui.model.ModelEmployee;
 import dto.SampleData;
+import dto.dtocthoadon;
 import dto.dtoctphieunhap;
 import dto.dtodonhang;
 import dto.dtonhacungcap;
@@ -69,12 +70,12 @@ public class formmenu extends Form {
     private JTextField quantityField;
     private ArrayList<dtophieunhap> list_PN;
     private ArrayList<dtoctphieunhap> list_CTPN;
+    private int manv;
     
-    
-    public formmenu() throws SQLException {
+    public formmenu(int ma_nv) throws SQLException {
         init();
         formInit();
-        
+        manv = ma_nv;
     }
 
     private void init() throws SQLException {
@@ -735,6 +736,23 @@ public class formmenu extends Form {
             
             
             JButton btnCheckout = new JButton("Thanh toán");
+            btnCheckout.addActionListener(e -> {
+                if(!list_donhang.isEmpty()){
+                    ArrayList<dtocthoadon> list = new ArrayList<>();
+                    for(dtodonhang i : list_donhang){
+                        dtocthoadon a = new dtocthoadon();
+                        a.setMaSanPham(i.getMa());
+                        a.setSoLuong(i.getSl());
+                        a.setTensanpham(i.getMa());
+                        list.add(a);
+                    }
+                    new formthanhtoan(list,manv).setVisible(true);
+                    giohangDialog.dispose();
+                }
+                else{
+
+                }
+            });
 
             // Thêm các thành phần vào bottomPanel
             bottomPanel.add(totalLabel);
