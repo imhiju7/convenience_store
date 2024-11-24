@@ -105,31 +105,31 @@ public class daochucnang {
     }
 
     // Lấy tên chức năng theo mã chức năng
-    public String getTenChucNang(int maChucNang) {
-        String tenChucNang = null;
-        Connection con = connect.connection();
-        String sql = "SELECT tenChucNang FROM chucnang WHERE maChucNang = ?";
+   public String getTenDanhMuc(int maDanhMuc) {
+    String tenDanhMuc = null;
+    Connection con = connect.connection(); // Kết nối cơ sở dữ liệu
+    String sql = "SELECT tenDanhMuc FROM danhmuc WHERE maDanhMuc = ?"; // Câu truy vấn SQL
 
+    try {
+        PreparedStatement pst = con.prepareStatement(sql);
+        pst.setInt(1, maDanhMuc); // Gán giá trị mã danh mục cho tham số
+        ResultSet rs = pst.executeQuery();
+        if (rs.next()) {
+            tenDanhMuc = rs.getString("tenDanhMuc"); // Lấy tên danh mục từ kết quả
+        }
+    } catch (SQLException e) {
+        e.printStackTrace(); // Xử lý ngoại lệ
+    } finally {
         try {
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setInt(1, maChucNang); // Đặt giá trị cho tham số
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                tenChucNang = rs.getString("tenChucNang"); // Lấy tên chức năng
+            if (con != null) {
+                con.close(); // Đóng kết nối
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (con != null) {
-                    con.close(); // Đảm bảo đóng kết nối
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            e.printStackTrace(); // Xử lý ngoại lệ khi đóng kết nối
         }
-        return tenChucNang; // Trả về tên chức năng
     }
+    return tenDanhMuc; // Trả về tên danh mục
+}
 
     // Lấy số lượng chức năng
     public int getCountChucNang() {

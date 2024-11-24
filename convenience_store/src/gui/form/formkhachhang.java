@@ -60,6 +60,7 @@ public class formkhachhang extends JPanel {
         panelDetails.add(txtDiemTichLuy);
         panelDetails.add(new JLabel("Mã ưu đãi:"));
         txtMaUuDai = new JTextField();
+        txtMaUuDai.setEnabled(false);  
         panelDetails.add(txtMaUuDai);
 
         // Panel for buttons and search

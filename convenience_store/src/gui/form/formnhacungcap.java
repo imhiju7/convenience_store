@@ -104,7 +104,7 @@ public class formnhacungcap extends JPanel {
 
         // Vô hiệu hóa việc thay đổi thứ tự cột
         table.getTableHeader().setReorderingAllowed(false);
-        table.getColumnModel().getColumn(0).setHeaderRenderer(new CheckBoxTableHeaderRenderer(table, 0));
+    
 
         // Thiết lập renderer cho cột checkbox
         table.getColumnModel().getColumn(0).setHeaderRenderer(new CheckBoxTableHeaderRenderer(table, 0));
