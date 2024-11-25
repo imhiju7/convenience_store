@@ -129,16 +129,21 @@ public class dtoctphieunhap {
         bussanpham sp = new bussanpham();
         return sp.getById(masp).getTenSanPham();
     }
+    public int getMaNCC(int masp){
+        bussanpham sp = new bussanpham();
+        return sp.getById(masp).getMaNCC();
+    }
+    
     @Override
     public String toString() {
         return "dtoctphieunhap{" + "maCTPhieuNhap=" + maCTPhieuNhap + ", soLuong=" + soLuong + ", giaNhap=" + giaNhap + ", giaBan=" + giaBan + ", maPhieuNhap=" + maPhieuNhap + ", maSanPham=" + maSanPham + ", ngayhethan=" + ngayhethan + ", soluongtonkho=" + soluongtonkho + ", ishidden=" + ishidden + ", ghichu=" + ghichu + '}';
     }
 
-    public Object[] toTableRow() {
-        return new Object[]{maSanPham , getTenSP(maSanPham), giaNhap, soLuong, ngayhethan, giaBan, soluongtonkho};
+    public Object[] toTableRow(int index) {
+        return new Object[]{index, maSanPham , getTenSP(maSanPham), giaNhap, soLuong, ngayhethan, giaBan, soluongtonkho};
     }
     
     public Object[] toAdditionalTableRow() {
-        return new Object[]{maSanPham , getTenSP(maSanPham), ngayhethan, soluongtonkho};
+        return new Object[]{getMaNCC(maSanPham), maSanPham , getTenSP(maSanPham), ngayhethan, soluongtonkho};
     }
 }

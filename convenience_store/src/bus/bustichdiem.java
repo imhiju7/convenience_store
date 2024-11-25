@@ -26,4 +26,8 @@ public class bustichdiem {
         }
         return td;
     }
+    public dtotichdiem get(int id){
+        return daoTichDiem.get(id);
+    }
+
 }

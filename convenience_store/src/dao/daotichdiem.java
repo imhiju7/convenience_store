@@ -41,4 +41,26 @@ public class daotichdiem {
         Collections.sort(list, (dtotichdiem person1, dtotichdiem person2) -> Double.compare(person1.getTien(), person2.getTien()));
         return list;
     }
+    
+    public dtotichdiem get(int id){
+        Connection con = connect.connection();
+        String sql = "SELECT * FROM tichdiem WHERE maTichDiem = ?";
+        
+        dtotichdiem td = new dtotichdiem();
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, id);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                
+                td.setMaTichDiem(rs.getInt("maTichDiem"));
+                td.setTien(rs.getDouble("Tien"));
+                td.setDiemTichLuy(rs.getInt("diemTichLuy"));
+            }
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daotichdiem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return td;
+    }
 }

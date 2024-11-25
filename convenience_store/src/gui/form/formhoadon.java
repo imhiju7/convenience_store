@@ -97,8 +97,6 @@ public class formhoadon extends javax.swing.JPanel {
             }
         });
 
-        // style
-        generalTable.putClientProperty(FlatClientProperties.STYLE, "" + "arc:20;" + "background:$Table.background;");
         generalTable.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" + "height:30;" + "hoverBackground:null;" + "pressedBackground:null;" + "separatorColor:$TableHeader.background;");
         generalTable.putClientProperty(FlatClientProperties.STYLE, "" + "rowHeight:30;" + "showHorizontalLines:true;" + "intercellSpacing:0,1;" + "cellFocusColor:$TableHeader.hoverBackground;" + "selectionBackground:$TableHeader.hoverBackground;" + "selectionInactiveBackground:$TableHeader.hoverBackground;" + "selectionForeground:$Table.foreground;");
         scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" + "trackArc:$ScrollBar.thumbArc;" + "trackInsets:3,3,3,3;" + "thumbInsets:3,3,3,3;" + "background:$Table.background;");
@@ -159,10 +157,6 @@ public class formhoadon extends javax.swing.JPanel {
         }
     });
 
-    // Style settings for generalTable
-    table.putClientProperty(FlatClientProperties.STYLE, "" +
-            "arc:20;" +
-            "background:$Table.background;");
     table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
             "height:30;" +
             "hoverBackground:null;" +
@@ -361,7 +355,7 @@ public class formhoadon extends javax.swing.JPanel {
         }
         else{
             bustichdiem td = new bustichdiem();
-            txtScore.setText("chua update");
+            txtScore.setText(String.valueOf(td.get(tdid).getDiemTichLuy()));
         }
         
 
@@ -384,8 +378,8 @@ public class formhoadon extends javax.swing.JPanel {
         btnDetail.addActionListener(e -> {
             JDialog dialog = new JDialog((JFrame) null, "Chi tiết hóa đơn", true);
             dialog.setContentPane(detailForms(hdIDOnClick));
+            dialog.setLocation(600,100);
             dialog.pack();
-            dialog.setLocationRelativeTo(generalTable);
             dialog.setVisible(true);
         });
     }

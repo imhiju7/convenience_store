@@ -54,6 +54,7 @@ import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import org.apache.xmlbeans.impl.jam.JPackage;
@@ -67,9 +68,9 @@ public class formphieunhap extends javax.swing.JPanel {
     private busctphieunhap busctpn = new busctphieunhap();
     private bussanpham bussp = new bussanpham();
     private JButton btnDetail;
-    private int manv;
+    private int manv, index = -1;
     boolean activate = false;
-    JTextField txtNCCid, txtSL, txtGiaNhap, txtGiaBan, txtSPid, txtTotal;
+    JTextField txtNCCid, txtSL, txtGiaNhap, txtGiaBan, txtSPid, txtTotal, txtLoiNhuan;
     JTextArea txtNote;
     JComboBox<String> cbNCCname;
     JDateChooser dateChooser;
@@ -146,7 +147,16 @@ public class formphieunhap extends javax.swing.JPanel {
     busnhacungcap busncc = new busnhacungcap();
     JPanel midLeft = new JPanel(new MigLayout("fillx, wrap 2", "[fill][grow]"));
     txtNCCid = new JTextField();
+    txtNCCid.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if (!Character.isDigit(c)) {
+                    e.consume(); // Reject non-numeric characters
+                }
+            }
+        });
     txtNCCid.setHorizontalAlignment(JTextField.CENTER);
+    txtNCCid.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nhập mã");
     cbNCCname = new JComboBox<>();
     cbNCCname.addItem("");
     for(dtonhacungcap ncc: busncc.list()){
@@ -221,7 +231,7 @@ public class formphieunhap extends javax.swing.JPanel {
     panel.add(label, BorderLayout.SOUTH); // Add the label to the top
 
     // Creating a sample table with some data for demonstration
-    String[] columns = {"Mã SP", "Tên", "Ngày hết hạn", "Số lượng tồn kho"};
+    String[] columns = {"Mã NCC", "Mã SP", "Tên", "Ngày hết hạn", "Số lượng tồn kho"};
     additionalTable = new DefaultTableModel(columns, 0) {
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -268,7 +278,7 @@ public class formphieunhap extends javax.swing.JPanel {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
 
         // Create table model
-        Object columns[] = new Object[]{"Mã SP", "Tên sản phẩm", "Giá nhập", "Số lượng", "Ngày hết hạn", "Giá bán"};
+        Object columns[] = new Object[]{"#", "Mã SP", "Tên sản phẩm", "Giá nhập", "Số lượng", "Ngày hết hạn", "Giá bán"};
         modelNhapHang = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -291,10 +301,7 @@ public class formphieunhap extends javax.swing.JPanel {
             }
         });
 
-        // Style settings for nhapHangTable
-        table.putClientProperty(FlatClientProperties.STYLE, "" +
-                "arc:20;" +
-                "background:$Table.background;");
+
         table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
                 "height:30;" +
                 "hoverBackground:null;" +
@@ -323,6 +330,15 @@ public class formphieunhap extends javax.swing.JPanel {
         // Add scrollPane to the panel
         panel.add(scrollPane, "growx"); // Adjust with growx to expand width
 
+
+        // Add MouseListener for row click
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                index = table.getSelectedRow();
+            }
+        });
+
         return panel;
     }
     
@@ -330,8 +346,11 @@ public class formphieunhap extends javax.swing.JPanel {
 
         modelNhapHang.setRowCount(0);
         if (nhapHangList == null) return;
+        int i = 1;
         for (dtoctphieunhap cc: nhapHangList){
-            modelNhapHang.addRow(cc.toTableRow());
+
+            modelNhapHang.addRow(cc.toTableRow(i));
+            i+=1;
         }
     }
     private Component createNhapHangListHeader() {
@@ -343,20 +362,30 @@ public class formphieunhap extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(panel, "Vui lòng chọn Nhà cung cấp để thực hiện nhập hàng", "Invalid ID", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            
+            txtNCCid.setEditable(false);
+            UIManager.put("ComboBox.disabledForeground", Color.BLACK);
+            cbNCCname.setEnabled(false); // Works with new LookAndFeel settings
+
             showModal();
             }
         );
         
         JButton btnDelete = new JButton("Delete");
         btnDelete.addActionListener(e -> {
-
+            if (index == -1){
+                JOptionPane.showMessageDialog(panel, "Vui lòng chọn 1 sản phẩm để xóa", "Invalid index", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            nhapHangList.remove(index);
+            reloadDataToNhapHangTable();
+            index = -1;
         });
-                
-        panel.add(btnDelete);
+            
         panel.add(btnAdd);
+        panel.add(btnDelete);
+        
                      
-
         panel.putClientProperty(FlatClientProperties.STYLE, "background:null;");
         return panel;
     }
@@ -377,6 +406,10 @@ public class formphieunhap extends javax.swing.JPanel {
             (controller, action) -> {
                 if (action == SimpleModalBorder.YES_OPTION) {
                     
+                    if(txtSPid.getText().isEmpty() || txtGiaNhap.getText().isEmpty() || dateChooser.getDate() == null || txtLoiNhuan.getText().isEmpty()){
+                        JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin", "Cannot add", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
                     double total = txtTotal.getText().isEmpty() ? 0 : doubleValueofTextField(txtTotal);
                     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                     dtoctphieunhap ct;
@@ -408,8 +441,6 @@ public class formphieunhap extends javax.swing.JPanel {
         option
     );
 }
-
-    
     private int intValueofTextField(JTextField t){
         return Integer.parseInt(String.valueOf(t.getText()));
     }
@@ -427,30 +458,6 @@ public class formphieunhap extends javax.swing.JPanel {
         for (dtosanpham sp : products) {
                 txtSPname.addItem(sp.getTenSanPham());
             }
-        // Populate ComboBox with product names based on supplier ID
-                // Shared flag to prevent duplicate JOptionPane calls
-
-        // Add FocusListener to txtSPid
-        txtSPid.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (dialogShown.get()) {
-                return; // Prevent duplicate dialogs
-            }
-
-            for (dtosanpham sp : products) {
-                txtSPname.addItem(sp.getTenSanPham());
-                if (String.valueOf(sp.getMaSanPham()).equals(txtSPid.getText())) {
-                    txtSPname.setSelectedItem(sp.getTenSanPham());
-                    return; // Stop further processing if product is found
-                }
-            }
-            // Show dialog if no product matches
-            dialogShown.set(true);
-            JOptionPane.showMessageDialog(null, "Không tìm thấy sản phẩm trong danh sách bán hàng của Nhà cung cấp");
-            dialogShown.set(false);
-            }
-        });
 
         // Add KeyListener to txtSPid
         txtSPid.addKeyListener(new KeyAdapter() {
@@ -495,20 +502,20 @@ public class formphieunhap extends javax.swing.JPanel {
         dateChooser.setMaximumSize(new Dimension(180, 28));
          txtGiaNhap = new JTextField();
         txtGiaNhap.setMaximumSize(new Dimension(120, 28));
-        JTextField txtLoiNhuan = new JTextField();
+        txtLoiNhuan = new JTextField();
         txtLoiNhuan.setMaximumSize(new Dimension(100, 28));
         JComboBox<String> unit = new JComboBox<>(new String[]{"Đồng", "%"});
         unit.setMaximumSize(new Dimension(80, 28));
          txtGiaBan = new JTextField();
         txtGiaBan.setEditable(false);
-        txtGiaBan.setMinimumSize(new Dimension(150, 28));
+        txtGiaBan.setMinimumSize(new Dimension(120, 28));
         JTextArea txtAddress = new JTextArea("ảnh sp hiện ở đây, nhưng chưa làm=)");
         txtAddress.setWrapStyleWord(true);
         txtAddress.setLineWrap(true);
         JScrollPane scroll = new JScrollPane(txtAddress);
 
         // Placeholder styling (use your placeholder library)
-        txtSPid.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "First");
+        txtSPid.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nhập mã SP");
         txtSPname.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Last");
         txtSL.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "e.g. Tesla Motors");
 
@@ -700,12 +707,14 @@ public class formphieunhap extends javax.swing.JPanel {
         nhapHangList = new ArrayList<>();
         reloadDataToNhapHangTable();
         txtTotal.setText("");
+        txtNCCid.setEditable(true);
+        cbNCCname.setEnabled(true);
     }
     private Component createDetailTable() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
 
         // Create table model
-        Object[] columns = {"Mã SP", "Tên SP", "Số lượng", "Giá nhập", "Ngày hết hạn", "Giá bán", "SL tồn kho"};
+        Object[] columns = {"#", "Mã SP", "Tên SP", "Giá nhập", "Số lượng", "HSD", "Giá bán", "SL tồn kho"};
         DefaultTableModel model = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -729,10 +738,10 @@ public class formphieunhap extends javax.swing.JPanel {
             }
         });
 
-        // Style settings for table
-        table.putClientProperty(FlatClientProperties.STYLE, "" +
-                "arc:20;" +
-                "background:$Table.background;");
+        table.getColumnModel().getColumn(0).setPreferredWidth(10);
+        table.getColumnModel().getColumn(2).setPreferredWidth(120);
+        table.getColumnModel().getColumn(7).setPreferredWidth(70);
+        
         table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
                 "height:30;" +
                 "hoverBackground:null;" +
@@ -761,8 +770,11 @@ public class formphieunhap extends javax.swing.JPanel {
         panel.add(scrollPane, "growx"); // Adjust with growx to expand width
 
         busctpn.getlist();
+                    int i = 1;
         for (dtoctphieunhap cc: busctpn.dsctpn){
-            model.addRow(cc.toTableRow());
+
+            model.addRow(cc.toTableRow(i));
+            i+=1;
         }
         return panel;
     }
@@ -794,8 +806,7 @@ public class formphieunhap extends javax.swing.JPanel {
             }
         });
 
-        // Style settings
-        generalTable.putClientProperty(FlatClientProperties.STYLE, "arc:20; background:$Table.background;");
+
         generalTable.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "height:30; hoverBackground:null; pressedBackground:null; separatorColor:$TableHeader.background;");
         generalTable.putClientProperty(FlatClientProperties.STYLE, "rowHeight:30; showHorizontalLines:true; intercellSpacing:0,1; cellFocusColor:$TableHeader.hoverBackground; selectionBackground:$TableHeader.hoverBackground; selectionInactiveBackground:$TableHeader.hoverBackground; selectionForeground:$Table.foreground;");
         scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "trackArc:$ScrollBar.thumbArc; trackInsets:3,3,3,3; thumbInsets:3,3,3,3; background:$Table.background;");
@@ -966,15 +977,16 @@ public class formphieunhap extends javax.swing.JPanel {
     }
     private JPanel detailForms(int idOnClick){
         JPanel panel = new JPanel();
-        panel.setLayout(new MigLayout("fillx,wrap,insets 5 35 5 35,width 400", "[fill]", ""));
+        panel.setLayout(new MigLayout("fillx,wrap,insets 5 35 5 35,width 600", "[fill]", ""));
         JTextField txtPNid = new JTextField();
         txtPNid.setEditable(false);
 
         JTextField txtDate = new JTextField();
         txtDate.setEditable(false);
 
-        txtNCCid = new JTextField();
+        JTextField txtNCCid = new JTextField();
         txtNCCid.setEditable(false);
+        
 
         JTextField txtNCCname = new JTextField();
         txtNCCname.setEditable(false);
