@@ -4,6 +4,8 @@
  */
 package dto;
 
+import bus.bussanpham;
+
 /**
  *
  * @author giavi
@@ -75,7 +77,8 @@ public class dtocthoadon {
     }
 
     public void setTensanpham(int masanpham) {
-        this.tensanpham = "ten SP";
+        bussanpham sp = new bussanpham();
+        this.tensanpham = sp.getById(masanpham).getTenSanPham();
     }
 
     @Override

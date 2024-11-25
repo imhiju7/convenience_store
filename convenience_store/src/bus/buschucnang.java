@@ -44,8 +44,8 @@ public class buschucnang {
     }
 
     // Lấy tên chức năng theo mã
-    public String getTenChucNang(int maChucNang) throws SQLException {
-        return daoCN.getTenChucNang(maChucNang); // Gọi phương thức từ DAO để lấy tên chức năng
+    public String getTenDanhMuc(int maChucNang) throws SQLException {
+        return daoCN.getTenDanhMuc(maChucNang); // Gọi phương thức từ DAO để lấy tên chức năng
     }
 
     // Đếm số lượng chức năng

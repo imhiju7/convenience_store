@@ -4,6 +4,7 @@
  */
 package dto;
 
+import bus.busnhacungcap;
 import bus.busnhanvien;
 import java.sql.Timestamp;
 
@@ -70,7 +71,8 @@ public class dtophieunhap {
     }
 
     public String getTenNCC(int maNCC){
-        return "wait for NCC bus, dao";
+        busnhacungcap ncc = new busnhacungcap();
+        return ncc.getById(maNCC).getTenNhaCungCap();
     }
 
     public String getTenNV(int maNV){

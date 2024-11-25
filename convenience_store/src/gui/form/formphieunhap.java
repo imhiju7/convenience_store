@@ -62,7 +62,7 @@ import org.apache.xmlbeans.impl.jam.JPackage;
  * @author PHUONG ANH
  */
 public class formphieunhap extends javax.swing.JPanel {
-    private JTable generalTable, additionalTable;
+    private JTable generalTable;
     private busphieunhap buspn = new busphieunhap();
     private busctphieunhap busctpn = new busctphieunhap();
     private bussanpham bussp = new bussanpham();
@@ -71,10 +71,11 @@ public class formphieunhap extends javax.swing.JPanel {
     boolean activate = false;
     JTextField txtNCCid, txtSL, txtGiaNhap, txtGiaBan, txtSPid, txtTotal;
     JTextArea txtNote;
+    JComboBox<String> cbNCCname;
     JDateChooser dateChooser;
     private ArrayList<dtoctphieunhap> nhapHangList= new ArrayList<>();
     AtomicBoolean dialogShown = new AtomicBoolean(false);
-    DefaultTableModel modelNhapHang;
+    DefaultTableModel modelNhapHang, additionalTable;
     //private busnhanvien busnv = new busnhanvien();
     /**
      * Creates new form phieunhap
@@ -146,7 +147,7 @@ public class formphieunhap extends javax.swing.JPanel {
     JPanel midLeft = new JPanel(new MigLayout("fillx, wrap 2", "[fill][grow]"));
     txtNCCid = new JTextField();
     txtNCCid.setHorizontalAlignment(JTextField.CENTER);
-    JComboBox<String> cbNCCname = new JComboBox<>();
+    cbNCCname = new JComboBox<>();
     cbNCCname.addItem("");
     for(dtonhacungcap ncc: busncc.list()){
         cbNCCname.addItem(ncc.getTenNhaCungCap());
@@ -187,6 +188,7 @@ public class formphieunhap extends javax.swing.JPanel {
     cbNCCname.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if(cbNCCname.getSelectedItem().equals("")) return;
             String selectedName = (String) cbNCCname.getSelectedItem();
             if (selectedName != null) {
                 int providerId = busncc.getByName(selectedName).getMaNhaCungCap(); // Replace with actual method to get ID
@@ -220,23 +222,23 @@ public class formphieunhap extends javax.swing.JPanel {
 
     // Creating a sample table with some data for demonstration
     String[] columns = {"Mã SP", "Tên", "Ngày hết hạn", "Số lượng tồn kho"};
-    DefaultTableModel model = new DefaultTableModel(columns, 0) {
+    additionalTable = new DefaultTableModel(columns, 0) {
         @Override
         public boolean isCellEditable(int row, int column) {
             return false;
         }
     };
-    additionalTable = new JTable(model);
-    additionalTable.setFillsViewportHeight(true);
+    JTable table = new JTable(additionalTable);
+    table.setFillsViewportHeight(true);
 
-    // Put the additionalTable in a scroll pane
-    JScrollPane scrollPane = new JScrollPane(additionalTable);
+    // Put the table in a scroll pane
+    JScrollPane scrollPane = new JScrollPane(table);
     scrollPane.setPreferredSize(new Dimension(500, 150)); // Adjust size as needed
     scrollPane.setMinimumSize(new Dimension(500, 150));   // Set minimum size
     scrollPane.setBorder(BorderFactory.createEmptyBorder()); // Remove default border
 
     // Table header alignment
-    additionalTable.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(additionalTable) {
+    table.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(table) {
         protected int getAlignment() {
             return SwingConstants.CENTER; // Center align headers
         }
@@ -248,12 +250,20 @@ public class formphieunhap extends javax.swing.JPanel {
     // Populate the table with data
     busctpn.needToFillList();
     for (dtoctphieunhap cc : busctpn.dsctpn) {
-        model.addRow(cc.toAdditionalTableRow());
+        additionalTable.addRow(cc.toAdditionalTableRow());
     }
 
     return panel;
 }
 
+    private void reloadAdditionalTable(){
+        
+        additionalTable.setRowCount(0);
+            busctpn.needToFillList();
+        for (dtoctphieunhap cc : busctpn.dsctpn) {
+            additionalTable.addRow(cc.toAdditionalTableRow());
+        }
+    }
     private Component nhapHangTable() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
 
@@ -313,15 +323,15 @@ public class formphieunhap extends javax.swing.JPanel {
         // Add scrollPane to the panel
         panel.add(scrollPane, "growx"); // Adjust with growx to expand width
 
-        reloadDataToNhapHangTable(modelNhapHang);
         return panel;
     }
     
-    private void reloadDataToNhapHangTable(DefaultTableModel model){
+    private void reloadDataToNhapHangTable(){
 
-        model.setRowCount(0);
+        modelNhapHang.setRowCount(0);
+        if (nhapHangList == null) return;
         for (dtoctphieunhap cc: nhapHangList){
-            model.addRow(cc.toTableRow());
+            modelNhapHang.addRow(cc.toTableRow());
         }
     }
     private Component createNhapHangListHeader() {
@@ -340,16 +350,17 @@ public class formphieunhap extends javax.swing.JPanel {
         
         JButton btnDelete = new JButton("Delete");
         btnDelete.addActionListener(e -> {
-            
+
         });
                 
-
+        panel.add(btnDelete);
         panel.add(btnAdd);
-        panel.add(btnDelete);             
+                     
 
         panel.putClientProperty(FlatClientProperties.STYLE, "background:null;");
         return panel;
     }
+
     private void showModal() {
     Option option = ModalDialog.createOption();
     option.getLayoutOption()
@@ -383,12 +394,12 @@ public class formphieunhap extends javax.swing.JPanel {
                             doubleValueofTextField(txtGiaBan)
                         );
                         nhapHangList.add(ct);
-                        total += intValueofTextField(txtSL)*doubleValueofTextField(txtGiaNhap);
+                        total = total + intValueofTextField(txtSL)*doubleValueofTextField(txtGiaNhap);
                         txtTotal.setText(String.valueOf(total));
                     } catch (Exception ex) {
                         Logger.getLogger(formphieunhap.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                reloadDataToNhapHangTable(modelNhapHang);
+                reloadDataToNhapHangTable();
                 
                 }
                 controller.close();
@@ -479,6 +490,8 @@ public class formphieunhap extends javax.swing.JPanel {
         JPanel p = quantity();
         p.setMaximumSize(new Dimension(100, 28));
          dateChooser = new JDateChooser();
+        dateChooser.getDateEditor().getUiComponent().setEnabled(true); // Keeps it visually enabled
+        ((JTextField) dateChooser.getDateEditor().getUiComponent()).setEditable(false);
         dateChooser.setMaximumSize(new Dimension(180, 28));
          txtGiaNhap = new JTextField();
         txtGiaNhap.setMaximumSize(new Dimension(120, 28));
@@ -660,18 +673,17 @@ public class formphieunhap extends javax.swing.JPanel {
             }
             dtophieunhap pn = new dtophieunhap(buspn.maxID() + 1, Timestamp.valueOf(LocalDateTime.now().withNano((LocalDateTime.now().getNano() / 1_000_000) * 1_000_000)), doubleValueofTextField(txtTotal), intValueofTextField(txtNCCid), manv, String.valueOf(txtNote.getText()));
             buspn.create(pn);
-            //System.out.println(pn);
 
             for(dtoctphieunhap ct : nhapHangList){
                 busctpn.create(ct);
-                //System.out.println(ct);
             }
-            
+            JOptionPane.showMessageDialog(null, "Nhập hàng thành công");
+            reset();
         });
         
         JButton btnClear = new JButton("Clear all");
         btnClear.addActionListener(e -> {
-            
+            reset();
         });              
         panel.add(title, "gapx 20");
         panel.add(btnClear, "split 2");
@@ -679,6 +691,15 @@ public class formphieunhap extends javax.swing.JPanel {
 
         panel.putClientProperty(FlatClientProperties.STYLE, "background:null;");
         return panel;
+    }
+        private void reset (){
+        txtNCCid.setText("");
+        cbNCCname.setSelectedItem("");
+        txtNote.setText("");
+        reloadAdditionalTable();
+        nhapHangList = new ArrayList<>();
+        reloadDataToNhapHangTable();
+        txtTotal.setText("");
     }
     private Component createDetailTable() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));

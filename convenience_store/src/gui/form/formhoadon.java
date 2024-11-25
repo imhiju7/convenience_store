@@ -11,6 +11,8 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import bus.bushoadon;
 import bus.buscthoadon;
+import bus.buskhuyenmai;
+import bus.bustichdiem;
 import dto.dtohoadon;
 import dto.dtocthoadon;
 
@@ -337,15 +339,31 @@ public class formhoadon extends javax.swing.JPanel {
         panel.add(new JLabel("Chương trình khuyến mãi"), "gapy 5 0");
         panel.add(txtKMid, "split 2, growx 0.5, wmin 100"); // Half width
         panel.add(txtKMname, "growx"); // Full width
-        txtKMid.setText(String.valueOf(bushd.get(hdIDOnClick).getMaKhuyenMai()));
-        txtKMname.setText("wait for KM dao, bus");
+        int kmid = bushd.get(hdIDOnClick).getMaKhuyenMai();
+        txtKMid.setText(String.valueOf(kmid));
+        if(kmid == 0 ){
+            txtKMname.setText("");
+        }
+        else{
+            buskhuyenmai km = new buskhuyenmai();
+            txtKMname.setText(km.getkmbyid(kmid).getTenKhuyenMai());
+        }
+        
         
         panel.add(new JLabel("Mã tích điểm"), "split 2, growx 0.5, wmin 100");
         panel.add(new JLabel("Điểm tích lũy"));
         panel.add(txtTDid, "split 2"); 
         panel.add(txtScore); // Full width
-        txtTDid.setText(String.valueOf(bushd.get(hdIDOnClick).getMaTichDiem()));
-        txtScore.setText("wait for TD dao, bus");
+        int tdid = bushd.get(hdIDOnClick).getMaTichDiem();
+        txtTDid.setText(String.valueOf(tdid));
+        if(tdid == 0 ){
+            txtScore.setText("");
+        }
+        else{
+            bustichdiem td = new bustichdiem();
+            txtScore.setText("chua update");
+        }
+        
 
         panel.add(new JLabel("Ghi chú"), "gapy 5 0");
         panel.add(scroll, "height 50,grow,pushy");

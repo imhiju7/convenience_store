@@ -51,6 +51,9 @@ public class buskhuyenmai {
     public dtokhuyenmai getkmbyname(String name){
         return daokm.getkmbyname(name);
     }
+    public dtokhuyenmai getkmbyid(int id){
+        return daokm.getkmbyid(id);
+    }
     public int updatekhuyenmai(dtokhuyenmai km){
         return daokm.updateKhuyenMai(km);
     }

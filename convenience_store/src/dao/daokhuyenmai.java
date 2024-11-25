@@ -222,6 +222,31 @@ public class daokhuyenmai {
         }
         return km;
     }
+    public dtokhuyenmai getkmbyid(int id){
+        Connection con = connect.connection();
+        String sql = "SELECT * FROM khuyenmai WHERE maKhuyenMai = ? ";
+        PreparedStatement pst;
+        dtokhuyenmai km = new dtokhuyenmai();
+        try {
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, id);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                km.setMaKhuyenMai(rs.getInt("maKhuyenMai"));
+                km.setTenKhuyenMai(rs.getString("tenKhuyenMai"));
+                km.setNgayBatDau(rs.getDate("ngayBatDau"));
+                km.setNgayHetHan(rs.getDate("ngayHetHan"));
+                km.setPhanTram(rs.getInt("phanTram"));
+                km.setSoLuong(rs.getInt("soLuong"));
+                km.setSoLuongDaDung(rs.getInt("soLuongDaDung"));
+                km.setIshidden(rs.getInt("ishidden"));
+            }
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daokhuyenmai.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return km;
+    }
     public ArrayList<dtokhuyenmai> getlist(){
         Connection con = connect.connection();
         String sql = "SELECT * FROM khuyenmai WHERE ishidden = 0 and soLuong > soLuongDaDung";
