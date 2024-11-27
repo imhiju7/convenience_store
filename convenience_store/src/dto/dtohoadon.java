@@ -79,7 +79,7 @@ public class dtohoadon {
     }
     
     public dtohoadon(){}
-    public dtohoadon(int maHoaDon, int maNhanVien, double tongTien, int maKhachHang, int maKhuyenMai, Timestamp ngayMua, String ghiChu, int maTichDiem){
+    public dtohoadon(int maHoaDon, int maNhanVien, double tongTien, int maKhachHang, int maKhuyenMai, Timestamp ngayMua, String ghiChu, int maTichDiem,int isHidden){
         this.maHoaDon = maHoaDon;
         this.maNhanVien = maNhanVien;
         this.tongTien = tongTien;
@@ -88,6 +88,7 @@ public class dtohoadon {
         this.ngayMua = ngayMua;
         this.ghiChu = ghiChu;
         this.maTichDiem = maTichDiem;
+        this.isHidden = isHidden;
         setTenkhachhang(this.maKhachHang);
         setTennhanvien(this.maNhanVien);
         
@@ -102,6 +103,15 @@ public class dtohoadon {
     private int maTichDiem;
     private String tenkhachhang;
     private String tennhanvien;
+
+    public int getIsHidden() {
+        return isHidden;
+    }
+
+    public void setIsHidden(int isHidden) {
+        this.isHidden = isHidden;
+    }
+    private int isHidden;
     
     @Override
     public String toString() {

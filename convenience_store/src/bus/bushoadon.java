@@ -26,7 +26,8 @@ public class bushoadon {
     }
     
     public dtohoadon gethdgannhat() {
-        return daoHD.getlist().get(0);
+       int count = dshd.size();
+       return dshd.get(count - 1);
     }
     public dtohoadon get(int mahoadon){
         for(dtohoadon hd: dshd){
@@ -39,5 +40,14 @@ public class bushoadon {
     public double getTongDoanhThu(){
         return daoHD.getTongDoanhThu();
     } 
+    public int addhdnokmkh(dtohoadon i){
+        return daoHD.addhdnokhkm(i);
+    }
+    public int addhdnokm(dtohoadon i){
+        return daoHD.addhdnokm(i);
+    }
+    public int addhdnokh(dtohoadon i){
+        return daoHD.addhdnokh(i);
+    }
 }
 
