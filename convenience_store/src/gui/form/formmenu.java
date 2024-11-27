@@ -745,10 +745,16 @@ public class formmenu extends Form {
                         a.setSoLuong(i.getSl());
                         a.setTensanpham(i.getMa());
                         list.add(a);
-
                     }
-                    new formthanhtoan(list,manv).setVisible(true);
                     giohangDialog.dispose();
+                    formthanhtoan formth =  new formthanhtoan(list,manv);
+                    formth.setSize(510, 750);
+                    formth.setResizable(false);
+                    formth.setLocationRelativeTo(null);
+                    formth.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);                   
+                    formth.setVisible(true);
+                    formth.toFront();
+                    
                 }
                 else{
 
