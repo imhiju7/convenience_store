@@ -158,7 +158,28 @@ public class daosanpham {
             }
         }
     }
-    
+    public int updatesoluong(dtosanpham sp){
+        Connection con = connect.connection();
+        String sql = "UPDATE SanPham set soLuong = ?,isHidden = ? WHERE maSanPham= ?";
+        PreparedStatement pst;
+        int rowaffect = 0;
+        try {
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, sp.getSoLuong());
+            pst.setInt(2, sp.getIshidden());
+            pst.setInt(3, sp.getMaSanPham());
+            rowaffect = pst.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(daosanpham.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daosanpham.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rowaffect;
+        
+    }
     public void deleteSanPham(Integer masp){
         String sql = "update sanpham set isHidden = 1 where maSanPham = ?";
         Connection con = null;
