@@ -130,7 +130,30 @@ public class daochucnang {
     }
     return tenDanhMuc; // Trả về tên danh mục
 }
-
+    public String getTenChucNang(int macn){
+        Connection con = connect.connection();
+        String sql = "SELECT tenChucNang FROM chucnang WHERE maChucNang = ?";
+        String tenChucNang = null;
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, macn); // Gán giá trị mã danh mục cho tham số
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                tenChucNang = rs.getString("tenChucNang"); // Lấy tên danh mục từ kết quả
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Xử lý ngoại lệ
+        } finally {
+            try {
+                if (con != null) {
+                    con.close(); // Đóng kết nối
+                }
+            } catch (SQLException e) {
+                e.printStackTrace(); // Xử lý ngoại lệ khi đóng kết nối
+            }
+        }
+        return tenChucNang; // Trả về tên danh mục
+    }
     // Lấy số lượng chức năng
     public int getCountChucNang() {
         int count = 0;
