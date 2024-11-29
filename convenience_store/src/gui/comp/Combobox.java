@@ -101,7 +101,9 @@ public class Combobox<E> extends JComboBox<E> {
 
         public ComboUI(Combobox combo) {
             this.combo = combo;
-            
+             if (combo.getSelectedIndex() != -1) {
+            showing(false);
+            }
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseEntered(MouseEvent me) {

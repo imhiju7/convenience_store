@@ -18,6 +18,7 @@ import gui.form.formhopdong;
 import gui.form.formphieunhap;
 import gui.form.frmlogin;
 import gui.form.formkhachhang;
+import gui.form.formluong;
 import gui.form.formnhacungcap;
 import gui.form.formtaikhoan;
 import gui.form.formthanhtoan;
@@ -176,14 +177,14 @@ public class Guimain extends javax.swing.JFrame {
                      main.showForm(new formchamcong());
                  }
                  
-//                  if ((menuIndex==2)&&(subMenuIndex==4)) {
-//                     try {
-//                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                     main.showForm(new formluong());
-//                 }
+                  if ((menuIndex==2)&&(subMenuIndex==4)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     main.showForm(new formluong());
+                 }
 
                   if ((menuIndex==2)&&(subMenuIndex==5)) {
                      try {

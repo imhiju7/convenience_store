@@ -9,6 +9,8 @@ import bus.*;
 import dto.*;
 import gui.comp.Combobox;
 import gui.comp.TableSorter;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -26,9 +28,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -84,11 +90,17 @@ public class formthanhtoan extends javax.swing.JFrame {
         jTable.repaint();
     }
     public void cbimport(Combobox jcb,ArrayList<dtokhuyenmai> list){
+        ArrayList<String> tenKhuyenMai = new ArrayList<>();
         jcb.removeAllItems();
-        jcb.addItem("Khuyến mãi");
+//        tenKhuyenMai.add("Bỏ chọn");
         for(dtokhuyenmai i: list){
-            jcb.addItem(i.getTenKhuyenMai());
+            tenKhuyenMai.add(i.getTenKhuyenMai());
+           
         }
+        String[] tenKhuyenMaiArray = tenKhuyenMai.toArray(new String[0]);
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(tenKhuyenMaiArray);
+        jcb.setModel(model);
+        jcb.setSelectedIndex(-1);
     }
     public formthanhtoan(ArrayList<dtocthoadon> list,int ma_nv) {
         init();
@@ -101,6 +113,7 @@ public class formthanhtoan extends javax.swing.JFrame {
         
         arr_jt(paymentTable, list);
         cbimport(khuyenMai,khuyenmai.getkhuyenmaitoday());
+        khuyenMai.setSelectedIndex(-1);
         tongtien = total;
         totalValue.setText(Double.toString(total));
         
@@ -216,7 +229,29 @@ public class formthanhtoan extends javax.swing.JFrame {
                 khuyenMaiActionPerformed(evt);
             }
         });
+        khuyenMai.setRenderer(new DefaultListCellRenderer() {
+    @Override
+    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        // Gọi phương thức gốc để lấy thành phần cơ bản
+        Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        setBorder(new EmptyBorder(5, 5, 5, 5));
+        if (value != null && value.toString().equals("Bỏ chọn")) {
+            // Đặt màu nền và chữ riêng cho "Bỏ chọn"
+            setForeground(Color.GRAY); // Màu chữ xám
+            if (isSelected) {
+                setBackground(Color.LIGHT_GRAY); // Màu nền nhạt khi chọn
+            } else {
+                setBackground(Color.WHITE); // Màu nền trắng khi không chọn
+            }
+        } else {
+            // Đặt màu mặc định cho các mục khác
+            setForeground(Color.BLACK);
+            setBackground(isSelected ? Color.LIGHT_GRAY : Color.WHITE);
+        }
 
+        return component;
+    }
+});
         note.setColumns(20);
         note.setRows(5);
         note.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
@@ -779,18 +814,41 @@ layout.setVerticalGroup(
 
     private void khuyenMaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_khuyenMaiActionPerformed
         // TODO add your handling code here:
-        if(khuyenMai.getSelectedItem() != null){
-            if(!khuyenMai.getSelectedItem().equals("Khuyến mãi")){
-                String tenkhuyenmai = khuyenMai.getSelectedItem().toString();
-                km = khuyenmai.getkmbyname(tenkhuyenmai);
-                hd.setMaKhuyenMai(km.getMaKhuyenMai());
-                double tienkm = (tongtien*km.getPhanTram())/100;
-                tongtienkm = tienkm;
-                discountValue.setText("-"+Integer.toString((int)tienkm)+" đ "+Double.toString(km.getPhanTram())+" %");
-                tongtienfi = tongtienfi - tongtienkm;
-                totalValue.setText(Integer.toString((int)tongtienfi));
-            }
+        if (khuyenMai.getSelectedItem() != null) {
+    String selectedItem = khuyenMai.getSelectedItem().toString();
+
+    // Nếu "Bỏ chọn" được chọn
+    if (selectedItem.equals("Bỏ chọn")) {
+        // Loại bỏ khuyến mãi
+        khuyenMai.setSelectedIndex(-1); // Đặt lại combobox về trạng thái chưa chọn
+        cbimport(khuyenMai, khuyenmai.getkhuyenmaitoday()); // Load lại danh sách khuyến mãi
+        tongtienkm = 0; // Không có giảm giá
+        tongtienfi = tongtien; // Trả lại tổng tiền ban đầu
+        discountValue.setText("0 đ"); // Hiển thị không có giảm giá
+        totalValue.setText(Integer.toString((int) tongtien)); // Hiển thị tổng tiền gốc
+        khuyenMai.setFocusable(true);
+    } else { 
+        String tenkhuyenmai = selectedItem;
+        km = khuyenmai.getkmbyname(tenkhuyenmai);
+
+        
+        hd.setMaKhuyenMai(km.getMaKhuyenMai());
+        double tienkm = (tongtien * km.getPhanTram()) / 100; 
+        tongtienkm = tienkm;
+        tongtienfi = tongtien - tongtienkm; 
+
+        
+        discountValue.setText("-" + Integer.toString((int) tienkm) + " đ (" + Double.toString(km.getPhanTram()) + "%)");
+        totalValue.setText(Integer.toString((int) tongtienfi));
+
+        
+        if (!"Bỏ chọn".equals(khuyenMai.getItemAt(khuyenMai.getItemCount() - 1))) {
+            khuyenMai.addItem("Bỏ chọn");
         }
+
+        khuyenMai.setFocusable(false); 
+    }
+}
     }//GEN-LAST:event_khuyenMaiActionPerformed
 
     private void discountValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_discountValueActionPerformed

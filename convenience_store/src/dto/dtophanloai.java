@@ -8,13 +8,13 @@ public class dtophanloai {
 
     private int maPhanLoai;
     private String tenPhanLoai;
-    private int isDelete; // Thêm trường isDelete
+    private int isDelete; 
 
     // Constructor với tham số isDelete
     public dtophanloai(int maPhanLoai, String tenPhanLoai, int isDelete) {
         this.maPhanLoai = maPhanLoai;
         this.tenPhanLoai = tenPhanLoai;
-        this.isDelete = isDelete; // Khởi tạo isDelete
+        this.isDelete = isDelete; 
     }
 
     // Constructor mặc định
