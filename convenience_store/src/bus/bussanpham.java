@@ -39,7 +39,9 @@ public class bussanpham {
     public ArrayList<dtosanpham> getList(){
         return list_sp;
     }
-    
+    public int updateslsanpham(dtosanpham i){
+        return daoSanPham.updatesoluong(i);
+    }
     public dtosanpham getById(int maSp){
         list();
         for (dtosanpham sp: list_sp){

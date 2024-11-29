@@ -56,8 +56,8 @@ public class daocthoadon {
 
     // Method to add a new chitietchamcong record
     public void add(dtocthoadon detail) {
-        String sql = "INSERT INTO chitiethoadon(maSanPham, soLuong, donGia, maHoaDon, maCTHoaDon)"
-                   + "VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO chitiethoadon(maSanPham, soLuong, donGia, maHoaDon)"
+                   + "VALUES (?, ?, ?, ?)";
         java.sql.Connection con = connect.connection();
 
         try {
@@ -65,9 +65,8 @@ public class daocthoadon {
 
             pst.setInt(1, detail.getMaSanPham());
             pst.setInt(2, detail.getSoLuong());
-            pst.setInt(4, detail.getMaHoaDon());
             pst.setDouble(3, detail.getDonGia());
-            pst.setInt(5, detail.getMaCTHoaDon());
+            pst.setInt(4, detail.getMaHoaDon());
 
             pst.executeUpdate();
         } catch (SQLException e) {

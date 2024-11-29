@@ -65,12 +65,7 @@ public class formthanhtoan extends javax.swing.JFrame {
     double tongtienfi;
     int diem;
     public void arr_jt (JTable jTable, ArrayList<dtocthoadon> spOrder) {
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("ID");
-        model.addColumn("Tên SP");
-        model.addColumn("SL");
-        model.addColumn("Giá");
-        model.addColumn("Thành tiền");
+        DefaultTableModel model = (DefaultTableModel) paymentTable.getModel();
         int i = 0;
         for (dtocthoadon cthd : spOrder) {
             i++;
@@ -79,33 +74,32 @@ public class formthanhtoan extends javax.swing.JFrame {
             sp = sanpham.getsp(sp);
             
             int soluong = cthd.getSoLuong();
-            
             dtoctphieunhap ctpn = ctphieunhap.getspganhh(cthd.getMaSanPham());
             double giaban = ctpn.getGiaBan();
-            model.addRow(new Object[]{i, sp.getTenSanPham(), cthd.getSoLuong(),giaban, soluong*giaban});
+            double tonggia = soluong*giaban;
+            model.addRow(new Object[]{Integer.toString(i), sp.getTenSanPham(),Integer.toString(soluong),Double.toString(giaban), Double.toString(tonggia)});
         }
         jTable.setModel(model);
+        jTable.revalidate();
+        jTable.repaint();
     }
     public void cbimport(Combobox jcb,ArrayList<dtokhuyenmai> list){
         jcb.removeAllItems();
-        jcb.addItem("Phân loại");
+        jcb.addItem("Khuyến mãi");
         for(dtokhuyenmai i: list){
             jcb.addItem(i.getTenKhuyenMai());
         }
     }
     public formthanhtoan(ArrayList<dtocthoadon> list,int ma_nv) {
-         for(dtocthoadon i : list){
-                       System.out.println(i);
-                    }
         init();
         // loading
         nv.setManhanvien(ma_nv);
         nv = nhanvien.getnv(nv);
-        arr_jt(paymentTable, list);
-        
+
         double total = cthoadon.gettongtien(list);
         discountValue.setText(Double.toString(total));
         
+        arr_jt(paymentTable, list);
         cbimport(khuyenMai,khuyenmai.getkhuyenmaitoday());
         tongtien = total;
         totalValue.setText(Double.toString(total));
@@ -119,7 +113,7 @@ public class formthanhtoan extends javax.swing.JFrame {
     }
 
     public void init() {
-       jSplitPane1 = new javax.swing.JSplitPane();
+        jSplitPane1 = new javax.swing.JSplitPane();
         optionLayoutUtils1 = new gui.modal.layout.OptionLayoutUtils();
         jPanel2 = new javax.swing.JPanel();
         phonejLabel = new javax.swing.JLabel();
@@ -129,7 +123,8 @@ public class formthanhtoan extends javax.swing.JFrame {
         checkPhoneBtn = new gui.swing.login.Button();
         newCustomerBtn = new gui.swing.login.Button();
         jScrollPane1 = new javax.swing.JScrollPane();
-        paymentTable = new javax.swing.JTable();
+        DefaultTableModel model = new DefaultTableModel();
+        paymentTable = new JTable(model);
         khuyenMai = new gui.comp.Combobox();
         jScrollPane3 = new javax.swing.JScrollPane();
         note = new gui.comp.HintTextArea();
@@ -212,13 +207,6 @@ public class formthanhtoan extends javax.swing.JFrame {
         TableSorter.configureTableColumnSorter(paymentTable, 4, TableSorter.VND_CURRENCY_COMPARATOR);
         paymentTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(paymentTable);
-        if (paymentTable.getColumnModel().getColumnCount() > 0) {
-            paymentTable.getColumnModel().getColumn(0).setResizable(false);
-            paymentTable.getColumnModel().getColumn(1).setResizable(false);
-            paymentTable.getColumnModel().getColumn(2).setResizable(false);
-            paymentTable.getColumnModel().getColumn(3).setResizable(false);
-            paymentTable.getColumnModel().getColumn(4).setResizable(false);
-        }
 
         khuyenMai.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         khuyenMai.setLabeText("Khuyến mãi");
@@ -472,7 +460,6 @@ layout.setVerticalGroup(
             }
             return result;
         }
-        
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -825,41 +812,55 @@ layout.setVerticalGroup(
     private void thanhToanBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thanhToanBtnActionPerformed
         // TODO add your handling code here:
         hd.setGhiChu(note.getText());
-        hd.setNgayMua((Timestamp) new Date());
+        hd.setNgayMua(new java.sql.Timestamp(((java.util.Date) new Date()).getTime()));
         hd.setTongTien(tongtienfi);
+        hd.setIsHidden(0);
         
-        hoadon.add(hd);
-        hd = hoadon.gethdgannhat();
-        
-        if(hd.getMaKhuyenMai() != 0){
+        if(hd.getMaKhachHang() == 0 && hd.getMaKhuyenMai() == 0){
+            hoadon.addhdnokmkh(hd);
+        }
+        else if(hd.getMaKhachHang() ==0 ){
+            hoadon.addhdnokh(hd);
+            
             km.setSoLuongDaDung(km.getSoLuongDaDung()+1);
             khuyenmai.updatekhuyenmai(km);
         }
-        if(hd.getMaKhachHang() != 0){
+        else if(hd.getMaKhuyenMai() ==0 ){
+            hoadon.addhdnokm(hd);
+            
             kh.setDiemTichLuy(kh.getDiemTichLuy()+diem);
             kh.setMaUudai(uudai.setudbydiem(kh.getDiemTichLuy()).getMaUuDai());
             khachhang.updatediemtichluy(kh);
         }
-        
-        int mahd = hd.getMaHoaDon();
+        else{
+            hoadon.add(hd);
+            
+            km.setSoLuongDaDung(km.getSoLuongDaDung()+1);
+            khuyenmai.updatekhuyenmai(km);
+                        
+            kh.setDiemTichLuy(kh.getDiemTichLuy()+diem);
+            kh.setMaUudai(uudai.setudbydiem(kh.getDiemTichLuy()).getMaUuDai());
+            khachhang.updatediemtichluy(kh);
+        }
+        hd = hoadon.gethdgannhat();
+        int mahd = hd.getMaHoaDon() + 1;
         // add chi tiet hoa don
         for(dtocthoadon i: limenu){
-            dtocthoadon cthd = new dtocthoadon();
             i.setMaHoaDon(mahd);
             dtoctphieunhap ctpn = ctphieunhap.getspganhh(i.getMaSanPham());
-            cthd.setDonGia(ctpn.getGiaBan());
-            cthoadon.add(cthd);
+            i.setDonGia(ctpn.getGiaBan());
+            cthoadon.add(i);
             
-            int masp = cthd.getMaSanPham();
-            int soluong = ctpn.getSoluongtonkho() - cthd.getSoLuong();
+            int masp = i.getMaSanPham();
+            int soluong = ctpn.getSoluongtonkho() - i.getSoLuong();
             ctpn.setSoluongtonkho(soluong);
             ctphieunhap.update(ctpn);
             
             dtosanpham sp = new dtosanpham();
             sp.setMaSanPham(masp);
             sp = sanpham.getsp(sp);
-            int soluongsanpham = sp.getSoLuong() - cthd.getSoLuong();
-            sanpham.updateSanPham(sp);
+            int soluongsanpham = sp.getSoLuong() - i.getSoLuong();
+            sanpham.updateslsanpham(sp);
         }
         JOptionPane.showMessageDialog(this, "Thanh toán thành công! In hóa đơn");
 
@@ -872,7 +873,7 @@ layout.setVerticalGroup(
         } catch (PrinterException ex) {
             ex.printStackTrace();
         }
-         
+        this.dispose();
     }//GEN-LAST:event_thanhToanBtnActionPerformed
      public static void main(String[] args) {
         // Tạo danh sách sản phẩm mẫu cho `dtocthoadon`

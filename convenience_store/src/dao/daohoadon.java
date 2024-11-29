@@ -5,6 +5,7 @@
 package dao;
 
 import dto.dtohoadon;
+import java.sql.Connection;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -59,7 +60,8 @@ public class daohoadon {
                     rs.getInt("maKhuyenMai"),
                     rs.getTimestamp("ngayMua"),
                     rs.getString("ghiChu"),
-                    rs.getInt("maTichDiem")
+                    rs.getInt("maTichDiem"),
+                    rs.getInt("isDelete")
                 );
                 list.add(hoadon);
             }
@@ -76,22 +78,20 @@ public class daohoadon {
     }
     
     public void add(dtohoadon hoadon) {
-        String sql = "INSERT INTO hoadon (maHoaDon, maNhanVien, tongTien, maKhachHang, maKhuyenMai, ngayMua, " +
+        String sql = "INSERT INTO hoadon ( maNhanVien, tongTien, maKhachHang, maKhuyenMai, ngayMua, " +
                      "ghiChu, maTichDiem, isDelete) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         java.sql.Connection con = connect.connection();
-
         try {
             PreparedStatement pst = con.prepareStatement(sql);
-            pst.setInt(2, hoadon.getMaNhanVien());
-            pst.setInt(1, hoadon.getMaHoaDon());
-            pst.setDouble(3, hoadon.getTongTien());
-            pst.setInt(4, hoadon.getMaKhachHang());
-            pst.setInt(5, hoadon.getMaKhuyenMai());
-            pst.setTimestamp(6,hoadon.getNgayMua());
-            pst.setString(7, hoadon.getGhiChu());
-            pst.setInt(8, hoadon.getMaTichDiem());
-            pst.setInt(9, 0);
+            pst.setInt(1, hoadon.getMaNhanVien());
+            pst.setDouble(2, hoadon.getTongTien());
+            pst.setInt(3, hoadon.getMaKhachHang());
+            pst.setInt(4, hoadon.getMaKhuyenMai());
+            pst.setTimestamp(5,hoadon.getNgayMua());
+            pst.setString(6, hoadon.getGhiChu());
+            pst.setInt(7, hoadon.getMaTichDiem());
+            pst.setInt(8, 0);
 
             pst.executeUpdate();
         } catch (SQLException e) {
@@ -103,5 +103,78 @@ public class daohoadon {
                 Logger.getLogger(daohoadon.class.getName()).log(Level.SEVERE, null, e);
             }
         }
+    }
+        public int addhdnokhkm(dtohoadon hd){
+        Connection con = connect.connection();
+        String sql = "INSERT INTO hoadon(maNhanVien,ngayMua,tongTien,ghiChu,isDelete) VALUES(?,?,?,?,?)";
+        PreparedStatement pst;
+        int rowaffect = 0;
+        try {
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, hd.getMaNhanVien());
+            pst.setTimestamp(2, new java.sql.Timestamp(hd.getNgayMua().getTime()));
+            pst.setDouble(3, hd.getTongTien());
+            pst.setString(4, hd.getGhiChu());
+            pst.setInt(5, hd.getIsHidden());
+            rowaffect = pst.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(daohoadon.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daohoadon.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rowaffect;
+    }
+    public int addhdnokh(dtohoadon hd){
+        Connection con = connect.connection();
+        String sql = "INSERT INTO hoadon(maNhanVien,maKhuyenMai,ngayMua,tongTien,ghiChu,isDelete) VALUES(?,?,?,?,?,?)";
+        PreparedStatement pst;
+        int rowaffect = 0;
+        try {
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, hd.getMaNhanVien());
+            pst.setInt(2, hd.getMaKhuyenMai());
+            pst.setTimestamp(3, new java.sql.Timestamp(hd.getNgayMua().getTime()));
+            pst.setDouble(4, hd.getTongTien());
+            pst.setString(5, hd.getGhiChu());
+            pst.setInt(6, hd.getIsHidden());
+            rowaffect = pst.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(daohoadon.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daohoadon.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rowaffect;
+    }
+    public int addhdnokm(dtohoadon hd){
+        Connection con = connect.connection();
+        String sql = "INSERT INTO hoadon(maKhachHang,maNhanVien,maTichDiem,ngayMua,tongTien,ghiChu,isDelete) VALUES(?,?,?,?,?,?,?)";
+        PreparedStatement pst;
+        int rowaffect = 0;
+        try {
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, hd.getMaKhachHang());
+            pst.setInt(2, hd.getMaNhanVien());
+            pst.setInt(3, hd.getMaTichDiem());
+            pst.setTimestamp(4, new java.sql.Timestamp(hd.getNgayMua().getTime()));
+            pst.setDouble(5, hd.getTongTien());
+            pst.setString(6, hd.getGhiChu());
+            pst.setInt(7, hd.getIsHidden());
+            rowaffect = pst.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(daohoadon.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daohoadon.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rowaffect;
     }
 }
