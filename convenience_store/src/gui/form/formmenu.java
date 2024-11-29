@@ -751,7 +751,7 @@ public class formmenu extends Form {
                     formth.setSize(510, 750);
                     formth.setResizable(false);
                     formth.setLocationRelativeTo(null);
-                    formth.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);                   
+                   
                     formth.setVisible(true);
                     formth.toFront();
                     

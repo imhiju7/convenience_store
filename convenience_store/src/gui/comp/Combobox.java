@@ -31,7 +31,6 @@ import javax.swing.plaf.basic.ComboPopup;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
-import gui.swing.scrollbar.ScrollBarCustom;
 
 public class Combobox<E> extends JComboBox<E> {
 
@@ -60,26 +59,36 @@ public class Combobox<E> extends JComboBox<E> {
         super.updateUI();
         installUI();
     }
-
+    
     private void installUI() {
         setUI(new ComboUI(this));
         setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> jlist, Object o, int i, boolean bln, boolean bln1) {
-                Component com = super.getListCellRendererComponent(jlist, o, i, bln, bln1);
-                setBorder(new EmptyBorder(5, 5, 5, 5));
-                if (bln) {
-                    com.setBackground(new Color(240, 240, 240));
-                }
-                return com;
-            }
-        });
+    @Override
+    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        Component com = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+        // Bỏ padding mặc định
+        setBorder(new EmptyBorder(5, 5, 5, 5));
+
+        // Tùy chỉnh màu nền khi item được chọn
+        if (isSelected) {
+            com.setBackground(new Color(220, 220, 220)); // Màu nền xám nhạt
+            com.setForeground(Color.BLACK); // Màu chữ đen
+        } else {
+            com.setBackground(Color.WHITE); // Màu nền trắng
+            com.setForeground(Color.BLACK); // Màu chữ đen
+        }
+
+        return com;
+    }
+});
     }
 
     public Combobox() {
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(15, 3, 5, 3));
         installUI();
+        
     }
 
     private class ComboUI extends BasicComboBoxUI {
@@ -92,6 +101,7 @@ public class Combobox<E> extends JComboBox<E> {
 
         public ComboUI(Combobox combo) {
             this.combo = combo;
+            
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseEntered(MouseEvent me) {

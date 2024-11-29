@@ -86,7 +86,7 @@ public class formthanhtoan extends javax.swing.JFrame {
         }
         jTable.setModel(model);
     }
-    public void cbimport(JComboBox jcb,ArrayList<dtokhuyenmai> list){
+    public void cbimport(Combobox jcb,ArrayList<dtokhuyenmai> list){
         jcb.removeAllItems();
         jcb.addItem("Phân loại");
         for(dtokhuyenmai i: list){

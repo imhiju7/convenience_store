@@ -21,6 +21,7 @@ import gui.form.formkhachhang;
 import gui.form.formnhacungcap;
 import gui.form.formtaikhoan;
 import gui.form.formthanhtoan;
+import gui.form.formthongkesp;
 import gui.form.formuudaivakhuyenmai;
 import gui.swing.dashboard.MenuItem;
 import gui.swing.dashboard.PopupMenu;
@@ -232,7 +233,15 @@ public class Guimain extends javax.swing.JFrame {
                         e.printStackTrace();
                     }
                      main.showForm(new formthongke());
-                 }   
+                 }
+                  if ((menuIndex==4)&&(subMenuIndex==1)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     main.showForm(new formthongkesp());
+                 }
 //                 Danh mục Cài đặt
                  
                  
