@@ -241,7 +241,11 @@ public class Guimain extends javax.swing.JFrame {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                     main.showForm(new formthongkesp());
+                     try {
+                         main.showForm(new formthongkesp());
+                     } catch (SQLException ex) {
+                         Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
+                     }
                  }
 //                 Danh mục Cài đặt
                  

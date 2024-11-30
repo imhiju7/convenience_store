@@ -174,4 +174,7 @@ public class dtonhanvien {
     public String toString() {
         return "dtonhanvien{" + "manhanvien=" + manhanvien + ", tennhanvien=" + tennhanvien + ", machucvu=" + machucvu + ", gioitinh=" + gioitinh + ", ngaysinh=" + ngaysinh + ", diachi=" + diachi + ", email=" + email + ", sdt=" + sdt + ", isdelete=" + isdelete + ", ngaytao=" + ngaytao + ", img=" + img + ", mahopdong=" + mahopdong + ", luongcoban=" + luongcoban + ", ngaylamviec=" + ngaylamviec + ", ngayketthuc=" + ngayketthuc + '}';
     }
+     public String getDropdownDisplay() {
+        return tennhanvien;
+    }
 }

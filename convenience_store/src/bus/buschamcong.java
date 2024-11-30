@@ -26,6 +26,10 @@ public class buschamcong {
     public ArrayList <Integer> listYears() {
         return dao.getListYears();
     }
+    public ArrayList<dtochamcong> getAllChamCong() {
+    return dao.getAllChamCong();
+}
+
 
     public void create(dtochamcong cc){
         dao.create(cc);

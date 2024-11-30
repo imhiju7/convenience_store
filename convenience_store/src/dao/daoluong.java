@@ -191,4 +191,46 @@ public class daoluong {
         }
         return count;
     }
+    
+    public static void main(String[] args) {
+    daoluong daoLuong = new daoluong();
+
+    // 1. Thử thêm một bản ghi mới
+    dtoluong newLuong = new dtoluong(
+            0, // maLuong (Auto Increment trong DB)
+            1, // maChamCong
+            500.0, // phuCap
+            10000.0, // luongThucTe
+            2000.0, // luongThuong
+            1000.0, // khoanBaoHiem
+            500.0, // khoanThue
+            11500.0, // thuclanh
+            2, // luongLamThem
+            "2024-11-29", // ngayNhanLuong
+            1 // maNhanVien
+    );
+    daoLuong.add(newLuong);
+    System.out.println("Thêm mới thành công!");
+
+    // 2. Thử lấy danh sách lương
+    ArrayList<dtoluong> listLuong = daoLuong.getList();
+    System.out.println("Danh sách lương:");
+    for (dtoluong luong : listLuong) {
+        System.out.println("Mã lương: " + luong.getMaLuong() + ", Mã nhân viên: " + luong.getMaNhanVien()
+                + ", Lương thực tế: " + luong.getLuongThucTe());
+    }
+
+    // 3. Thử lấy thông tin chi tiết lương bằng ID
+    int testId = 1; // Giả sử ID lương cần lấy là 1
+    dtoluong luongById = daoLuong.getById(testId);
+    if (luongById != null) {
+        System.out.println("Chi tiết lương ID " + testId + ": " + luongById.getLuongThucTe());
+    } else {
+        System.out.println("Không tìm thấy lương với ID " + testId);
+    }
+
+    // 4. Đếm số lượng bản ghi
+    int count = daoLuong.countLuong();
+    System.out.println("Số lượng bản ghi lương: " + count);
+}
 }
