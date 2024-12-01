@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,6 +48,44 @@ public class daoluong {
             }
         }
         return luong;
+    }
+    public ArrayList<dtoluong> getByTime(Date day1, Date day2) {
+       ArrayList<dtoluong> list = new ArrayList<>();
+        Connection con = connect.connection();
+        String sql = "SELECT * FROM luong WHERE ngayNhanLuong BETWEEN ? AND ?";
+
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setDate(1, (java.sql.Date) day1);
+            pst.setDate(2, (java.sql.Date) day2);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                dtoluong luong = new dtoluong(
+                        rs.getInt("maLuong"),
+                        rs.getInt("maChamCong"),
+                        rs.getDouble("phuCap"),
+                        rs.getDouble("luongThucTe"),
+                        rs.getDouble("luongThuong"),
+                        rs.getDouble("khoanBaoHiem"),
+                        rs.getDouble("khoanThue"),
+                        rs.getDouble("thuclanh"),
+                        rs.getInt("luongLamThem"),
+                        rs.getString("ngayNhanLuong"),
+                        rs.getInt("maNhanVien")
+                );
+                list.add(luong);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(daoluong.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                Logger.getLogger(daoluong.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+        return list;
     }
 
     // Lấy danh sách tất cả các bản ghi lương
@@ -102,7 +141,7 @@ public class daoluong {
             pst.setDouble(5, luong.getKhoanBaoHiem());
             pst.setDouble(6, luong.getKhoanThue());
             pst.setDouble(7, luong.getThuclanh());
-            pst.setInt(8, luong.getLuongLamThem());
+            pst.setDouble(8, luong.getLuongLamThem());
             pst.setString(9, luong.getNgayNhanLuong());
             pst.setInt(10, luong.getMaNhanVien());
             pst.executeUpdate();
@@ -132,30 +171,10 @@ public class daoluong {
             pst.setDouble(5, luong.getKhoanBaoHiem());
             pst.setDouble(6, luong.getKhoanThue());
             pst.setDouble(7, luong.getThuclanh());
-            pst.setInt(8, luong.getLuongLamThem());
+            pst.setDouble(8, luong.getLuongLamThem());
             pst.setString(9, luong.getNgayNhanLuong());
             pst.setInt(10, luong.getMaNhanVien());
             pst.setInt(11, luong.getMaLuong());
-            pst.executeUpdate();
-        } catch (SQLException e) {
-            Logger.getLogger(daoluong.class.getName()).log(Level.SEVERE, null, e);
-        } finally {
-            try {
-                con.close();
-            } catch (SQLException e) {
-                Logger.getLogger(daoluong.class.getName()).log(Level.SEVERE, null, e);
-            }
-        }
-    }
-
-    // Xóa thông tin lương (cứng, nếu cần xóa mềm, thêm cột isDelete)
-    public void delete(int maLuong) {
-        String sql = "DELETE FROM luong WHERE maLuong = ?";
-        Connection con = connect.connection();
-
-        try {
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setInt(1, maLuong);
             pst.executeUpdate();
         } catch (SQLException e) {
             Logger.getLogger(daoluong.class.getName()).log(Level.SEVERE, null, e);

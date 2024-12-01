@@ -12,12 +12,12 @@ public class dtohopdong {
     public int maHopDong;
     public String tuNgay;
     public String denNgay;
-    public float luongCoBan;
+    public double luongCoBan;
     public int maNV;
     public int isDelete;
     
     public dtohopdong(){};
-    public dtohopdong(int maHopDong, String tuNgay, String denNgay, float luongCoBan, int maNV, int isDelete) {
+    public dtohopdong(int maHopDong, String tuNgay, String denNgay, double luongCoBan, int maNV, int isDelete) {
         this.maHopDong = maHopDong;
         this.tuNgay = tuNgay;
         this.denNgay = denNgay;
@@ -26,7 +26,7 @@ public class dtohopdong {
         this.isDelete = isDelete;
     }
     
-    public dtohopdong(int maHopDong, String tuNgay, String denNgay, float luongCoBan, int maNV) {
+    public dtohopdong(int maHopDong, String tuNgay, String denNgay, double luongCoBan, int maNV) {
         this.maHopDong = maHopDong;
         this.tuNgay = tuNgay;
         this.denNgay = denNgay;
@@ -47,7 +47,7 @@ public class dtohopdong {
         return denNgay;
     }
 
-    public float getLuongCoBan() {
+    public double getLuongCoBan() {
         return luongCoBan;
     }
 
@@ -71,7 +71,7 @@ public class dtohopdong {
         this.denNgay = denNgay;
     }
 
-    public void setLuongCoBan(float luongCoBan) {
+    public void setLuongCoBan(double luongCoBan) {
         this.luongCoBan = luongCoBan;
     }
 
