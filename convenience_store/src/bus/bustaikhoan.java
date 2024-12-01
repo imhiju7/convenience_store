@@ -62,7 +62,20 @@ public boolean getIsBlockedByMaNhanVien(int manhanvien) {
         return false;  // Trả về false nếu có lỗi xảy ra trong quá trình truy vấn
     }
 }
+public boolean deleteTaiKhoan(String tenDangNhap) {
+    dtotaikhoan tk = new dtotaikhoan();
+    tk.setTendangnhap(tenDangNhap); // Gán tên đăng nhập vào đối tượng tài khoản
+    return daotk.deletetaikhoan(tk); // Gọi phương thức xóa trong DAO
+}
 
+public boolean addTaikhoan(dtotaikhoan tk) {
+        if (tk == null) {
+            return false; // Không cho phép thêm tài khoản nếu dữ liệu đầu vào là null
+        }
+
+        // Gọi phương thức addtaikhoan từ daotaikhoan
+        return daotk.addtaikhoan(tk);
+    }
     public ArrayList<dtotaikhoan> getlist(){
         return daotk.getlist();
     }

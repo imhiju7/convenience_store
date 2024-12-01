@@ -1,6 +1,7 @@
 package gui.form;
 
 import bus.busnhanvien;
+import bus.bustaikhoan;
 import gui.comp.NVCard;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
@@ -12,6 +13,7 @@ import dto.SampleData;
 import dto.dtochucvu;
 import dto.dtohopdong;
 import dto.dtonhanvien;
+import dto.dtotaikhoan;
 import gui.comp.RoundedBorder;
 import gui.simple.SimpleInputForms;
 import gui.simple.SimpleInputFormsNhanVien;
@@ -50,6 +52,7 @@ public class formnhanvien extends Form {
     
     
     private busnhanvien busNV;
+    private bustaikhoan busTK;
     private ArrayList<dtonhanvien> list_NV;
     private ArrayList<dtochucvu> list_CV;
     private JLabel imageDisplayLabel;
@@ -92,7 +95,7 @@ public class formnhanvien extends Form {
                 boolean isExist = false;
                 for(dtohopdong hd : list_HD){
                     if(hd.getMaNV() == nv.getManhanvien()){
-                        nv.setLuongcoban(hd.getLuongCoBan());
+                        nv.setLuongcoban((float) hd.getLuongCoBan());
                         NVCard card1 = new NVCard(nv, createEventCard1() , 1);
                         cards.add(card1);
                         panelCard.add(card1);
@@ -537,41 +540,66 @@ public class formnhanvien extends Form {
             card.setSelected(selected);
         }
     }
-    private void deleteSelectedCards() throws SQLException {         
-        List<NVCard> selectedCards = new ArrayList<>();
-        StringBuilder deletedNames = new StringBuilder("Đã xóa các nhân viên: ");
-        for (NVCard card : cards) {
-            if (card.isSelected()) { 
-                selectedCards.add(card);
+        private void deleteSelectedCards() throws SQLException {         
+            List<NVCard> selectedCards = new ArrayList<>();
+            StringBuilder deletedNames = new StringBuilder("Đã xóa các nhân viên: ");
+
+            // Lọc danh sách nhân viên được chọn
+            for (NVCard card : cards) {
+                if (card.isSelected()) { 
+                    selectedCards.add(card);
+                }
+            }
+
+            // Kiểm tra nếu không có nhân viên nào được chọn
+            if (selectedCards.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Không có nhân viên nào được chọn để xóa.");
+                return;
+            }
+
+            // Xác nhận trước khi xóa
+            int result = JOptionPane.showConfirmDialog(null, "Bạn có muốn xóa các nhân viên vừa chọn không?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.NO_OPTION) {
+                return;
+            }
+
+            busNV = new busnhanvien();
+            busTK = new bustaikhoan();
+
+            for (NVCard card : selectedCards) {
+                // Lấy mã nhân viên từ card
+                int manv = card.getMaNhanVien();
+
+                // Xóa nhân viên
+                busNV.deleteNhanVien(manv);  // Không cần kiểm tra thành công nếu phương thức không trả về giá trị
+
+                // Xóa tài khoản của nhân viên
+                boolean deleteAccountSuccess = busTK.deleteTaiKhoan(String.valueOf(manv));
+
+                // Nếu xóa tài khoản thành công, xóa thẻ nhân viên khỏi giao diện
+                if (deleteAccountSuccess) {
+                    deletedNames.append(card.getEmployeeName()).append(", ");
+                    panelCard.remove(card);  // Xóa card khỏi giao diện
+                    cards.remove(card);      // Xóa card khỏi danh sách
+                } else {
+                    // Nếu không thể xóa tài khoản, thông báo lỗi cho từng nhân viên
+                    JOptionPane.showMessageDialog(this, "Không thể xóa tài khoản cho nhân viên: " + card.getEmployeeName() + ". Vui lòng kiểm tra lại.");
+                }
+            }
+
+            // Cập nhật lại giao diện
+            panelCard.revalidate();
+            panelCard.repaint();
+
+            // Hiển thị kết quả xóa
+            if (deletedNames.length() > 0) {
+                deletedNames.setLength(deletedNames.length() - 2);  // Xóa dấu phẩy và khoảng trắng cuối cùng
+                JOptionPane.showMessageDialog(this, "Đã xóa " + selectedCards.size() + " nhân viên.\n" + deletedNames.toString());
+            } else {
+                JOptionPane.showMessageDialog(this, "Không có nhân viên nào được xóa.");
             }
         }
-        if (selectedCards.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Không có nhân viên nào được chọn để xóa.");
-            return;
-        }
 
-        int result = JOptionPane.showConfirmDialog(null, "Bạn có muốn xóa các nhân viên vừa chọn không ?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
-        if(result == JOptionPane.NO_OPTION){
-            return;
-        }
-        busNV = new busnhanvien();
-        for (NVCard card : selectedCards) {
-            deletedNames.append(card.getEmployeeName()).append(", ");
-            busNV.deleteNhanVien(card.getMaNhanVien());
-            panelCard.remove(card);
-            cards.remove(card);
-        }
-        panelCard.revalidate();
-        panelCard.repaint();
-
-        JOptionPane.showMessageDialog(this, "Đã xóa " + selectedCards.size() + " nhân viên.");
-        if (deletedNames.length() > 0) {
-            deletedNames.setLength(deletedNames.length() - 2); // Xóa dấu phẩy và khoảng trắng cuối cùng
-        }   
-        JOptionPane.showMessageDialog(this, deletedNames.toString());
-    }
-    
-    
     public boolean check_NV(dtonhanvien nv) throws SQLException{
         String regexTenNV = "^[A-Za-zÀ-ỹ]+( [A-Za-zÀ-ỹ]+)*$";
         String regexSDT = "^0\\d{9}$";
@@ -668,21 +696,54 @@ public class formnhanvien extends Form {
 
                     try {
                         dtonhanvien nv = form.getNhanVien();
-                        if (check_NV(nv)) {
-                            selectedFile = form.getSelectedFile();
-                            String root_dir = System.getProperty("user.dir") + "/src/source/image/nhanvien/";
-                            busNV.AddNhanVien(nv);
+                             if (check_NV(nv)) {
+                        selectedFile = form.getSelectedFile();
+                        String root_dir = System.getProperty("user.dir") + "/src/source/image/nhanvien/";
+
+                        // Thêm nhân viên
+                        busNV.AddNhanVien(nv);
+
+                        // Lưu ảnh (nếu có)
+                        if (selectedFile != null) {
                             saveImageToDirectory(root_dir);
-                            JOptionPane.showMessageDialog(null, "Thêm nhân viên thành công");
-                            isSuccessful = true;
-                        }else{
-                            controller.close(); 
                         }
-                        formInit();
-                    } catch (ParseException | SQLException ex) {
-                        Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, null, ex);
-                        JOptionPane.showMessageDialog(null, "Có lỗi xảy ra trong quá trình thêm nhân viên");
-                    }
+                        
+                        busTK = new bustaikhoan();
+                        // Tạo tài khoản cho nhân viên
+                        dtotaikhoan newTaiKhoan = new dtotaikhoan();
+                        newTaiKhoan.setTendangnhap(nv.getEmail());
+                        newTaiKhoan.setMatkhau(nv.getSdt());
+                        newTaiKhoan.setNgaytao(new Date());
+                        newTaiKhoan.setIsblock(0);
+                        newTaiKhoan.setManhanvien(nv.getManhanvien());
+
+                        // In thông tin tài khoản để kiểm tra
+                        System.out.println("Thông tin tài khoản:");
+                        System.out.println("Tên đăng nhập: " + newTaiKhoan.getTendangnhap());
+                        System.out.println("Mật khẩu: " + newTaiKhoan.getMatkhau());
+                        System.out.println("Ngày tạo: " + newTaiKhoan.getNgaytao());
+                        System.out.println("IsBlock: " + newTaiKhoan.getIsblock());
+                        System.out.println("Mã nhân viên: " + newTaiKhoan.getManhanvien());
+                        // Thêm tài khoản
+                               boolean results = busTK.addTaikhoan(newTaiKhoan); // Sử dụng lại biến result
+                               System.out.println("Kết quả thêm tài khoản: " + results);
+                               if (results) {
+                                   JOptionPane.showMessageDialog(null, "Thêm nhân viên và tài khoản thành công!");
+                               } else {
+                                   JOptionPane.showMessageDialog(null, "Thêm nhân viên thành công nhưng tạo tài khoản thất bại!");
+                               }
+
+                               formInit();
+                           } else {
+                               controller.close();
+                           }
+                       } catch (ParseException ex) {
+                           Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, "Lỗi định dạng dữ liệu", ex);
+                           JOptionPane.showMessageDialog(null, "Lỗi định dạng dữ liệu, vui lòng kiểm tra lại thông tin nhập vào.");
+                       } catch (SQLException ex) {
+                           Logger.getLogger(formnhanvien.class.getName()).log(Level.SEVERE, "Lỗi cơ sở dữ liệu", ex);
+                           JOptionPane.showMessageDialog(null, "Lỗi trong quá trình lưu vào cơ sở dữ liệu, vui lòng thử lại.");
+                       }
                     if (isSuccessful) {
                         controller.close(); // Chỉ đóng modal nếu tất cả các bước thành công
                     }
