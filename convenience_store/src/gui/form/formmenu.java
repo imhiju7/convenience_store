@@ -71,6 +71,7 @@ public class formmenu extends Form {
     private ArrayList<dtophieunhap> list_PN;
     private ArrayList<dtoctphieunhap> list_CTPN;
     private int manv;
+    private ArrayList<dtosanpham> list_SP_has_money = new ArrayList<>();
     
     public formmenu(int ma_nv) throws SQLException {
         init();
@@ -93,7 +94,7 @@ public class formmenu extends Form {
         panelCard.removeAll();
 
         list_Sp = busSP.list();
-
+        list_SP_has_money.clear();
         for (dtosanpham sp : list_Sp) {
             try {
                 list_PN = busSP.listPN(sp.getMaNCC()); 
@@ -110,7 +111,7 @@ public class formmenu extends Form {
                             if(ctpn.getSoluongtonkho() != 0){
                                 sp.setGiaBan(ctpn.getGiaBan());
                                 sp.setSoLuong(ctpn.getSoluongtonkho());
-//                                System.out.println("Giá bán : " + sp.getGiaBan());
+                                list_SP_has_money.add(sp);
                                 MenuCard card = new MenuCard(sp, createEventCard());
                                 cards.add(card);
                                 panelCard.add(card);
@@ -448,7 +449,7 @@ public class formmenu extends Form {
             list_Sp = busSP.list();
             if(!tenmpl.equals("Mặc định")){
                 ArrayList<dtosanpham> list_sp_tmp = new ArrayList<>();
-                for(dtosanpham sp : list_Sp){
+                for(dtosanpham sp : list_SP_has_money){
                     if(sp.getMaPhanLoai()== busSP.getMaPL(tenmpl)){
                         list_sp_tmp.add(sp);
                     }
@@ -490,7 +491,7 @@ public class formmenu extends Form {
                 }
 
 
-                for (dtosanpham sp : list_Sp) {
+                for (dtosanpham sp : list_SP_has_money) {
                     String tenSanPham = sp.getTenSanPham().toLowerCase();
                     if (tenSanPham.contains(searchText)) {
                         MenuCard card = new MenuCard(sp, createEventCard());
