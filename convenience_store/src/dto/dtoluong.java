@@ -17,7 +17,16 @@ public class dtoluong {
     private double khoanBaoHiem;
     private double khoanThue;
     private double thuclanh;
-    private int luongLamThem;
+
+    public double getKhoanTru() {
+        return khoanTru;
+    }
+
+    public void setKhoanTru(double khoanTru) {
+        this.khoanTru = khoanTru;
+    }
+    private double khoanTru;
+    private double luongLamThem;
     private String ngayNhanLuong; // Sử dụng String nếu ngày là null, hoặc LocalDate nếu đảm bảo giá trị không null
     private int maNhanVien;
     
@@ -25,7 +34,7 @@ public class dtoluong {
     
     }
     public dtoluong(int maLuong, int maChamCong, double phuCap, double luongThucTe, double luongThuong,
-                    double khoanBaoHiem, double khoanThue, double thuclanh, int luongLamThem, 
+                    double khoanBaoHiem, double khoanThue,double khoanTru, double thuclanh, double luongLamThem, 
                     String ngayNhanLuong, int maNhanVien) {
         this.maLuong = maLuong;
         this.maChamCong = maChamCong;
@@ -34,6 +43,7 @@ public class dtoluong {
         this.luongThuong = luongThuong;
         this.khoanBaoHiem = khoanBaoHiem;
         this.khoanThue = khoanThue;
+        this.khoanTru = khoanTru;
         this.thuclanh = thuclanh;
         this.luongLamThem = luongLamThem;
         this.ngayNhanLuong = ngayNhanLuong;
@@ -105,11 +115,11 @@ public class dtoluong {
         this.thuclanh = thuclanh;
     }
 
-    public int getLuongLamThem() {
+    public double getLuongLamThem() {
         return luongLamThem;
     }
 
-    public void setLuongLamThem(int luongLamThem) {
+    public void setLuongLamThem(double luongLamThem) {
         this.luongLamThem = luongLamThem;
     }
 

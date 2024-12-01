@@ -181,24 +181,7 @@ public class formluong extends JPanel {
             }
         });
 
-        cmdDelete.addActionListener(e -> {
-            DefaultTableModel model = (DefaultTableModel) table.getModel();
-            int rowCount = table.getRowCount();
 
-            int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa các mục đã chọn không?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                for (int i = rowCount - 1; i >= 0; i--) {
-                    Boolean isChecked = (Boolean) model.getValueAt(i, 0);
-                    if (isChecked != null && isChecked) {
-                        int maLuong = (int) model.getValueAt(i, 1);
-                        daoluong dao = new daoluong();
-                        dao.delete(maLuong); // Cập nhật isDelete = 1 trong cơ sở dữ liệu
-                        model.removeRow(i);
-                    }
-                }
-                JOptionPane.showMessageDialog(this, "Đã xóa các mục được chọn.");
-            }
-        });
 
         cmdExportExcel.addActionListener(e -> {
             exportTableToExcel();

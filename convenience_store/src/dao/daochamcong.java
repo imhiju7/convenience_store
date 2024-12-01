@@ -170,7 +170,41 @@ public class daochamcong {
         }
         return years;
     }
-    
+    public ArrayList<dtochamcong> getlisttime(int Month,int Year) {
+        ArrayList<dtochamcong> list = new ArrayList<>();
+        java.sql.Connection con = connect.connection();
+        String sql = "SELECT * FROM chamcong WHERE thangChamCong = ? AND namChamCong = ?";
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, Month);
+            pst.setInt(2, Year);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                dtochamcong chamCong = new dtochamcong(
+                    rs.getInt("maChamCong"),
+                    rs.getInt("maNhanVien"),
+                    rs.getInt("soGioLamViec"),
+                    rs.getInt("soNgayLamViec"),
+                    rs.getInt("soNgayNghi"),
+                    rs.getInt("soNgayTre"),
+                    rs.getInt("soGioLamThem"),
+                    rs.getString("chiTiet"),
+                    rs.getInt("thangChamCong"),
+                    rs.getInt("namChamCong")
+                );
+                list.add(chamCong);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(daochamcong.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                Logger.getLogger(daochamcong.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+        return list;
+    }
     public static void main(String[] args) {
         // Create an instance of the DAO class
         daochamcong dao = new daochamcong();

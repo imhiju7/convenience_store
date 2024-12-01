@@ -1,23 +1,64 @@
 package bus;
 
 import dao.daoluong;
+import dao.daonhanvien;
+import dao.daochamcong;
+import dao.daohopdong;
+import dto.dtochamcong;
+import dto.dtohopdong;
 import dto.dtoluong;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class busluong {
     public ArrayList<dtoluong> dsLuong; // Danh sách lương
     private daoluong daoLuong = new daoluong();
-
+    private daonhanvien daonv = new daonhanvien();
+    private daochamcong daocc = new daochamcong();
+    private daohopdong daohd = new daohopdong();
     // Lấy thông tin lương theo mã
     public dtoluong getById(int maLuong) {
         return daoLuong.getById(maLuong);
     }
+    // Lấy tất cả các bản ghi lương theo khoảng thời gian
+    public ArrayList<dtoluong> getlist(Date day1, Date day2) {
+        ArrayList<dtoluong> listluong = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(day1);
+        ArrayList<dtochamcong> list = daocc.getlisttime(cal.get(Calendar.MONTH)+1, cal.get(Calendar.YEAR));
+        if(!daoLuong.getByTime(day1, day2).isEmpty()){
+            listluong = daoLuong.getByTime(day1, day2);
+        }
+        else{
+            for(dtochamcong cc : list){
+                dtoluong l = new dtoluong();
+                dtohopdong hd = daohd.gethopdongnhanvien(cc.getManhanvien());
+                
+                double luongcoban = hd.getLuongCoBan();
+                l.setMaChamCong(cc.getMachamcong());
+                l.setMaNhanVien(cc.getManhanvien());
+                l.setLuongThucTe(cc.getSogiolamviec()*luongcoban);
+                l.setLuongLamThem(cc.getSogiolamthem()*luongcoban);
+                l.setLuongThuong(0);
+                l.setPhuCap(0);
+                
+                double luongchuathue = cc.getSogiolamviec()*luongcoban + cc.getSogiolamthem()*luongcoban;
+                double thuethunhap = 0;
 
-    // Lấy tất cả các bản ghi lương thông qua DAO
-    public ArrayList<dtoluong> list() {
-        return daoLuong.getList();
+                l.setKhoanThue(thuethunhap);
+                l.setKhoanBaoHiem(0);
+                l.setThuclanh(luongchuathue - thuethunhap);
+                l.setNgayNhanLuong(new Date().toString());
+                l.setKhoanTru((cc.getSongaynghi()*luongcoban+cc.getSongaytre()*0.5*luongcoban));
+
+                daoLuong.add(l);
+                listluong.add(l);
+            }
+        }
+        return listluong;
     }
 
     // Constructor khởi tạo busluong và lấy danh sách lương
@@ -42,11 +83,7 @@ public class busluong {
         getlist(); // Cập nhật lại danh sách sau khi cập nhật
     }
 
-    // Phương thức xóa thông tin lương theo mã
-    public void delete(int maLuong) {
-        daoLuong.delete(maLuong); // Xóa bản ghi thông qua DAO
-        getlist(); // Cập nhật danh sách sau khi xóa
-    }
+
 
     // Phương thức đếm tổng số bản ghi lương
     public int getSoLuongLuong() throws SQLException {
