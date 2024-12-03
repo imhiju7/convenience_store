@@ -51,6 +51,8 @@ public class dtodanhmuc {
     public void setIsDelete(int isDelete) {
         this.isDelete = isDelete;
     }
-
+     public String getDropdownDisplay() {
+        return tenDanhMuc;
+    }
    
 }
