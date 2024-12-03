@@ -50,6 +50,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import net.miginfocom.swing.MigLayout;
 import org.apache.poi.ss.usermodel.*;
@@ -155,6 +156,22 @@ public class formchucnang extends JPanel {
         JButton cmdExportExcel = new JButton("Xuất Excel");
 
         // Thêm sự kiện cho các nút (Thêm, Sửa, Xuất Excel)
+        txtSearch.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filterTable(txtSearch.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filterTable(txtSearch.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filterTable(txtSearch.getText());
+            }
+        });
         cmdCreate.addActionListener(e -> {
             try {
                 showChucNangModal();
@@ -211,6 +228,13 @@ public class formchucnang extends JPanel {
         panel.putClientProperty(FlatClientProperties.STYLE, "background:null;");
 
         return panel;
+    }
+    private void filterTable(String searchText) {
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(model);
+        table.setRowSorter(sorter);
+
+        RowFilter<TableModel, Object> rf = RowFilter.regexFilter("(?i)" + searchText);  // Lọc không phân biệt chữ hoa/thường
+        sorter.setRowFilter(rf);
     }
 
     private void loadDataToTable() {

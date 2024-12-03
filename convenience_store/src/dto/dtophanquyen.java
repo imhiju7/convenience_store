@@ -4,51 +4,57 @@
  */
 package dto;
 
-/**
- *
- * @author Hieu PC
- */
 public class dtophanquyen {
+    private int maPhanQuyen;
+    private int maChucVu;
+    private int maChucNang;
 
-    private int maphanquyen;
-    private int machucvu;
-    private int machucnang;
-    
+    // Constructor không tham số
     public dtophanquyen() {
     }
 
-    public dtophanquyen(int maphanquyen, int machucvu, int machucnang) {
-        this.maphanquyen = maphanquyen;
-        this.machucvu = machucvu;
-        this.machucnang = machucnang;
+    // Constructor có tham số
+    public dtophanquyen(int maPhanQuyen, int maChucVu, int maChucNang) {
+        this.maPhanQuyen = maPhanQuyen;
+        this.maChucVu = maChucVu;
+        this.maChucNang = maChucNang;
     }
 
-    public int getMaphanquyen() {
-        return maphanquyen;
+    // Getter và Setter cho maPhanQuyen
+    public int getMaPhanQuyen() {
+        return maPhanQuyen;
     }
 
-    public void setMaphanquyen(int maphanquyen) {
-        this.maphanquyen = maphanquyen;
+    public void setMaPhanQuyen(int maPhanQuyen) {
+        this.maPhanQuyen = maPhanQuyen;
     }
 
-    public int getMachucvu() {
-        return machucvu;
+    // Getter và Setter cho maChucVu
+    public int getMaChucVu() {
+        return maChucVu;
     }
 
-    public void setMachucvu(int machucvu) {
-        this.machucvu = machucvu;
+    public void setMaChucVu(int maChucVu) {
+        this.maChucVu = maChucVu;
     }
 
-    public int getMachucnang() {
-        return machucnang;
+    // Getter và Setter cho maChucNang
+    public int getMaChucNang() {
+        return maChucNang;
     }
 
-    public void setMachucnang(int machucnang) {
-        this.machucnang = machucnang;
+    public void setMaChucNang(int maChucNang) {
+        this.maChucNang = maChucNang;
     }
 
+    // Phương thức toString() để in thông tin phân quyền
     @Override
     public String toString() {
-        return "dtophanquyen{" + "maphanquyen=" + maphanquyen + ", machucvu=" + machucvu + ", machucnang=" + machucnang + '}';
+        return "dtophanquyen{" +
+                "maPhanQuyen=" + maPhanQuyen +
+                ", maChucVu=" + maChucVu +
+                ", maChucNang=" + maChucNang +
+                '}';
     }
 }
+
