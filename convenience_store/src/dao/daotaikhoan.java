@@ -25,27 +25,30 @@ import java.util.logging.Logger;
  */
 public class daotaikhoan {
     
-    public boolean addtaikhoan(dtotaikhoan tk){
-        Connection con = connect.connection();
-        String sql = "INSERT INTO taikhoan(tenDangNhap,matKhau,ngayTao,isBlock,maNhanVien) VALUES(?,?,?,?,?)";
-        try{
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, tk.getTendangnhap());
-            pst.setString(2, tk.getMatkhau());
-            pst.setTimestamp(3, new java.sql.Timestamp(tk.getNgaytao().getTime()));
-            pst.setInt(4, tk.getIsblock());
-            pst.setInt(5, tk.getManhanvien());
-        } catch (SQLException e) {
-            return false;
-        }
-        try {
-            con.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(daotaikhoan.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        }
-        return true;
-    }
+                public boolean addtaikhoan(dtotaikhoan tk) {
+                Connection con = connect.connection();
+                String sql = "INSERT INTO taikhoan(tenDangNhap, matKhau, ngayTao, isBlock, maNhanVien) VALUES(?,?,?,?,?)";
+                try {
+                    PreparedStatement pst = con.prepareStatement(sql);
+                    pst.setString(1, tk.getTendangnhap());
+                    pst.setString(2, tk.getMatkhau());
+                    pst.setTimestamp(3, new java.sql.Timestamp(tk.getNgaytao().getTime()));
+                    pst.setInt(4, tk.getIsblock());
+                    pst.setInt(5, tk.getManhanvien());
+                    int rowsAffected = pst.executeUpdate();
+                    return rowsAffected > 0; // Nếu thêm thành công, trả về true
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return false; // Lỗi SQL, trả về false
+                } finally {
+                    try {
+                        if (con != null) con.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
     
         public boolean update(int manhanvien, String tendangnhap, String matkhau, int isblock) {
                     Connection con = connect.connection();

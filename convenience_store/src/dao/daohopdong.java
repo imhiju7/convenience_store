@@ -28,7 +28,32 @@ public class daohopdong {
                 int mahd = rs.getInt("mahopdong");
                 String tungay = rs.getDate("tungay")+"";
                 String denngay = rs.getDate("denngay")+"";
-                float luongcb = rs.getFloat("luongcoban");
+                Double luongcb = rs.getDouble("luongcoban");
+                int manv = rs.getInt("maNhanVien");
+                int isDelete = rs.getInt("isDelete");
+                hd = new dtohopdong(mahd, tungay, denngay, luongcb, manv, isDelete);
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        if(hd.getIsDelete()==0){
+            return hd;
+        }
+        return null;
+    }
+        public dtohopdong gethopdongnhanvien(int ma_nv){
+        dtohopdong hd = new dtohopdong();
+        try (java.sql.Connection con = connect.connection()) {
+            String sql = "select * from hopdonglaodong where maNhanVien = ? ";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1,ma_nv);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                int mahd = rs.getInt("mahopdong");
+                String tungay = rs.getDate("tungay")+"";
+                String denngay = rs.getDate("denngay")+"";
+                double luongcb = rs.getFloat("luongcoban");
                 int manv = rs.getInt("maNhanVien");
                 int isDelete = rs.getInt("isDelete");
                 hd = new dtohopdong(mahd, tungay, denngay, luongcb, manv, isDelete);
@@ -54,7 +79,7 @@ public class daohopdong {
                     int mahd = rs.getInt("mahopdong");
                     String tungay = rs.getDate("tungay")+"";
                     String denngay = rs.getDate("denngay")+"";
-                    float luongcb = rs.getFloat("luongcoban");
+                    double luongcb = rs.getFloat("luongcoban");
                     int manv = rs.getInt("maNhanVien");
                     int isDelete = rs.getInt("isDelete");
                     dtohopdong hd = new dtohopdong(mahd, tungay, denngay, luongcb, manv, isDelete);
@@ -78,7 +103,7 @@ public class daohopdong {
                 int mahd = rs.getInt("mahopdong");
                 String tungay = rs.getDate("tungay")+"";
                 String denngay = rs.getDate("denngay")+"";
-                float luongcb = rs.getFloat("luongcoban");
+                double luongcb = rs.getFloat("luongcoban");
                 int manv = rs.getInt("maNhanVien");
                 int isDelete = rs.getInt("isDelete");
                 dtohopdong hd = new dtohopdong(mahd, tungay, denngay, luongcb, manv, isDelete);
@@ -133,7 +158,7 @@ public class daohopdong {
             pst.setInt(1, hd.getMaHopDong());
             pst.setDate(2, java.sql.Date.valueOf(hd.getTuNgay())); // Chuyển đổi từ String sang Date
             pst.setDate(3, java.sql.Date.valueOf(hd.getDenNgay())); // Chuyển đổi từ String sang Date
-            pst.setFloat(4, hd.getLuongCoBan());
+            pst.setFloat(4,(float)hd.getLuongCoBan());
             pst.setInt(5, hd.getMaNV());
             pst.setInt(6,0);
             // Thực thi câu lệnh
@@ -174,7 +199,7 @@ public class daohopdong {
             PreparedStatement pst = con.prepareStatement(sql)) {
             pst.setString(1, hd.getTuNgay());
             pst.setString(2, hd.getDenNgay());
-            pst.setFloat(3,hd.getLuongCoBan());
+            pst.setFloat(3,(float)hd.getLuongCoBan());
             pst.setInt(4,hd.getMaNV());
             pst.setInt(5,hd.getMaHopDong());
             int rowsAffected = pst.executeUpdate();

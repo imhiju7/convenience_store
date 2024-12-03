@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dto;
 
-/**
- *
- * @author ASUS
- */
 public class dtoluong {
     private int maLuong;
     private int maChamCong;
@@ -18,12 +10,10 @@ public class dtoluong {
     private double khoanThue;
     private double thuclanh;
     private int luongLamThem;
-    private String ngayNhanLuong; // Sử dụng String nếu ngày là null, hoặc LocalDate nếu đảm bảo giá trị không null
+    private String ngayNhanLuong;
     private int maNhanVien;
-    
-    public dtoluong(){
-    
-    }
+
+    // Constructor đầy đủ
     public dtoluong(int maLuong, int maChamCong, double phuCap, double luongThucTe, double luongThuong,
                     double khoanBaoHiem, double khoanThue, double thuclanh, int luongLamThem, 
                     String ngayNhanLuong, int maNhanVien) {
@@ -40,7 +30,7 @@ public class dtoluong {
         this.maNhanVien = maNhanVien;
     }
 
-    // Getter và Setter
+    // Getters và Setters
     public int getMaLuong() {
         return maLuong;
     }
@@ -128,5 +118,22 @@ public class dtoluong {
     public void setMaNhanVien(int maNhanVien) {
         this.maNhanVien = maNhanVien;
     }
-}
 
+    // Override phương thức toString để dễ kiểm tra dữ liệu
+    @Override
+    public String toString() {
+        return "dtoluong{" +
+                "maLuong=" + maLuong +
+                ", maChamCong=" + maChamCong +
+                ", phuCap=" + phuCap +
+                ", luongThucTe=" + luongThucTe +
+                ", luongThuong=" + luongThuong +
+                ", khoanBaoHiem=" + khoanBaoHiem +
+                ", khoanThue=" + khoanThue +
+                ", thuclanh=" + thuclanh +
+                ", luongLamThem=" + luongLamThem +
+                ", ngayNhanLuong='" + ngayNhanLuong + '\'' +
+                ", maNhanVien=" + maNhanVien +
+                '}';
+    }
+}
