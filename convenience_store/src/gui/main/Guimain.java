@@ -1,6 +1,7 @@
 package gui.main;
 
 import bus.busnhanvien;
+import dto.dtonhanvien;
 
 
 import gui.comp.Header;
@@ -8,6 +9,7 @@ import gui.comp.Menu;
 import gui.event.EventMenuSelected;
 import gui.event.EventShowPopupMenu;
 import gui.form.formchamcong;
+import gui.form.formchamconghangngay;
 import gui.form.formchucvu;
 import gui.form.formnhanvien;
 import gui.form.formmenu;
@@ -34,6 +36,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,6 +55,7 @@ public class Guimain extends javax.swing.JFrame {
     private Header header;
     private MainForm main;
     private Animator animator;
+    private dtonhanvien nv;
     
     public Guimain(int manv) throws SQLException, ParseException {
         initComponents();
@@ -63,7 +67,12 @@ public class Guimain extends javax.swing.JFrame {
         bg.setLayout(layout);
         
         busnhanvien busnv = new busnhanvien();
-    
+        ArrayList<dtonhanvien> nvlist = busnv.getNhanVienList();
+        for (dtonhanvien i : nvlist) {
+            if (i.getManhanvien()==manv) {
+                nv = i;
+            }
+        }
         int macv = busnv.getmachucvu(manv);
         
         menu = new Menu();
@@ -241,9 +250,25 @@ public class Guimain extends javax.swing.JFrame {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                     main.showForm(new formthongkesp());
+                     try {
+                         main.showForm(new formthongkesp());
+                     } catch (SQLException ex) {
+                         Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
+                     }
                  }
 //                 Danh mục Cài đặt
+                    if ((menuIndex==5)&&(subMenuIndex==2)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     try {
+                         main.showForm(new formchamconghangngay(nv));
+                     } catch (SQLException ex) {
+                         Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
+                     }
+                 }
                  
                  
     }

@@ -133,6 +133,7 @@ public class Combobox<E> extends JComboBox<E> {
                 public void itemStateChanged(ItemEvent ie) {
                     if (!isFocusOwner()) {
                         if (getSelectedIndex() == -1) {
+                            
                             showing(true);
                         } else {
                             showing(false);

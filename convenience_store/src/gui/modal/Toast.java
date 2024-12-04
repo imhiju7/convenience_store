@@ -35,7 +35,7 @@ public class Toast {
         return instance;
     }
 
-    private Toast() {
+    public Toast() {
         map = new HashMap<>();
         initThemesData();
         defaultOption = ToastOption.getDefault();
