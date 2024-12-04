@@ -13,6 +13,7 @@ import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import dto.dtochucvu;
 import dao.daochucvu;
 import dao.daodanhmuc;
+import dao.daophanquyen;
 import dto.dtochucnang;
 import dto.dtodanhmuc;
 import dto.dtophanquyen;
@@ -59,6 +60,7 @@ import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
@@ -83,11 +85,9 @@ public class formchucvu extends javax.swing.JPanel {
     private JTable chucVuTable;
     private DefaultTableModel phanQuyenModel;
     private JTable phanQuyenTable;
-    private DefaultTableModel chucNangModel;
-    private JTable chucNangTable;
+    private busphanquyen busPhanQuyen;
     private DefaultTableModel danhMucModel;
     private JTable danhMucTable;
-    
 
     public formchucvu() throws SQLException, ParseException {
         initComponents();
@@ -105,12 +105,11 @@ public class formchucvu extends javax.swing.JPanel {
         // Tạo bảng phân quyền và thêm vào tab thứ hai
         JPanel panelPhanQuyen = createPhanQuyenTable();
         tabchucvu.addTab("Phân quyền", panelPhanQuyen);
-        
-        JPanel panelChucNang = createChucNangTable();
-        tabchucvu.addTab("Chức năng", panelChucNang);
-        
+
+//        JPanel panelChucNang = createChucNangTable();
+//        tabchucvu.addTab("Chức năng", panelChucNang);
         JPanel panelDanhMuc = createDanhMucTable();
-        tabchucvu.addTab("Danh mục",panelDanhMuc);
+        tabchucvu.addTab("Danh mục", panelDanhMuc);
 
         // Thêm JTabbedPane vào GUI
         this.setLayout(new java.awt.BorderLayout());
@@ -191,6 +190,7 @@ public class formchucvu extends javax.swing.JPanel {
 
         return panel;
     }
+
     private Component createPositionHeaderAction() {
         JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,230]push[][]"));
 
@@ -251,7 +251,6 @@ public class formchucvu extends javax.swing.JPanel {
             }
         });
 
-
         // Thêm sự kiện cho nút "Xóa"
         cmdDelete.addActionListener(e -> {
             int rowCount = chucVuTable.getRowCount();  // Lấy tổng số dòng trong bảng
@@ -289,8 +288,6 @@ public class formchucvu extends javax.swing.JPanel {
             }
         });
 
-
-
         // Thêm sự kiện cho nút "Xuất Excel"
         cmdExportExcel.addActionListener(e -> {
             exportPositionTableToExcel();  // Gọi phương thức xuất Excel
@@ -306,46 +303,47 @@ public class formchucvu extends javax.swing.JPanel {
 
         return panel;
     }
+
     private void exportPositionTableToExcel() {
-    try {
-        // Chọn file để lưu
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Lưu file Excel");
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Excel Files", "xls", "xlsx"));
-        int userSelection = fileChooser.showSaveDialog(this);
-        if (userSelection == JFileChooser.APPROVE_OPTION) {
-            File fileToSave = fileChooser.getSelectedFile();
-            // Đảm bảo file có đuôi .xlsx
-            if (!fileToSave.getName().endsWith(".xlsx")) {
-                fileToSave = new File(fileToSave.getAbsolutePath() + ".xlsx");
+        try {
+            // Chọn file để lưu
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Lưu file Excel");
+            fileChooser.setFileFilter(new FileNameExtensionFilter("Excel Files", "xls", "xlsx"));
+            int userSelection = fileChooser.showSaveDialog(this);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+                // Đảm bảo file có đuôi .xlsx
+                if (!fileToSave.getName().endsWith(".xlsx")) {
+                    fileToSave = new File(fileToSave.getAbsolutePath() + ".xlsx");
+                }
+                // Sử dụng thư viện Apache POI để xuất Excel (thêm phụ thuộc vào project)
+                Workbook workbook = new XSSFWorkbook();
+                Sheet sheet = workbook.createSheet("Chức Vụ");
+
+                // Thêm tiêu đề vào Excel
+                Row headerRow = sheet.createRow(0);
+                headerRow.createCell(0).setCellValue("Mã Chức Vụ");
+                headerRow.createCell(1).setCellValue("Tên Chức Vụ");
+
+                // Thêm dữ liệu vào Excel
+                for (int i = 0; i < chucVuModel.getRowCount(); i++) {
+                    Row row = sheet.createRow(i + 1);
+                    row.createCell(0).setCellValue((Integer) chucVuModel.getValueAt(i, 1));  // Mã Chức Vụ
+                    row.createCell(1).setCellValue((String) chucVuModel.getValueAt(i, 2));   // Tên Chức Vụ
+                }
+
+                // Lưu file Excel
+                try (FileOutputStream fileOut = new FileOutputStream(fileToSave)) {
+                    workbook.write(fileOut);
+                }
+
+                JOptionPane.showMessageDialog(this, "Đã xuất file Excel thành công!");
             }
-            // Sử dụng thư viện Apache POI để xuất Excel (thêm phụ thuộc vào project)
-            Workbook workbook = new XSSFWorkbook();
-            Sheet sheet = workbook.createSheet("Chức Vụ");
-
-            // Thêm tiêu đề vào Excel
-            Row headerRow = sheet.createRow(0);
-            headerRow.createCell(0).setCellValue("Mã Chức Vụ");
-            headerRow.createCell(1).setCellValue("Tên Chức Vụ");
-
-            // Thêm dữ liệu vào Excel
-            for (int i = 0; i < chucVuModel.getRowCount(); i++) {
-                Row row = sheet.createRow(i + 1);
-                row.createCell(0).setCellValue((Integer) chucVuModel.getValueAt(i, 1));  // Mã Chức Vụ
-                row.createCell(1).setCellValue((String) chucVuModel.getValueAt(i, 2));   // Tên Chức Vụ
-            }
-
-            // Lưu file Excel
-            try (FileOutputStream fileOut = new FileOutputStream(fileToSave)) {
-                workbook.write(fileOut);
-            }
-
-            JOptionPane.showMessageDialog(this, "Đã xuất file Excel thành công!");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi xuất file Excel: " + e.getMessage());
         }
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Lỗi khi xuất file Excel: " + e.getMessage());
     }
-}
 
     private void filterPositionTable(String keyword) {
         TableRowSorter<DefaultTableModel> rowSorter = new TableRowSorter<>(chucVuModel);
@@ -354,7 +352,7 @@ public class formchucvu extends javax.swing.JPanel {
         // Sử dụng regex để tìm kiếm không phân biệt chữ hoa chữ thường
         rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + keyword)); // (?i) để tìm kiếm không phân biệt hoa thường
     }
-    
+
     private void showEditPositionModal(int maChucVu, String tenChucVu, DefaultTableModel model, int row) {
         try {
             // Tạo một form SimpleInputPositionForm mới
@@ -378,7 +376,7 @@ public class formchucvu extends javax.swing.JPanel {
 
                              if (!newTenChucVu.isEmpty()) {
                                  // Cập nhật vào cơ sở dữ liệu
-                                 dtochucvu chucVu = new dtochucvu(maChucVu, newTenChucVu,currentIsDelete);
+                                 dtochucvu chucVu = new dtochucvu(maChucVu, newTenChucVu, currentIsDelete);
                                  try {
                                      buschucvu bus = new buschucvu();
                                      bus.updateChucVu(chucVu);  // Cập nhật vào cơ sở dữ liệu
@@ -403,8 +401,7 @@ public class formchucvu extends javax.swing.JPanel {
             e.printStackTrace();
         }
     }
-   
-    
+
     private void showPositionModal() throws SQLException {
         Option option = ModalDialog.createOption();
         option.getLayoutOption().setSize(-1, 1f)
@@ -445,6 +442,7 @@ public class formchucvu extends javax.swing.JPanel {
                      }
                  }), option);
     }
+
     public void loadDataToPositionTable() throws SQLException {
         chucVuModel.setRowCount(0); // Xóa dữ liệu cũ trong bảng
         buschucvu buscv = new buschucvu(); // Tạo đối tượng xử lý logic chức vụ
@@ -454,83 +452,91 @@ public class formchucvu extends javax.swing.JPanel {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
-        
-    private JPanel createPhanQuyenTable() throws SQLException {
-        JPanel panel = new JPanel(new MigLayout("fillx, wrap, insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
+    private JPanel createPhanQuyenTable() {
+        JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
 
-        // Tạo tiêu đề
-        JLabel title = new JLabel("Bảng Phân Quyền");
-        title.putClientProperty(FlatClientProperties.STYLE, "font:bold +2");
-        panel.add(title, "gapx 20, wrap");
-
-        // Tạo header với các nút chức năng
-        panel.add(createPermissionHeaderAction(), "growx, wrap");
-
-        // Tạo model cho bảng Phân Quyền
-        Object[] columns = new Object[]{"CHỌN", "MÃ PHÂN QUYỀN", "TÊN CHỨC VỤ", "TÊN CHỨC NĂNG"};
+        // Tạo mô hình bảng Phân Quyền
+        Object[] columns = new Object[]{"CHỌN", "MÃ PHÂN QUYỀN", "TÊN CHỨC VỤ", "TÊN CHỨC NĂNG", "MÃ CHỨC VỤ", "MÃ CHỨC NĂNG"};
         phanQuyenModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 0; // Cho phép chỉnh sửa cột checkbox
+                return column == 0; // Cho phép chỉnh sửa tại cột 0 cho checkbox
             }
 
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 0) {
-                    return Boolean.class; // Cột checkbox
-                }
-                return super.getColumnClass(columnIndex);
+                return columnIndex == 0 ? Boolean.class : super.getColumnClass(columnIndex);
             }
         };
 
-        // Thêm dữ liệu mẫu vào model
-//    busphanquyen bus = new busphanquyen();
-//    for (dtophanquyen pq : bus.list_pq) {
-//        phanQuyenModel.addRow(new Object[]{false, pq.getMaPhanQuyen(), pq.getTenChucVu(), pq.getTenChucNang()});
-//    }
-        // Tạo bảng với model
+        // Tạo bảng và gán model cho bảng
         phanQuyenTable = new JTable(phanQuyenModel);
+
+        loadPhanQuyenDataToTable();
+
         JScrollPane scrollPane = new JScrollPane(phanQuyenTable);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
-        // Cài đặt tùy chọn cho bảng
+        // Thiết lập kích thước cột
         phanQuyenTable.getColumnModel().getColumn(0).setMaxWidth(50);  // Cột checkbox
-        phanQuyenTable.getColumnModel().getColumn(1).setMinWidth(100); // Cột Mã phân quyền
-        phanQuyenTable.getColumnModel().getColumn(2).setPreferredWidth(150); // Cột Tên chức vụ
-        phanQuyenTable.getColumnModel().getColumn(3).setPreferredWidth(150); // Cột Tên chức năng
+        phanQuyenTable.getColumnModel().getColumn(1).setMinWidth(50);  // Mã phân quyền
+        phanQuyenTable.getColumnModel().getColumn(4).setMaxWidth(0);   // Ẩn cột Mã chức vụ
+        phanQuyenTable.getColumnModel().getColumn(4).setMinWidth(0);   // Ẩn cột Mã chức vụ
+        phanQuyenTable.getColumnModel().getColumn(4).setPreferredWidth(0);
+        phanQuyenTable.getColumnModel().getColumn(5).setMaxWidth(0);   // Ẩn cột Mã chức năng
+        phanQuyenTable.getColumnModel().getColumn(5).setMinWidth(0);   // Ẩn cột Mã chức năng
+        phanQuyenTable.getColumnModel().getColumn(5).setPreferredWidth(0);
 
-        // Không cho phép thay đổi vị trí cột
+        // Vô hiệu hóa việc thay đổi thứ tự cột
         phanQuyenTable.getTableHeader().setReorderingAllowed(false);
-
-        // Đặt renderer cho tiêu đề cột checkbox
         phanQuyenTable.getColumnModel().getColumn(0).setHeaderRenderer(new CheckBoxTableHeaderRenderer(phanQuyenTable, 0));
 
-        // Canh chỉnh tiêu đề các cột
-        phanQuyenTable.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(phanQuyenTable) {
-            @Override
-            protected int getAlignment(int column) {
-                return column == 1 ? SwingConstants.CENTER : SwingConstants.LEADING;
-            }
-        });
-
         // Thiết lập giao diện
-        panel.putClientProperty(FlatClientProperties.STYLE, "arc:20; background:$Table.background;");
-        phanQuyenTable.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "height:30; hoverBackground:null; pressedBackground:null; separatorColor:$TableHeader.background;");
-        phanQuyenTable.putClientProperty(FlatClientProperties.STYLE, "rowHeight:70; showHorizontalLines:true; intercellSpacing:0,1; cellFocusColor:$TableHeader.hoverBackground; selectionBackground:$TableHeader.hoverBackground; selectionForeground:$Table.foreground;");
-        scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "trackArc:$ScrollBar.thumbArc; trackInsets:3,3,3,3; thumbInsets:3,3,3,3; background:$Table.background;");
+        panel.putClientProperty(FlatClientProperties.STYLE, "arc:20;background:$Table.background;");
+        phanQuyenTable.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "height:30;");
+        phanQuyenTable.putClientProperty(FlatClientProperties.STYLE, "rowHeight:70;showHorizontalLines:true;");
 
-        // Thêm đường phân cách
+        // Tạo tiêu đề
+        JLabel title = new JLabel("Danh sách phân quyền");
+        title.putClientProperty(FlatClientProperties.STYLE, "font:bold +2");
+        panel.add(title, "gapx 20");
+
+        // Thêm header và separator vào panel
+        panel.add(createPermissionHeaderAction());
         JSeparator separator = new JSeparator();
         separator.putClientProperty(FlatClientProperties.STYLE, "foreground:$Table.gridColor;");
         panel.add(separator, "height 2");
-
-        // Thêm bảng vào panel
         panel.add(scrollPane, "span, grow");
 
         return panel;
     }
-         
+
+// Hàm tải dữ liệu phân quyền vào bảng
+    private void loadPhanQuyenDataToTable() {
+        phanQuyenModel.setRowCount(0); // Xóa dữ liệu cũ
+        daophanquyen dao = new daophanquyen();
+        ArrayList<dtophanquyen> list = dao.getList();
+
+        for (dtophanquyen phanQuyen : list) {
+            // Lấy tên chức vụ và tên chức năng thông qua DAO
+            String tenChucVu = dao.getTenChucVuById(phanQuyen.getMaChucVu());
+            String tenChucNang = dao.getTenChucNangById(phanQuyen.getMaChucNang());
+
+            // Tạo một dòng dữ liệu
+            Object[] row = {
+                false, // Checkbox
+                phanQuyen.getMaPhanQuyen(),
+                tenChucVu, // Tên chức vụ
+                tenChucNang, // Tên chức năng
+                phanQuyen.getMaChucVu(), // Mã chức vụ (ẩn)
+                phanQuyen.getMaChucNang() // Mã chức năng (ẩn)
+            };
+
+            // Thêm dòng vào model
+            phanQuyenModel.addRow(row);
+        }
+    }
+
     private Component createPermissionHeaderAction() {
         JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,230]push[][]"));
 
@@ -539,270 +545,168 @@ public class formchucvu extends javax.swing.JPanel {
         txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("source/image/icon/search.svg", 0.4f));
         JButton cmdCreate = new JButton("Thêm");
         JButton cmdEdit = new JButton("Sửa");
-        JButton cmdDelete = new JButton("Xóa");
+        JButton cmdExportToExcel = new JButton("Xuất Excel");
+         JButton cmdRefresh = new JButton("Làm mới");
+        txtSearch.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filterTable(txtSearch.getText());
+            }
 
-        cmdCreate.addActionListener(e -> showPermissionModal());
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filterTable(txtSearch.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filterTable(txtSearch.getText());
+            }
+        });
+        cmdCreate.addActionListener(e -> {
+            try {
+                showPhanQuyenModal();
+            } catch (SQLException ex) {
+                Logger.getLogger(formchucvu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        cmdEdit.addActionListener(e -> {
+        int row = phanQuyenTable.getSelectedRow(); // Lấy hàng được chọn
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một bản ghi phân quyền để chỉnh sửa.");
+        } else {
+            int maPhanQuyen = (int) phanQuyenModel.getValueAt(row, 1); // Lấy mã phân quyền từ cột 1
+            int maChucVu = (int) phanQuyenModel.getValueAt(row, 2);
+            try {
+                showEditPhanQuyenModal(maChucVu, maPhanQuyen); // Hàm chỉnh sửa phân quyền
+            } catch (SQLException ex) {
+                Logger.getLogger(formchucvu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    });
+        cmdRefresh.addActionListener(e -> {
+        txtSearch.setText(""); // Xóa nội dung tìm kiếm
+        loadPhanQuyenDataToTable(); // Tải lại dữ liệu vào bảng
+    });
+        cmdExportToExcel.addActionListener(e -> {
+        exportPhanQuyenToExcel(); // Hàm xuất dữ liệu phân quyền ra file Excel
+    });
+
         panel.add(txtSearch);
         panel.add(cmdCreate);
         panel.add(cmdEdit);
-        panel.add(cmdDelete);
+        panel.add(cmdExportToExcel);
+        panel.add(cmdRefresh);
 
         panel.putClientProperty(FlatClientProperties.STYLE, ""
                  + "background:null;");
         return panel;
     }
-    
-    private void showPermissionModal() {
-        Option option = ModalDialog.createOption();
-        option.getLayoutOption().setSize(-1, 1f)
-                 .setLocation(Location.TRAILING, Location.TOP)
-                 .setAnimateDistance(0.7f, 0);
-        ModalDialog.showModal(this, new SimpleModalBorder(
-                 new SimpleInputPermissionForm(), "Thêm phân quyền", SimpleModalBorder.YES_NO_OPTION,
-                 (controller, action) -> {
-                     controller.close();
-                 }), option);// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private JPanel createChucNangTable() throws SQLException, ParseException {
-        JPanel panel = new JPanel(new MigLayout("fillx, wrap, insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
+    private void filterTable(String query) {
+        DefaultTableModel model = (DefaultTableModel) phanQuyenTable.getModel();
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+        phanQuyenTable.setRowSorter(sorter);
 
-        // Tạo tiêu đề
-        JLabel title = new JLabel("Bảng Chức Năng");
-        title.putClientProperty(FlatClientProperties.STYLE, "font:bold +2");
-        panel.add(title, "gapx 20, wrap");
+        
+        int[] filterColumns = {1, 2};
 
-        // Tạo header với các nút chức năng
-        panel.add(createFunctionHeaderAction(), "growx, wrap");
-
-        // Tạo model cho bảng Chức Năng
-        Object[] columns = new Object[]{"CHỌN", "MÃ CHỨC NĂNG", "TÊN CHỨC NĂNG", "TÊN DANH MỤC"};
-        DefaultTableModel chucNangModel = new DefaultTableModel(columns, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return column == 0; // Cho phép chỉnh sửa cột checkbox
-            }
-
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 0) {
-                    return Boolean.class; // Cột checkbox
-                }
-                return super.getColumnClass(columnIndex);
-            }
-        };
-
-        buschucnang bus = new buschucnang();  // Tạo đối tượng bus
-        for (dtochucnang cn : bus.getList()) {  // Giả sử bus.getList() trả về danh sách các chức năng
-            // Lấy tên danh mục từ mã danh mục
-            String tenDanhMuc = bus.getTenDanhMuc(cn.getMaDanhMuc());  // Phương thức này cần trả về tên danh mục từ mã danh mục
-            chucNangModel.addRow(new Object[]{false, cn.getMaChucNang(), cn.getTenChucNang(), tenDanhMuc});
+        // Tạo RowFilter áp dụng regex cho tất cả cột trong filterColumns
+        List<RowFilter<Object, Object>> filters = new ArrayList<>();
+        for (int col : filterColumns) {
+            filters.add(RowFilter.regexFilter("(?i)" + query, col)); // Lọc không phân biệt hoa thường
         }
-        // Tạo bảng với model
-        JTable chucNangTable = new JTable(chucNangModel);
-        JScrollPane scrollPane = new JScrollPane(chucNangTable);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
-        // Cài đặt tùy chọn cho bảng
-        chucNangTable.getColumnModel().getColumn(0).setMaxWidth(50);  // Cột checkbox
-        chucNangTable.getColumnModel().getColumn(1).setMinWidth(100); // Cột Mã chức năng
-        chucNangTable.getColumnModel().getColumn(2).setPreferredWidth(150); // Cột Tên chức năng
-        chucNangTable.getColumnModel().getColumn(3).setPreferredWidth(150); // Cột Nhóm chức năng
-
-        // Không cho phép thay đổi vị trí cột
-        chucNangTable.getTableHeader().setReorderingAllowed(false);
-
-        // Đặt renderer cho tiêu đề cột checkbox
-        chucNangTable.getColumnModel().getColumn(0).setHeaderRenderer(new CheckBoxTableHeaderRenderer(chucNangTable, 0));
-
-        // Canh chỉnh tiêu đề các cột
-        chucNangTable.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(chucNangTable) {
-            @Override
-            protected int getAlignment(int column) {
-                return column == 1 ? SwingConstants.CENTER : SwingConstants.LEADING;
-            }
-        });
-
-        // Thiết lập giao diện
-        panel.putClientProperty(FlatClientProperties.STYLE, "arc:20; background:$Table.background;");
-        chucNangTable.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "height:30; hoverBackground:null; pressedBackground:null; separatorColor:$TableHeader.background;");
-        chucNangTable.putClientProperty(FlatClientProperties.STYLE, "rowHeight:70; showHorizontalLines:true; intercellSpacing:0,1; cellFocusColor:$TableHeader.hoverBackground; selectionBackground:$TableHeader.hoverBackground; selectionForeground:$Table.foreground;");
-        scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "trackArc:$ScrollBar.thumbArc; trackInsets:3,3,3,3; thumbInsets:3,3,3,3; background:$Table.background;");
-
-        // Thêm đường phân cách
-        JSeparator separator = new JSeparator();
-        separator.putClientProperty(FlatClientProperties.STYLE, "foreground:$Table.gridColor;");
-        panel.add(separator, "height 2");
-
-        // Thêm bảng vào panel
-        panel.add(scrollPane, "span, grow");
-
-        return panel;
+        // Kết hợp các RowFilter bằng OR logic
+        RowFilter<Object, Object> combinedFilter = RowFilter.orFilter(filters);
+        sorter.setRowFilter(combinedFilter);
     }
-    private Component createFunctionHeaderAction() {
-        JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,230]push[][]"));
+    private void exportPhanQuyenToExcel() {
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
+    fileChooser.setFileFilter(new FileNameExtensionFilter("Excel Files", "xlsx"));
 
-        // Tạo ô tìm kiếm
-        JTextField txtSearch = new JTextField();
-        txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Tìm kiếm...");
-        txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("source/image/icon/search.svg", 0.4f));
+    int userSelection = fileChooser.showSaveDialog(this);
+    if (userSelection == JFileChooser.APPROVE_OPTION) {
+        File fileToSave = fileChooser.getSelectedFile();
+        String filePath = fileToSave.getAbsolutePath();
+        if (!filePath.endsWith(".xlsx")) {
+            filePath += ".xlsx";
+        }
 
-        // Tạo các nút hành động
-        JButton cmdCreate = new JButton("Thêm");
-        JButton cmdEdit = new JButton("Sửa");
-        JButton cmdDelete = new JButton("Xóa");
-        JButton cmdExportExcel = new JButton("Xuất Excel"); // Thêm nút xuất Excel
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Phân quyền");
+            Row headerRow = sheet.createRow(0);
 
-        // Xử lý Tìm kiếm
-        txtSearch.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                filterFunctionTable(txtSearch.getText());
+            // Lưu các cột cần hiển thị
+            List<Integer> visibleColumns = new ArrayList<>();
+            for (int col = 0; col < phanQuyenTable.getColumnCount(); col++) {
+                String columnName = phanQuyenTable.getColumnName(col);
+                // Lọc các cột không cần xuất (ẩn cột "Chọn", "Mã chức vụ", và "Mã chức năng")
+                if (!columnName.equalsIgnoreCase("Chọn") &&
+                    !columnName.equalsIgnoreCase("Mã chức vụ") &&
+                    !columnName.equalsIgnoreCase("Mã chức năng") &&
+                    !columnName.equalsIgnoreCase("IS DELETE")) {
+                    visibleColumns.add(col);
+                }
             }
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                filterFunctionTable(txtSearch.getText());
+            // Thêm tiêu đề cột
+            int excelCol = 0;
+            for (int col : visibleColumns) {
+                Cell cell = headerRow.createCell(excelCol++);
+                cell.setCellValue(phanQuyenTable.getColumnName(col));
             }
 
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                filterFunctionTable(txtSearch.getText());
-            }
-        });
-
-        // Xử lý Thêm
-        cmdCreate.addActionListener(e -> {
-            try {
-                showFunctionModal(); // Hiển thị form thêm mới
-            } catch (SQLException ex) {
-                Logger.getLogger(formchucvu.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
-
-        // Xử lý Sửa
-        cmdEdit.addActionListener(e -> {
-            JTable chucNangTable = new JTable(chucNangModel);
-            int row = chucNangTable.getSelectedRow(); // Lấy dòng được chọn
-            if (row == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn một chức năng để chỉnh sửa.");
-            } else {
-                // Lấy dữ liệu từ hàng được chọn
-                int maChucNang = (int) chucNangModel.getValueAt(row, 0); // Lấy mã chức năng từ cột 0 (mã chức năng)
-                String tenChucNang = (String) chucNangModel.getValueAt(row, 1); // Lấy tên chức năng từ cột 1
-
-                // Kiểm tra và lấy mã danh mục từ cột danh mục, nếu có (ví dụ từ cột thứ 2)
-                int maDanhMuc = (int) chucNangModel.getValueAt(row, 2); // Giả sử cột 2 là mã danh mục
-                
-
-                // Hiển thị modal chỉnh sửa với các tham số lấy từ bảng
-                showEditFunctionModal(maChucNang, tenChucNang, maDanhMuc, chucNangModel, row);
-            }
-        });
-
-        // Xử lý Xóa
-        cmdDelete.addActionListener(e -> {
-              JTable chucNangTable = new JTable(chucNangModel);
-            DefaultTableModel model = (DefaultTableModel) chucNangTable.getModel();
-            int rowCount = chucNangTable.getRowCount();
-            // Xác nhận xóa
-            int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa các mục đã chọn?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                for (int i = rowCount - 1; i >= 0; i--) { // Duyệt qua bảng từ dưới lên
-                    Boolean isChecked = (Boolean) model.getValueAt(i, 0);
-                    if (isChecked != null && isChecked) {
-                        model.removeRow(i); // Xóa dòng trong mô hình dữ liệu
+            // Thêm dữ liệu bảng
+            for (int row = 0; row < phanQuyenTable.getRowCount(); row++) {
+                Row excelRow = sheet.createRow(row + 1);
+                excelCol = 0;
+                for (int col : visibleColumns) {
+                    Object value = phanQuyenTable.getValueAt(row, col);
+                    Cell cell = excelRow.createCell(excelCol++);
+                    if (value != null) {
+                        if (value instanceof Number) {
+                            cell.setCellValue(((Number) value).doubleValue());
+                        } else {
+                            cell.setCellValue(value.toString());
+                        }
                     }
                 }
-                JOptionPane.showMessageDialog(this, "Đã xóa các mục được chọn.");
             }
-        });
 
-        // Xử lý Xuất Excel
-        cmdExportExcel.addActionListener(e -> {
-            exportFunctionTableToExcel(); // Gọi hàm xuất Excel
-        });
+            // Tự động chỉnh kích thước cột
+            for (int col = 0; col < visibleColumns.size(); col++) {
+                sheet.autoSizeColumn(col);
+            }
 
-        // Thêm các thành phần vào panel
-        panel.add(txtSearch);
-        panel.add(cmdCreate);
-        panel.add(cmdEdit);
-        panel.add(cmdDelete);
-        panel.add(cmdExportExcel); // Thêm nút xuất Excel
-        panel.putClientProperty(FlatClientProperties.STYLE, "background:null;");
+            // Ghi dữ liệu ra file
+            try (FileOutputStream fos = new FileOutputStream(filePath)) {
+                workbook.write(fos);
+            }
 
-        return panel;
-    }
-    private void filterFunctionTable(String query) {
-        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(chucNangModel);
-        chucNangTable.setRowSorter(sorter);
-
-        if (query.trim().isEmpty()) {
-            sorter.setRowFilter(null); // Hiển thị tất cả nếu không có tìm kiếm
-        } else {
-            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + query)); // Lọc theo từ khóa
+            JOptionPane.showMessageDialog(this, "Xuất file Excel thành công: " + filePath);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi xuất file Excel: " + e.getMessage());
         }
     }
-    
-    private void exportFunctionTableToExcel() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Lưu chức năng dưới dạng Excel");
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Excel Files", "xlsx"));
+}
 
-        int userSelection = fileChooser.showSaveDialog(this);
-        if (userSelection == JFileChooser.APPROVE_OPTION) {
-            File fileToSave = fileChooser.getSelectedFile();
-            String filePath = fileToSave.getAbsolutePath();
-
-            if (!filePath.endsWith(".xlsx")) {
-                filePath += ".xlsx"; // Thêm đuôi .xlsx nếu chưa có
-            }
-
-            try (Workbook workbook = new XSSFWorkbook()) {
-                Sheet sheet = workbook.createSheet("Chức Năng");
-
-                // Ghi header
-                Row headerRow = sheet.createRow(0);
-                for (int i = 0; i < chucNangTable.getColumnCount(); i++) {
-                    Cell cell = headerRow.createCell(i);
-                    cell.setCellValue(chucNangTable.getColumnName(i));
-                }
-
-                // Ghi dữ liệu
-                for (int i = 0; i < chucNangTable.getRowCount(); i++) {
-                    Row row = sheet.createRow(i + 1);
-                    for (int j = 0; j < chucNangTable.getColumnCount(); j++) {
-                        Object value = chucNangTable.getValueAt(i, j);
-                        row.createCell(j).setCellValue(value != null ? value.toString() : "");
-                    }
-                }
-
-                // Lưu file
-                try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
-                    workbook.write(fileOut);
-                }
-
-                JOptionPane.showMessageDialog(this, "Xuất Excel thành công!");
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi xuất file: " + ex.getMessage());
-            }
-        }
-    }
-    private void showFunctionModal() throws SQLException {
+    private void showPhanQuyenModal() throws SQLException {
         Option option = ModalDialog.createOption();
         option.getLayoutOption().setSize(-1, 1f).setLocation(Location.TRAILING, Location.TOP);
 
-        SimpleInputFunctionForm functionForm = new SimpleInputFunctionForm(); // Form nhập thông tin chức năng
+        SimpleInputPermissionForm permissionForm = new SimpleInputPermissionForm(); // Form nhập thông tin phân quyền
         ModalDialog.showModal(this, new SimpleModalBorder(
-                 functionForm, "Thêm Chức Năng", SimpleModalBorder.YES_NO_OPTION,
+                 permissionForm, "Quản lý phân quyền", SimpleModalBorder.YES_NO_OPTION,
                  (controller, action) -> {
                      if (action == SimpleModalBorder.YES_OPTION) {
                          try {
-                             // Lấy đối tượng chức năng từ form và gọi hàm addChucNang() để thêm chức năng
-                             functionForm.addChucNang();
-                             loadDataToFunctionTable(); // Tải lại dữ liệu vào bảng sau khi thêm mới
+                             // Lưu thông tin phân quyền từ form
+                             permissionForm.savePermissions();
+                             // Nếu cần tải lại dữ liệu bảng hoặc cập nhật giao diện:
+                             // loadDataToTable(); 
                          } catch (Exception e) {
-                             JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi khi thêm chức năng: " + e.getMessage());
+                             JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi khi lưu phân quyền: " + e.getMessage());
                              e.printStackTrace();
                          }
                      }
@@ -811,99 +715,60 @@ public class formchucvu extends javax.swing.JPanel {
                      }
                  }), option);
     }
-    private void showEditFunctionModal(int maChucNang, String tenChucNang, int maDanhMuc, DefaultTableModel model, int row) {
-        try {
-            // Tạo một form SimpleInputFunctionForm mới
-            SimpleInputFunctionForm functionForm = new SimpleInputFunctionForm();
-            int currentIsDelete = 0;
-            // Thiết lập dữ liệu ban đầu vào form
-            functionForm.txtTenChucNang.setText(tenChucNang);
+    private void showEditPhanQuyenModal(int maChucVu, int maPhanQuyen) throws SQLException {
+    // Lấy danh sách phân quyền dựa trên mã chức vụ
+    busphanquyen busPhanQuyen = new busphanquyen();
+    List<dtophanquyen> permissions = (List<dtophanquyen>) busPhanQuyen.getPhanQuyenByChucVu(maChucVu, maPhanQuyen); // Giả sử DAO có phương thức này
 
-            // Load danh mục vào ComboBox và chọn danh mục hiện tại
-            functionForm.loadDanhMuc();
-            for (int i = 0; i < functionForm.cmbDanhMuc.getItemCount(); i++) {
-                if (functionForm.cmbDanhMuc.getItemAt(i).equals(maDanhMuc)) {
-                    functionForm.cmbDanhMuc.setSelectedIndex(i);
-                    break;
-                }
+    if (permissions == null || permissions.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin phân quyền cho chức vụ có mã " + maChucVu);
+        return;
+    }
+
+    // Tạo Option cho ModalDialog
+    Option option = ModalDialog.createOption();
+    option.getLayoutOption().setSize(-1, 1f).setLocation(Location.TRAILING, Location.TOP);
+
+    // Tạo form phân quyền và điền sẵn các giá trị của phân quyền hiện tại
+    SimpleInputPermissionForm permissionForm = new SimpleInputPermissionForm();
+    permissionForm.cboChucVu.setSelectedItem(permissions.get(0).getMaChucVu()); // Chọn chức vụ hiện tại
+    for (dtophanquyen permission : permissions) {
+        for (int i = 0; i < permissionForm.pnlChucNang.getComponentCount(); i++) {
+            JCheckBox chk = (JCheckBox) permissionForm.pnlChucNang.getComponent(i);
+            if ((int) chk.getClientProperty("maChucNang") == permission.getMaChucNang()) {
+                chk.setSelected(true); // Đánh dấu các chức năng đã được phân quyền
             }
-
-            // Hiển thị form dưới dạng hộp thoại
-            Option option = ModalDialog.createOption();
-            option.getLayoutOption().setSize(-1, 1f)
-                     .setLocation(Location.TRAILING, Location.TOP)
-                     .setAnimateDistance(0.7f, 0);
-
-            ModalDialog.showModal(this, new SimpleModalBorder(
-                     functionForm, "Chỉnh sửa chức năng", SimpleModalBorder.YES_NO_OPTION,
-                     (controller, action) -> {
-                         if (action == SimpleModalBorder.YES_OPTION) {
-                             try {
-                                 // Lấy dữ liệu từ form
-                                 busdanhmuc busDanhMuc = new busdanhmuc();
-                                 String newTenChucNang = functionForm.txtTenChucNang.getText().trim();
-                                 int selectedIndex = functionForm.cmbDanhMuc.getSelectedIndex();
-                                 List<dtodanhmuc> danhMucList = busDanhMuc.getlist();
-                                 int newMaDanhMuc = danhMucList.get(selectedIndex).getMaDanhMuc();
-
-                                 // Kiểm tra tính hợp lệ của dữ liệu
-                                 if (newTenChucNang.isEmpty()) {
-                                     JOptionPane.showMessageDialog(null, "Tên chức năng không được để trống!");
-                                     return;
-                                 }
-
-                                 // Tạo đối tượng chức năng mới
-                                 dtochucnang updatedChucNang = new dtochucnang(maChucNang, newTenChucNang, newMaDanhMuc, currentIsDelete);
-                                 buschucnang busChucNang = new buschucnang();
-                                 busChucNang.updateChucNang(updatedChucNang); // Gọi phương thức cập nhật từ bus
-
-                                 // Cập nhật dữ liệu trong bảng
-                                 model.setValueAt(newTenChucNang, row, 2);
-                                 model.setValueAt(newMaDanhMuc, row, 3); // Cập nhật danh mục
-                                 JOptionPane.showMessageDialog(null, "Chức năng đã được cập nhật thành công!");
-                             } catch (SQLException e) {
-                                 JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi khi cập nhật chức năng: " + e.getMessage());
-                                 e.printStackTrace();
-                             }
-                         }
-                         if (action == SimpleModalBorder.NO_OPTION) {
-                             controller.close();
-                         }
-                     }
-            ), option);
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi khi mở form chỉnh sửa chức năng: " + e.getMessage());
-            e.printStackTrace();
         }
     }
-   public void loadDataToFunctionTable() throws SQLException {
-  
-    JTable chucNangTable = new JTable(chucNangModel);
-    DefaultTableModel model = (DefaultTableModel) chucNangTable.getModel();
-    model.setRowCount(0);
 
-    // Lấy dữ liệu từ busChucNang
-    buschucnang busChucNang = new buschucnang();
-    List<dtochucnang> functionList = busChucNang.getList();
-
-    // Duyệt qua danh sách chức năng và thêm vào bảng
-    for (dtochucnang chucNang : functionList) {
-        // Lấy tên danh mục từ mã danh mục (hoặc có thể lấy dữ liệu này từ một đối tượng busDanhMuc nếu cần)
-        String tenDanhMuc = busChucNang.getTenDanhMuc(chucNang.getMaDanhMuc());
-
-        // Thêm dòng mới vào bảng
-        model.addRow(new Object[]{false, chucNang.getMaChucNang(), chucNang.getTenChucNang(), tenDanhMuc});
-    }
+    // Hiển thị modal với form
+    ModalDialog.showModal(this, new SimpleModalBorder(
+            permissionForm, "Chỉnh sửa thông tin phân quyền", SimpleModalBorder.YES_NO_OPTION,
+            (controller, action) -> {
+                // Xử lý hành động của người dùng
+                if (action == SimpleModalBorder.YES_OPTION) {
+                    // Hiển thị thông báo xác nhận trước khi cập nhật thông tin phân quyền
+                    int result = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn chỉnh sửa thông tin phân quyền này không?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+                    if (result == JOptionPane.YES_OPTION) {
+                        try {
+                            // Lưu các thay đổi phân quyền
+                            permissionForm.savePermissions(); // Gọi hàm lưu phân quyền
+                            // Nếu cần tải lại dữ liệu bảng
+                            // loadDataToTable();
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi khi chỉnh sửa thông tin phân quyền: " + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                if (action == SimpleModalBorder.NO_OPTION) {
+                    // Đóng dialog khi nhấn No
+                    controller.close();
+                }
+            }), option);
 }
 
 
-
-
-    
-
-
-    
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private JPanel createDanhMucTable() throws SQLException {
         JPanel panel = new JPanel(new MigLayout("fillx, wrap, insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
@@ -1062,7 +927,6 @@ public class formchucvu extends javax.swing.JPanel {
             }
         });
 
-
         // Xử lý Xuất Excel
         cmdExportExcel.addActionListener(e -> {
             exportDirectoryTableToExcel(); // Gọi hàm xuất Excel
@@ -1209,13 +1073,13 @@ public class formchucvu extends javax.swing.JPanel {
                              }
 
                              // Cập nhật đối tượng và cơ sở dữ liệu
-                             dtodanhmuc danhMuc = new dtodanhmuc(maDanhMuc, newTenDanhMuc, newIconPath, currentIsDelete );
+                             dtodanhmuc danhMuc = new dtodanhmuc(maDanhMuc, newTenDanhMuc, newIconPath, currentIsDelete);
                              busdanhmuc bus = new busdanhmuc();
                              try {
                                  bus.updateDanhMuc(danhMuc); // Cập nhật vào cơ sở dữ liệu
                                  // Cập nhật dữ liệu trong bảng
                                  model.setValueAt(newTenDanhMuc, row, 2);
-                                
+
                                  JOptionPane.showMessageDialog(null, "Danh mục đã được cập nhật thành công!");
                              } catch (SQLException ex) {
                                  JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi khi cập nhật danh mục: " + ex.getMessage());
@@ -1243,11 +1107,7 @@ public class formchucvu extends javax.swing.JPanel {
         }
     }
 
-   
-
-
-
-  ///////////////////////////////////////////////// 
+    ///////////////////////////////////////////////// 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {

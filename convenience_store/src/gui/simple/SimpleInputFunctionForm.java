@@ -1,27 +1,26 @@
 package gui.simple;
 
-import bus.buschucnang; // Import lớp bus của chức năng
-import bus.busdanhmuc; // Import lớp bus của danh mục
+import bus.buschucnang;
+import dao.daochucnang; // Thay thế buschucnang bằng daochucnang
+import dao.daodanhmuc; // Thay thế busdanhmuc bằng daodanhmuc
+import dto.dtochucnang; // DTO của chức năng
+import dto.dtodanhmuc; // DTO của danh mục
 import com.formdev.flatlaf.FlatClientProperties;
-import dto.dtochucnang; // Import lớp DTO của chức năng
-import dto.dtodanhmuc; // Import lớp DTO của danh mục
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
 
 public class SimpleInputFunctionForm extends JPanel {
     public JTextField txtTenChucNang; // Trường nhập tên chức năng
-    public JComboBox<String> cmbDanhMuc; // ComboBox cho danh mục
-    private buschucnang busChucNang; // Khai báo lớp bus chức năng
-    private busdanhmuc busDanhMuc; // Khai báo lớp bus danh mục
+    public JComboBox<dtodanhmuc> cboDanhMuc; // ComboBox cho danh mục
+    private daochucnang daoChucNang; // Lớp DAO chức năng
+    private daodanhmuc daoDanhMuc; // Lớp DAO danh mục
 
     public SimpleInputFunctionForm() throws SQLException {
-        busChucNang = new buschucnang(); // Khởi tạo bus chức năng
-        busDanhMuc = new busdanhmuc(); // Khởi tạo bus danh mục
+        daoChucNang = new daochucnang(); // Khởi tạo DAO chức năng
+        daoDanhMuc = new daodanhmuc(); // Khởi tạo DAO danh mục
         init();
     }
 
@@ -29,138 +28,138 @@ public class SimpleInputFunctionForm extends JPanel {
         setLayout(new MigLayout("fillx,wrap,insets 5 35 5 35,width 400", "[fill]", ""));
         
         txtTenChucNang = new JTextField();
-        cmbDanhMuc = new JComboBox<>();
-
-        // Add components to panel
+        cboDanhMuc = new JComboBox<>();
+        populateComboBoxes();
+        
+        // Thêm các thành phần vào panel
         createTitle("Thông tin chức năng");
 
-        // Mã chức năng sẽ được tạo tự động, không cần trường nhập
+        // Tên chức năng
         add(new JLabel("Tên chức năng"), "gapy 5 0");
         add(txtTenChucNang);
 
-        // Thêm combo box danh mục
+        // ComboBox danh mục
         add(new JLabel("Chọn danh mục"), "gapy 5 0");
-        loadDanhMuc(); // Load danh mục vào combo box
-        add(cmbDanhMuc);
+        add(cboDanhMuc);
+    }
 
-        // Listener cho phím Enter để submit form
-        txtTenChucNang.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                if (e.isControlDown() && e.getKeyChar() == 10) {
-                    // Code để xử lý khi bấm tổ hợp phím
-                    addChucNang();
-                }
+    private void populateComboBoxes() throws SQLException {
+        // Lấy danh sách danh mục từ DAO và thêm vào ComboBox
+        List<dtodanhmuc> danhMucList = daoDanhMuc.getlist();
+        for (dtodanhmuc danhMuc : danhMucList) {
+            cboDanhMuc.addItem(danhMuc);
+        }
+        
+        // Hiển thị danh mục trong ComboBox
+        cboDanhMuc.setRenderer((list, value, index, isSelected, cellHasFocus) -> {
+            JLabel label = new JLabel();
+            if (value != null) {
+                label.setText(value.getDropdownDisplay()); // Đặt tên danh mục
             }
+            return label;
         });
     }
 
-    // Hàm để load danh mục vào ComboBox
-    public void loadDanhMuc() throws SQLException {
-        List<dtodanhmuc> danhMucList = busDanhMuc.getlist(); // Lấy danh sách danh mục
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-
-        // Thêm tên danh mục vào combobox
-        for (dtodanhmuc dm : danhMucList) {
-            model.addElement(dm.getTenDanhMuc());
-        }
-
-        cmbDanhMuc.setModel(model); // Cập nhật combo box với danh sách danh mục
-    }
-
-    public void addChucNang() {
-        try {
-            String tenChucNang = txtTenChucNang.getText();
-            if (tenChucNang.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Tên chức năng không được để trống!");
-                return;
-            }
-
-            // Lấy mã danh mục từ combo box
-            int selectedIndex = cmbDanhMuc.getSelectedIndex();
-            if (selectedIndex == -1) {
-                JOptionPane.showMessageDialog(this, "Bạn chưa chọn danh mục!");
-                return;
-            }
-
-            // Lấy mã danh mục từ danh sách danh mục
-            List<dtodanhmuc> danhMucList = busDanhMuc.getlist();
-            int maDanhMuc = danhMucList.get(selectedIndex).getMaDanhMuc();
-
-            dtochucnang chucNang = new dtochucnang(0, tenChucNang, maDanhMuc, 0); // Mã chức năng sẽ được tạo tự động
-            busChucNang.add(chucNang); // Gọi phương thức thêm từ bus
-
-            JOptionPane.showMessageDialog(this, "Chức năng đã được thêm thành công!");
-            txtTenChucNang.setText(""); // Xóa các trường nhập sau khi thêm
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi không xác định: " + e.getMessage());
-            e.printStackTrace(); // In ra lỗi để kiểm tra
-        }
-    }
-
-    public dtochucnang getChucNang() throws SQLException {
-        buschucnang bus = new buschucnang(); // Khởi tạo bus chức năng
-        busdanhmuc busDanhMuc = new busdanhmuc(); // Khởi tạo bus danh mục
-        List<dtodanhmuc> danhMucList = busDanhMuc.getlist(); // Lấy danh sách danh mục từ bus
-
-        // Lấy mã danh mục từ combo box
-        int selectedIndex = cmbDanhMuc.getSelectedIndex();
-        if (selectedIndex == -1) {
-            JOptionPane.showMessageDialog(this, "Bạn chưa chọn danh mục!");
-            return null; // Hoặc throw Exception nếu cần
-        }
-
-        // Gán mã danh mục từ danh sách danh mục
-        int maDanhMuc = danhMucList.get(selectedIndex).getMaDanhMuc();
-
-        // Gán mã chức năng tự động (lấy số lượng chức năng hiện tại và cộng thêm 1)
-        int maChucNang = bus.getSoLuongChucNang() + 1;
-
-        // Gán tên chức năng từ text field
-        String tenChucNang = txtTenChucNang.getText().trim();
-        if (tenChucNang.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Tên chức năng không được để trống!");
-            return null; // Hoặc throw Exception nếu cần
-        }
-
-        int isDelete = 0;  
-        dtochucnang chucNang = new dtochucnang(maChucNang, tenChucNang, maDanhMuc, isDelete);
-
-        return chucNang; // Trả về đối tượng dtochucnang
-    }
-
-
-
+    // Tạo tiêu đề cho form
     private void createTitle(String title) {
         JLabel lb = new JLabel(title);
         lb.putClientProperty(FlatClientProperties.STYLE, "font:+2");
         add(lb, "gapy 5 0");
         add(new JSeparator(), "height 2!,gapy 0 0");
     }
-    
+
+    public void addChucNang() {
+        try {
+            // Lấy giá trị từ các trường nhập liệu
+            String tenChucNang = txtTenChucNang.getText();
+            if (tenChucNang.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập tên chức năng!");
+                return;
+            }
+
+            // Lấy danh mục đã chọn
+            dtodanhmuc selectedDanhMuc = (dtodanhmuc) cboDanhMuc.getSelectedItem();
+            if (selectedDanhMuc == null) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn danh mục!");
+                return;
+            }
+
+            // Tạo đối tượng chức năng
+            dtochucnang chucNang = new dtochucnang(0, tenChucNang, selectedDanhMuc.getMaDanhMuc(),0);
+            
+            // Thêm chức năng vào cơ sở dữ liệu
+            daoChucNang.add(chucNang);
+
+            JOptionPane.showMessageDialog(this, "Chức năng đã được thêm thành công!");
+            resetFields(); // Reset các trường nhập liệu
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+    public void setDefaultValues(dtochucnang chucNang) {
+        // Điền tên chức năng vào trường txtTenChucNang
+        txtTenChucNang.setText(chucNang.getTenChucNang());
+
+        // Tìm danh mục từ danh sách và chọn danh mục tương ứng
+        for (int i = 0; i < cboDanhMuc.getItemCount(); i++) {
+            dtodanhmuc danhMuc = cboDanhMuc.getItemAt(i);
+            if (danhMuc.getMaDanhMuc() == chucNang.getMaDanhMuc()) {
+                cboDanhMuc.setSelectedItem(danhMuc);
+                break;
+            }
+        }
+    }
+    public void updateChucNang(int maChucNang) {
+    try {
+        // Lấy giá trị từ các trường nhập liệu
+        String tenChucNang = txtTenChucNang.getText().isEmpty() ? "" : txtTenChucNang.getText();
+        
+        // Lấy danh mục từ combo box
+        dtodanhmuc selectedDanhMuc = (dtodanhmuc) cboDanhMuc.getSelectedItem();
+        int maDanhMuc = selectedDanhMuc != null ? selectedDanhMuc.getMaDanhMuc() : 0;
+
+        // Tạo đối tượng chức năng
+        dtochucnang chucNang = new dtochucnang(maChucNang, tenChucNang, maDanhMuc,0);
+
+        // Cập nhật chức năng qua bus
+        buschucnang busChucNang = new buschucnang();
+        busChucNang.update(chucNang); // Giả sử busChucNang có hàm update này
+
+        JOptionPane.showMessageDialog(this, "Thông tin chức năng đã được cập nhật thành công!");
+        resetFields(); // Xóa các trường nhập liệu
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi không xác định: " + ex.getMessage());
+        ex.printStackTrace();
+    }
+}
+
+
+    private void resetFields() {
+        txtTenChucNang.setText("");
+        cboDanhMuc.setSelectedIndex(0);
+    }
+
     public static void main(String[] args) {
-        // Thiết lập Look and Feel cho giao diện (FlatLaf)
         try {
             UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // Tạo JFrame và thêm SimpleInputFunctionForm vào JFrame
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Chức năng quản lý chức năng"); // Tiêu đề của cửa sổ
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Đóng chương trình khi tắt cửa sổ
+            JFrame frame = new JFrame("Chức năng quản lý chức năng");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             try {
-                frame.setContentPane(new SimpleInputFunctionForm()); // Thêm panel vào JFrame
+                frame.setContentPane(new SimpleInputFunctionForm());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
 
-            frame.pack(); // Điều chỉnh kích thước JFrame theo kích thước của các thành phần
-            frame.setLocationRelativeTo(null); // Đặt JFrame ở giữa màn hình
-            frame.setVisible(true); // Hiển thị JFrame
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
         });
     }
 }

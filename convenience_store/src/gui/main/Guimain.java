@@ -10,6 +10,7 @@ import gui.event.EventMenuSelected;
 import gui.event.EventShowPopupMenu;
 import gui.form.formchamcong;
 import gui.form.formchamconghangngay;
+import gui.form.formchucnang;
 import gui.form.formchucvu;
 import gui.form.formnhanvien;
 import gui.form.formmenu;
@@ -257,6 +258,14 @@ public class Guimain extends javax.swing.JFrame {
                      }
                  }
 //                 Danh mục Cài đặt
+					  if ((menuIndex==5)&&(subMenuIndex==0)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     main.showForm(new formchucnang());
+                 }
                     if ((menuIndex==5)&&(subMenuIndex==2)) {
                      try {
                        UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
@@ -269,8 +278,6 @@ public class Guimain extends javax.swing.JFrame {
                          Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
                      }
                  }
-                 
-                 
     }
         });
         menu.addEventShowPopup((Component com) -> {

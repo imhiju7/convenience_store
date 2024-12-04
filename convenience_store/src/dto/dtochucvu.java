@@ -46,6 +46,8 @@ public class dtochucvu {
     public void setIsDelete(int isDelete) {
         this.isDelete = isDelete;
     }
-    
+    public String getDropdownDisplay() {
+        return tenchucvu;
+    }
     
 }

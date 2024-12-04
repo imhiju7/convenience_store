@@ -2,79 +2,68 @@ package bus;
 
 import dao.daochucnang;
 import dto.dtochucnang;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class buschucnang {
 
-    private daochucnang daoCN = new daochucnang();
-    public ArrayList<dtochucnang> dsCN;
+    private final daochucnang dao;
 
     public buschucnang() {
-        dsCN = getList(); // Khởi tạo danh sách khi tạo đối tượng buschucnang
+        dao = new daochucnang();
     }
 
-    // Lấy danh sách tất cả chức năng
+    // Lấy danh sách các chức năng chưa bị xóa
     public ArrayList<dtochucnang> getList() {
-        dsCN = daoCN.getlist(); // Lấy danh sách từ DAO
-        return dsCN;
+        return dao.getList();
+    }
+    public ArrayList<dtochucnang> getlistChucNangByDanhMuc(int maDanhMuc)  {
+        return dao.getListChucNangByDanhMuc(maDanhMuc); // Gọi phương thức từ DAO để lấy danh sách theo mã danh mục
     }
 
-    // Lấy danh sách chức năng theo mã danh mục và hiển thị tên danh mục
-    public ArrayList<dtochucnang> getlistChucNangByDanhMuc(int maDanhMuc) throws SQLException {
-        return daoCN.getlistChucNangByDanhMuc(maDanhMuc); // Gọi phương thức từ DAO để lấy danh sách theo mã danh mục
+    // Lấy thông tin chức năng theo mã chức năng
+    public dtochucnang getById(int maChucNang) {
+        return dao.getById(maChucNang);
     }
 
-    // Thêm mới chức năng
-    public void add(dtochucnang cn) throws SQLException {
-        daoCN.add(cn); // Thêm chức năng mới
-        getList(); // Cập nhật lại danh sách sau khi thêm
-    }
-
-    // Cập nhật chức năng
-    public void updateChucNang(dtochucnang cn) throws SQLException {
-        daoCN.update(cn); // Cập nhật chức năng
-        getList(); // Cập nhật lại danh sách sau khi cập nhật
-    }
-
-    // Xóa chức năng
-    public void deleteChucNang(int maChucNang) throws SQLException {
-        daoCN.delete(maChucNang); // Xóa chức năng
-        getList(); // Cập nhật lại danh sách sau khi xóa
-    }
-
-    // Lấy tên chức năng theo mã
-    public String getTenDanhMuc(int maChucNang) throws SQLException {
-        return daoCN.getTenDanhMuc(maChucNang); // Gọi phương thức từ DAO để lấy tên chức năng
-    }
-
-    // Đếm số lượng chức năng
-    public int getSoLuongChucNang() throws SQLException {
-        return daoCN.getCountChucNang(); // Gọi phương thức từ DAO để đếm số lượng chức năng
-    }
-
-    // Main method để kiểm tra
-    public static void main(String[] args) throws SQLException {
-        // Tạo một instance của lớp BUS
-        buschucnang bus = new buschucnang();
-
-        // In ra danh sách chức năng
-        System.out.println("Danh sách chức năng:");
-        for (dtochucnang cn : bus.getList()) {
-            System.out.println("Mã: " + cn.getMaChucNang() + " - Tên: " + cn.getTenChucNang());
+    // Thêm mới một chức năng
+    public boolean add(dtochucnang chucNang) {
+        if (chucNang.getTenChucNang().isEmpty()) {
+            System.out.println("Tên chức năng không được để trống.");
+            return false;
         }
+        dao.add(chucNang);
+        return true;
+    }
 
-        // Ví dụ: Lấy danh sách chức năng theo mã danh mục
-        int maDanhMuc = 2; // Ví dụ mã danh mục
-        System.out.println("\nDanh sách chức năng theo mã danh mục " + maDanhMuc + ":");
-        for (dtochucnang cn : bus.getlistChucNangByDanhMuc(maDanhMuc)) {
-            System.out.println("Mã: " + cn.getMaChucNang() + " - Tên: " + cn.getTenChucNang() + " - Danh mục: " + cn.getMaDanhMuc());
+    // Cập nhật thông tin chức năng
+    public boolean update(dtochucnang chucNang) {
+        if (chucNang.getTenChucNang().isEmpty()) {
+            System.out.println("Tên chức năng không được để trống.");
+            return false;
         }
+        dao.update(chucNang);
+        return true;
+    }
 
-        // In ra danh sách sau khi thêm
-        System.out.println("\nSau khi thêm:");
-        for (dtochucnang cn : bus.getList()) {
-            System.out.println("Mã: " + cn.getMaChucNang() + " - Tên: " + cn.getTenChucNang());
+    // Xóa mềm một chức năng bằng cách đặt isDelete = 1
+    public boolean delete(int maChucNang) {
+        dtochucnang chucNang = dao.getById(maChucNang);
+        if (chucNang == null) {
+            System.out.println("Không tìm thấy chức năng với mã: " + maChucNang);
+            return false;
         }
+        dao.delete(maChucNang);
+        return true;
+    }
+
+    // Tìm kiếm chức năng theo tên
+    public ArrayList<dtochucnang> searchByName(String tenChucNang) {
+        ArrayList<dtochucnang> result = new ArrayList<>();
+        for (dtochucnang chucNang : dao.getList()) {
+            if (chucNang.getTenChucNang().toLowerCase().contains(tenChucNang.toLowerCase())) {
+                result.add(chucNang);
+            }
+        }
+        return result;
     }
 }

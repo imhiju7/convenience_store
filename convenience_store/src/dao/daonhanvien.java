@@ -33,32 +33,32 @@ public class daonhanvien {
     
     
     public ArrayList<dtonhanvien> list() {
-    ArrayList<dtonhanvien> list_nv = new ArrayList<>();
-    Connection con = null;
-    PreparedStatement pst = null;
-    ResultSet rs = null;
+        ArrayList<dtonhanvien> list_nv = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
 
-    try {
-        con = connect.connection();
-        String sql = "SELECT * FROM nhanvien WHERE isDelete = 0";
-        pst = con.prepareStatement(sql);
-        rs = pst.executeQuery();
+        try {
+            con = connect.connection();
+            String sql = "SELECT * FROM nhanvien WHERE isDelete = 0";
+            pst = con.prepareStatement(sql);
+            rs = pst.executeQuery();
 
-        while (rs.next()) {
-            dtonhanvien nv = new dtonhanvien();
-            nv.setManhanvien(rs.getInt("maNhanVien"));
-            nv.setTennhanvien(rs.getString("tenNhanVien"));
-            nv.setNgaysinh(rs.getDate("ngaySinh"));
-            nv.setEmail(rs.getString("Email"));
-            nv.setSdt(rs.getString("soDienThoai"));
-            nv.setDiachi(rs.getString("diaChi"));
-            nv.setGioitinh(rs.getInt("gioiTinh"));
-            nv.setMachucvu(rs.getInt("maChucVu"));
-            nv.setIsdelete(rs.getInt("isDelete"));
-            nv.setImg(rs.getString("img"));
-            list_nv.add(nv);
-        }
-    } catch (SQLException e) {
+            while (rs.next()) {
+                dtonhanvien nv = new dtonhanvien();
+                nv.setManhanvien(rs.getInt("maNhanVien"));
+                nv.setTennhanvien(rs.getString("tenNhanVien"));
+                nv.setNgaysinh(rs.getDate("ngaySinh"));
+                nv.setEmail(rs.getString("Email"));
+                nv.setSdt(rs.getString("soDienThoai"));
+                nv.setDiachi(rs.getString("diaChi"));
+                nv.setGioitinh(rs.getInt("gioiTinh"));
+                nv.setMachucvu(rs.getInt("maChucVu"));
+                nv.setIsdelete(rs.getInt("isDelete"));
+                nv.setImg(rs.getString("img"));
+                list_nv.add(nv);
+            }
+        } catch (SQLException e) {
             Logger.getLogger(daonhanvien.class.getName()).log(Level.SEVERE, null, e);
         } finally {
             try {
@@ -69,8 +69,8 @@ public class daonhanvien {
         }
         return list_nv;
     }
-
-        public dtonhanvien getnv(dtonhanvien i){
+    
+    public dtonhanvien getnv(dtonhanvien i){
         Connection con = connect.connection();
         String sql = "SELECT * FROM nhanvien where isDelete = 0 and maNhanVien = ?";
         PreparedStatement pst;
@@ -449,8 +449,6 @@ public class daonhanvien {
         }
         return list_HD;
     }
-    
-    
     
     
     

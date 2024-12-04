@@ -2,96 +2,105 @@ package bus;
 
 import dao.daoluong;
 import dto.dtoluong;
-import java.sql.SQLException;
 import java.util.ArrayList;
-
+import java.util.Date;
 
 public class busluong {
-    public ArrayList<dtoluong> dsLuong; // Danh sách lương
-    private daoluong daoLuong = new daoluong();
+    private daoluong daoLuong;
 
-    // Lấy thông tin lương theo mã
-    public dtoluong getById(int maLuong) {
-        return daoLuong.getById(maLuong);
+    // Constructor
+    public busluong() {
+        this.daoLuong = new daoluong();
     }
 
-    // Lấy tất cả các bản ghi lương thông qua DAO
-    public ArrayList<dtoluong> list() {
+    // Lấy danh sách tất cả bản ghi lương
+    public ArrayList<dtoluong> getAllLuong() {
         return daoLuong.getList();
     }
 
-    // Constructor khởi tạo busluong và lấy danh sách lương
-    public busluong() {
-        getlist(); // Lấy danh sách khi khởi tạo
+    // Lấy thông tin lương theo ID
+    public dtoluong getLuongById(int maLuong) {
+        return daoLuong.getById(maLuong);
     }
 
-    // Lấy danh sách lương từ DAO
-    public void getlist() {
-        dsLuong = daoLuong.getList();
+    // Lấy danh sách lương theo khoảng thời gian
+    public ArrayList<dtoluong> getLuongByTime(Date start, Date end) {
+        return daoLuong.getByTime(start, end);
     }
 
-    // Phương thức thêm mới thông tin lương
-    public void add(dtoluong luong) {
-        daoLuong.add(luong); // Thêm thông tin lương qua DAO
-        getlist(); // Cập nhật danh sách sau khi thêm
+    // Thêm một bản ghi lương mới
+    public boolean addLuong(dtoluong luong) {
+        try {
+            daoLuong.add(luong);
+            return true; // Thêm thành công
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // Thêm thất bại
+        }
     }
 
-    // Phương thức cập nhật thông tin lương
-    public void update(dtoluong luong) {
-        daoLuong.update(luong); // Cập nhật thông tin qua DAO
-        getlist(); // Cập nhật lại danh sách sau khi cập nhật
+    // Cập nhật thông tin một bản ghi lương
+    public boolean updateLuong(dtoluong luong) {
+        try {
+            daoLuong.update(luong);
+            return true; // Cập nhật thành công
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // Cập nhật thất bại
+        }
     }
 
-    // Phương thức xóa thông tin lương theo mã
-    public void delete(int maLuong) {
-        daoLuong.delete(maLuong); // Xóa bản ghi thông qua DAO
-        getlist(); // Cập nhật danh sách sau khi xóa
+    // Đếm số lượng bản ghi lương
+    public int countLuong() {
+        return daoLuong.countLuong();
     }
 
-    // Phương thức đếm tổng số bản ghi lương
-    public int getSoLuongLuong() throws SQLException {
-        return daoLuong.countLuong(); // Gọi phương thức đếm từ DAO
+    // Xử lý nghiệp vụ tính lương thực lãnh (có thể áp dụng logic riêng)
+    public double calculateThuclanh(double luongThucTe, double phuCap, double luongThuong, double khoanBaoHiem, double khoanThue) {
+        return luongThucTe + phuCap + luongThuong - khoanBaoHiem - khoanThue;
     }
 
-    // Phương thức lấy lương theo mã từ danh sách đã tải
-    public dtoluong get(int maLuong) {
-        for (dtoluong luong : dsLuong) {
-            if (luong.getMaLuong() == maLuong) {
-                return luong; // Trả về thông tin lương nếu tìm thấy
+    // Kiểm tra hợp lệ trước khi thêm hoặc cập nhật lương
+    public boolean validateLuong(dtoluong luong) {
+        if (luong.getLuongThucTe() < 0 || luong.getPhuCap() < 0 || luong.getKhoanBaoHiem() < 0 || luong.getKhoanThue() < 0) {
+            return false; // Các giá trị liên quan đến lương không được âm
+        }
+        if (luong.getMaNhanVien() <= 0) {
+            return false; // Mã nhân viên không hợp lệ
+        }
+        return true;
+    }
+
+    // Xử lý thêm mới lương với kiểm tra hợp lệ
+    public boolean addLuongWithValidation(dtoluong luong) {
+        if (validateLuong(luong)) {
+            return addLuong(luong);
+        } else {
+            System.out.println("Dữ liệu lương không hợp lệ!");
+            return false;
+        }
+    }
+
+    // Xử lý cập nhật lương với kiểm tra hợp lệ
+    public boolean updateLuongWithValidation(dtoluong luong) {
+        if (validateLuong(luong)) {
+            return updateLuong(luong);
+        } else {
+            System.out.println("Dữ liệu lương không hợp lệ!");
+            return false;
+        }
+    }
+
+    // Tìm kiếm lương theo mã nhân viên
+    public ArrayList<dtoluong> searchLuongByNhanVien(int maNhanVien) {
+        ArrayList<dtoluong> allLuong = daoLuong.getList();
+        ArrayList<dtoluong> result = new ArrayList<>();
+
+        for (dtoluong luong : allLuong) {
+            if (luong.getMaNhanVien() == maNhanVien) {
+                result.add(luong);
             }
         }
-        return null; // Không tìm thấy
-    }
-
-    // Phương thức main để kiểm tra chức năng
-    public static void main(String[] args) {
-        // Tạo một instance của busluong
-        busluong bus = new busluong();
-
-        // In ra danh sách lương
-        System.out.println("Danh sách lương:");
-        for (dtoluong luong : bus.dsLuong) {
-            System.out.println(luong);
-        }
-
-        // Thêm một bản ghi lương mới (ví dụ dữ liệu minh họa)
-        dtoluong newLuong = new dtoluong(0, 2, 500000, 15000000, 2000000, 500000, 1000000, 13500000, 5, "2024-11-28", 1);
-        bus.add(newLuong);
-
-        // In lại danh sách sau khi thêm
-        System.out.println("Danh sách lương sau khi thêm:");
-        for (dtoluong luong : bus.dsLuong) {
-            System.out.println(luong);
-        }
-
-        // Lấy thông tin lương theo mã
-        int maLuong = 1; // Ví dụ mã cần tìm
-        dtoluong luongTimThay = bus.getById(maLuong);
-        if (luongTimThay != null) {
-            System.out.println("Thông tin lương có mã " + maLuong + ":");
-            System.out.println(luongTimThay);
-        } else {
-            System.out.println("Không tìm thấy lương có mã " + maLuong);
-        }
+        return result;
     }
 }
