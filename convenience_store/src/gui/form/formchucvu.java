@@ -576,7 +576,7 @@ public class formchucvu extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn một bản ghi phân quyền để chỉnh sửa.");
         } else {
             int maPhanQuyen = (int) phanQuyenModel.getValueAt(row, 1); // Lấy mã phân quyền từ cột 1
-            int maChucVu = (int) phanQuyenModel.getValueAt(row, 2);
+            int maChucVu = (int) phanQuyenModel.getValueAt(row, 4);
             try {
                 showEditPhanQuyenModal(maChucVu, maPhanQuyen); // Hàm chỉnh sửa phân quyền
             } catch (SQLException ex) {
@@ -704,7 +704,7 @@ public class formchucvu extends javax.swing.JPanel {
                              // Lưu thông tin phân quyền từ form
                              permissionForm.savePermissions();
                              // Nếu cần tải lại dữ liệu bảng hoặc cập nhật giao diện:
-                             // loadDataToTable(); 
+                             loadPhanQuyenDataToTable();
                          } catch (Exception e) {
                              JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi khi lưu phân quyền: " + e.getMessage());
                              e.printStackTrace();
@@ -715,12 +715,13 @@ public class formchucvu extends javax.swing.JPanel {
                      }
                  }), option);
     }
+    
     private void showEditPhanQuyenModal(int maChucVu, int maPhanQuyen) throws SQLException {
-    // Lấy danh sách phân quyền dựa trên mã chức vụ
+    // Lấy danh sách phân quyền hiện tại từ cơ sở dữ liệu
     busphanquyen busPhanQuyen = new busphanquyen();
-    List<dtophanquyen> permissions = (List<dtophanquyen>) busPhanQuyen.getPhanQuyenByChucVu(maChucVu, maPhanQuyen); // Giả sử DAO có phương thức này
+     List<dtophanquyen> permissions = (List<dtophanquyen>) busPhanQuyen.getPhanQuyenByChucVu(maChucVu, maPhanQuyen);
 
-    if (permissions == null || permissions.isEmpty()) {
+    if (permissions == null) {
         JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin phân quyền cho chức vụ có mã " + maChucVu);
         return;
     }
@@ -729,14 +730,24 @@ public class formchucvu extends javax.swing.JPanel {
     Option option = ModalDialog.createOption();
     option.getLayoutOption().setSize(-1, 1f).setLocation(Location.TRAILING, Location.TOP);
 
-    // Tạo form phân quyền và điền sẵn các giá trị của phân quyền hiện tại
+    // Tạo form phân quyền
     SimpleInputPermissionForm permissionForm = new SimpleInputPermissionForm();
-    permissionForm.cboChucVu.setSelectedItem(permissions.get(0).getMaChucVu()); // Chọn chức vụ hiện tại
-    for (dtophanquyen permission : permissions) {
+
+    if (maChucVu == 1) { // Giả sử mã '1' là admin
+        // Đánh dấu tất cả các checkbox
         for (int i = 0; i < permissionForm.pnlChucNang.getComponentCount(); i++) {
             JCheckBox chk = (JCheckBox) permissionForm.pnlChucNang.getComponent(i);
-            if ((int) chk.getClientProperty("maChucNang") == permission.getMaChucNang()) {
-                chk.setSelected(true); // Đánh dấu các chức năng đã được phân quyền
+            chk.setSelected(true);
+        }
+    } else {
+        // Đánh dấu các checkbox dựa trên dữ liệu từ permissions
+        for (dtophanquyen permission : permissions) {
+            for (int i = 0; i < permissionForm.pnlChucNang.getComponentCount(); i++) {
+                JCheckBox chk = (JCheckBox) permissionForm.pnlChucNang.getComponent(i);
+                int maChucNang = (int) chk.getClientProperty("maChucNang");
+                if (maChucNang == permission.getMaChucNang()) {
+                    chk.setSelected(true);
+                }
             }
         }
     }
@@ -745,24 +756,21 @@ public class formchucvu extends javax.swing.JPanel {
     ModalDialog.showModal(this, new SimpleModalBorder(
             permissionForm, "Chỉnh sửa thông tin phân quyền", SimpleModalBorder.YES_NO_OPTION,
             (controller, action) -> {
-                // Xử lý hành động của người dùng
                 if (action == SimpleModalBorder.YES_OPTION) {
-                    // Hiển thị thông báo xác nhận trước khi cập nhật thông tin phân quyền
-                    int result = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn chỉnh sửa thông tin phân quyền này không?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+                    int result = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn cập nhật thông tin phân quyền?", "Xác nhận", JOptionPane.YES_NO_OPTION);
                     if (result == JOptionPane.YES_OPTION) {
                         try {
-                            // Lưu các thay đổi phân quyền
-                            permissionForm.savePermissions(); // Gọi hàm lưu phân quyền
-                            // Nếu cần tải lại dữ liệu bảng
-                            // loadDataToTable();
+                            // Lưu thay đổi
+                            permissionForm.savePermissions();
+                            JOptionPane.showMessageDialog(null, "Cập nhật thông tin phân quyền thành công!");
+                            loadPhanQuyenDataToTable(); // Tải lại bảng dữ liệu
                         } catch (Exception e) {
-                            JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi khi chỉnh sửa thông tin phân quyền: " + e.getMessage());
+                            JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi: " + e.getMessage());
                             e.printStackTrace();
                         }
                     }
                 }
                 if (action == SimpleModalBorder.NO_OPTION) {
-                    // Đóng dialog khi nhấn No
                     controller.close();
                 }
             }), option);
