@@ -23,6 +23,7 @@ import gui.form.frmlogin;
 import gui.form.formkhachhang;
 import gui.form.formluong;
 import gui.form.formnhacungcap;
+import gui.form.formphanloai;
 import gui.form.formtaikhoan;
 import gui.form.formthanhtoan;
 import gui.form.formthongkesp;
@@ -258,13 +259,21 @@ public class Guimain extends javax.swing.JFrame {
                      }
                  }
 //                 Danh mục Cài đặt
-					  if ((menuIndex==5)&&(subMenuIndex==0)) {
+		if ((menuIndex==5)&&(subMenuIndex==0)) {
                      try {
                        UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                      main.showForm(new formchucnang());
+                 }
+                if ((menuIndex==5)&&(subMenuIndex==1)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     main.showForm(new formphanloai());
                  }
                     if ((menuIndex==5)&&(subMenuIndex==2)) {
                      try {

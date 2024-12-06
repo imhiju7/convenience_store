@@ -127,7 +127,7 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
     }
 
     protected JComponent createActionTitleComponent() {
-        JButton buttonClose = new JButton(new FlatSVGIcon("gui/modal/icon/close.svg", 0.4f));
+        JButton buttonClose = new JButton(new FlatSVGIcon("source/image/icon/close.svg", 0.4f));
         buttonClose.addActionListener(e -> {
             doAction(CLOSE_OPTION);
         });
