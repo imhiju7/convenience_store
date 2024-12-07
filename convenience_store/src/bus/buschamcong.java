@@ -34,9 +34,12 @@ public class buschamcong {
     public void create(dtochamcong cc){
         dao.create(cc);
     }
-    public dtochamcong get(int machamcong){
+    public void update(dtochamcong cc){
+        dao.update(cc);
+    }
+    public dtochamcong get(dtochamcong chamcong){
         for (dtochamcong cc: dscc){
-            if(cc.getMachamcong() == (machamcong)){
+            if(cc.getThangchamcong() == chamcong.getThangchamcong() && cc.getNamchamcong() == chamcong.getNamchamcong()){
                 return cc;
             }
         }

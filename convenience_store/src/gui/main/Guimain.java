@@ -258,6 +258,29 @@ public class Guimain extends javax.swing.JFrame {
                     }
                      main.showForm(new formchucnang());
                  }
+<<<<<<< Updated upstream
+=======
+                if ((menuIndex==5)&&(subMenuIndex==1)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     main.showForm(new formphanloai());
+                 }
+                    if ((menuIndex==5)&&(subMenuIndex==2)) {
+                     try {
+                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                     try {
+                         main.showForm(new formchamconghangngay(manv));
+                     } catch (SQLException ex) {
+                         Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
+                     }
+                 }
+>>>>>>> Stashed changes
     }
         });
         menu.addEventShowPopup((Component com) -> {

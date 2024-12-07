@@ -80,7 +80,7 @@ public class formthanhtoan extends javax.swing.JFrame {
             sp = sanpham.getsp(sp);
             
             int soluong = cthd.getSoLuong();
-            dtoctphieunhap ctpn = ctphieunhap.getspganhh(cthd.getMaSanPham());
+            dtoctphieunhap ctpn = ctphieunhap.getspnhap(cthd.getMaSanPham());
             double giaban = ctpn.getGiaBan();
             double tonggia = soluong*giaban;
             model.addRow(new Object[]{Integer.toString(i), sp.getTenSanPham(),Integer.toString(soluong),Double.toString(giaban), Double.toString(tonggia)});
@@ -109,7 +109,7 @@ public class formthanhtoan extends javax.swing.JFrame {
         nv = nhanvien.getnv(nv);
 
         double total = cthoadon.gettongtien(list);
-        discountValue.setText(Double.toString(total));
+        discountValue.setText("0");
         
         arr_jt(paymentTable, list);
         cbimport(khuyenMai,khuyenmai.getkhuyenmaitoday());
@@ -190,11 +190,7 @@ public class formthanhtoan extends javax.swing.JFrame {
         newCustomerBtn.setBackground(new java.awt.Color(0, 204, 204));
         newCustomerBtn.setText("Tạo mới");
         newCustomerBtn.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        newCustomerBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newCustomerBtnActionPerformed(evt);
-            }
-        });
+
 
         paymentTable.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         paymentTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -469,7 +465,7 @@ layout.setVerticalGroup(
 
                     for (dtocthoadon i : limenu) {
                         stt++;
-                        dtoctphieunhap ctpn = ctphieunhap.getspganhh(i.getMaSanPham());
+                        dtoctphieunhap ctpn = ctphieunhap.getspnhap(i.getMaSanPham());
                         g2d.drawString("    "+stt+" "+i.getTensanpham()+"                                        ", a, y);y+=headerRectHeight;
                         g2d.drawString("        "+ctpn.getGiaBan()+"      *"+i.getSoLuong()+"                            "+i.getSoLuong()*ctpn.getGiaBan(), a, y);y+=yShift;
                         
@@ -483,9 +479,9 @@ layout.setVerticalGroup(
                     g2d.drawString("-------------------------------------------------------------", a, y);y+=yShift;
                     g2d.drawString("    Thành tiền:                                           "+tongtienfi, a, y);y+=yShift;
                     
-                    g2d.drawString("*******************************************", a, y);y+=yShift;
+                    g2d.drawString("********************************************", a, y);y+=yShift;
                     g2d.drawString("                       CẢM ƠN QUÝ KHÁCH                      ", a, y);y+=yShift;
-                    g2d.drawString("*******************************************", a, y);y+=yShift;
+                    g2d.drawString("********************************************", a, y);y+=yShift;
                     
                 }
                 catch(Exception e){
@@ -815,40 +811,40 @@ layout.setVerticalGroup(
     private void khuyenMaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_khuyenMaiActionPerformed
         // TODO add your handling code here:
         if (khuyenMai.getSelectedItem() != null) {
-    String selectedItem = khuyenMai.getSelectedItem().toString();
+            String selectedItem = khuyenMai.getSelectedItem().toString();
 
-    // Nếu "Bỏ chọn" được chọn
-    if (selectedItem.equals("Bỏ chọn")) {
-        // Loại bỏ khuyến mãi
-        khuyenMai.setSelectedIndex(-1); // Đặt lại combobox về trạng thái chưa chọn
-        cbimport(khuyenMai, khuyenmai.getkhuyenmaitoday()); // Load lại danh sách khuyến mãi
-        tongtienkm = 0; // Không có giảm giá
-        tongtienfi = tongtien; // Trả lại tổng tiền ban đầu
-        discountValue.setText("0 đ"); // Hiển thị không có giảm giá
-        totalValue.setText(Integer.toString((int) tongtien)); // Hiển thị tổng tiền gốc
-        khuyenMai.setFocusable(true);
-    } else { 
-        String tenkhuyenmai = selectedItem;
-        km = khuyenmai.getkmbyname(tenkhuyenmai);
+            // Nếu "Bỏ chọn" được chọn
+            if (selectedItem.equals("Bỏ chọn")) {
+                // Loại bỏ khuyến mãi
+                khuyenMai.setSelectedIndex(-1); // Đặt lại combobox về trạng thái chưa chọn
+                cbimport(khuyenMai, khuyenmai.getkhuyenmaitoday()); // Load lại danh sách khuyến mãi
+                tongtienkm = 0; // Không có giảm giá
+                tongtienfi = tongtien; // Trả lại tổng tiền ban đầu
+                discountValue.setText("0 đ"); // Hiển thị không có giảm giá
+                totalValue.setText(Integer.toString((int) tongtien)); // Hiển thị tổng tiền gốc
+                khuyenMai.setFocusable(true);
+            } else { 
+                String tenkhuyenmai = selectedItem;
+                km = khuyenmai.getkmbyname(tenkhuyenmai);
 
-        
-        hd.setMaKhuyenMai(km.getMaKhuyenMai());
-        double tienkm = (tongtien * km.getPhanTram()) / 100; 
-        tongtienkm = tienkm;
-        tongtienfi = tongtien - tongtienkm; 
 
-        
-        discountValue.setText("-" + Integer.toString((int) tienkm) + " đ (" + Double.toString(km.getPhanTram()) + "%)");
-        totalValue.setText(Integer.toString((int) tongtienfi));
+                hd.setMaKhuyenMai(km.getMaKhuyenMai());
+                double tienkm = (tongtien * km.getPhanTram()) / 100; 
+                tongtienkm = tienkm;
+                tongtienfi = tongtien - tongtienkm; 
 
-        
-        if (!"Bỏ chọn".equals(khuyenMai.getItemAt(khuyenMai.getItemCount() - 1))) {
-            khuyenMai.addItem("Bỏ chọn");
+
+                discountValue.setText("-" + Integer.toString((int) tienkm) + " đ (" + Double.toString(km.getPhanTram()) + "%)");
+                totalValue.setText(Integer.toString((int) tongtienfi));
+
+
+                if (!"Bỏ chọn".equals(khuyenMai.getItemAt(khuyenMai.getItemCount() - 1))) {
+                    khuyenMai.addItem("Bỏ chọn");
+                }
+
+                khuyenMai.setFocusable(false); 
+            }
         }
-
-        khuyenMai.setFocusable(false); 
-    }
-}
     }//GEN-LAST:event_khuyenMaiActionPerformed
 
     private void discountValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_discountValueActionPerformed
@@ -873,7 +869,8 @@ layout.setVerticalGroup(
         hd.setNgayMua(new java.sql.Timestamp(((java.util.Date) new Date()).getTime()));
         hd.setTongTien(tongtienfi);
         hd.setIsHidden(0);
-        
+        int mahd = hoadon.maxID()+1;
+        hd.setMaHoaDon(mahd);
         if(hd.getMaKhachHang() == 0 && hd.getMaKhuyenMai() == 0){
             hoadon.addhdnokmkh(hd);
         }
@@ -900,12 +897,12 @@ layout.setVerticalGroup(
             kh.setMaUudai(uudai.setudbydiem(kh.getDiemTichLuy()).getMaUuDai());
             khachhang.updatediemtichluy(kh);
         }
-        hd = hoadon.gethdgannhat();
-        int mahd = hd.getMaHoaDon() + 1;
+        hoadon.getlist();
+        hd.setMaHoaDon(mahd);
         // add chi tiet hoa don
         for(dtocthoadon i: limenu){
             i.setMaHoaDon(mahd);
-            dtoctphieunhap ctpn = ctphieunhap.getspganhh(i.getMaSanPham());
+            dtoctphieunhap ctpn = ctphieunhap.getspnhap(i.getMaSanPham());
             i.setDonGia(ctpn.getGiaBan());
             cthoadon.add(i);
             
@@ -913,12 +910,6 @@ layout.setVerticalGroup(
             int soluong = ctpn.getSoluongtonkho() - i.getSoLuong();
             ctpn.setSoluongtonkho(soluong);
             ctphieunhap.update(ctpn);
-            
-            dtosanpham sp = new dtosanpham();
-            sp.setMaSanPham(masp);
-            sp = sanpham.getsp(sp);
-            int soluongsanpham = sp.getSoLuong() - i.getSoLuong();
-            sanpham.updateslsanpham(sp);
         }
         JOptionPane.showMessageDialog(this, "Thanh toán thành công! In hóa đơn");
 

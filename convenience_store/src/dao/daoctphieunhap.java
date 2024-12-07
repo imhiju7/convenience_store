@@ -54,7 +54,72 @@ public class daoctphieunhap {
         }
         return list;
     }
-    
+    public ArrayList<dtoctphieunhap> getlistlo(int masp) {
+        ArrayList<dtoctphieunhap> list = new ArrayList<>();
+        java.sql.Connection con = connect.connection();
+        String sql = "SELECT * FROM chitietphieunhap WHERE maSanPham = ? AND ngayHetHan > NOW()";
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, masp);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                dtoctphieunhap ctphieunhap = new dtoctphieunhap(
+                    rs.getInt("maCTPhieuNhap"),
+                    rs.getInt("soLuong"),
+                    rs.getDouble("giaNhap"),
+                    rs.getInt("maPhieuNhap"),
+                    rs.getInt("maSanPham"),
+                    rs.getDate("ngayHetHan"),
+                    rs.getInt("soLuongTonKho"),
+                    rs.getString("ghiChu"),
+                    rs.getDouble("giaBan")
+                );
+                list.add(ctphieunhap);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(daoctphieunhap.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                Logger.getLogger(daoctphieunhap.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+        return list;
+    }
+    public ArrayList<dtoctphieunhap> getlistpn(int mapn) {
+        ArrayList<dtoctphieunhap> list = new ArrayList<>();
+        java.sql.Connection con = connect.connection();
+        String sql = "SELECT * FROM chitietphieunhap WHERE maPhieuNhap = ?";
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, mapn);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                dtoctphieunhap ctphieunhap = new dtoctphieunhap(
+                    rs.getInt("maCTPhieuNhap"),
+                    rs.getInt("soLuong"),
+                    rs.getDouble("giaNhap"),
+                    rs.getInt("maPhieuNhap"),
+                    rs.getInt("maSanPham"),
+                    rs.getDate("ngayHetHan"),
+                    rs.getInt("soLuongTonKho"),
+                    rs.getString("ghiChu"),
+                    rs.getDouble("giaBan")
+                );
+                list.add(ctphieunhap);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(daoctphieunhap.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                Logger.getLogger(daoctphieunhap.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+        return list;
+    }
     public ArrayList<dtoctphieunhap> needToFillList(int maNCC) {
         ArrayList<dtoctphieunhap> list = new ArrayList<>();
         java.sql.Connection con = connect.connection();
@@ -205,7 +270,7 @@ public class daoctphieunhap {
             }
         }
     }
-        public int updatectphieunhap(dtoctphieunhap ctpn){
+    public int updatectphieunhap(dtoctphieunhap ctpn){
         Connection con = connect.connection();
         String sql = "UPDATE chitietphieunhap set maPhieuNhap= ?,maSanPham = ? ,soLuong= ?, giaNhap= ?, ngayHetHan = ?, ishidden=?,ghiChu = ?,soLuongTonKho = ?,giaBan = ? WHERE maCTPhieuNhap= ?";
         PreparedStatement pst;
@@ -254,7 +319,7 @@ public class daoctphieunhap {
     }
     public ArrayList<dtoctphieunhap> getalllist(){
         Connection con = connect.connection();
-        String sql = "SELECT * FROM chitietphieunhap WHERE ngayHetHan < NOW() ";
+        String sql = "SELECT * FROM chitietphieunhap WHERE ngayHetHan > NOW() ";
         PreparedStatement pst;
         ArrayList<dtoctphieunhap> list = new ArrayList<>();
         try {

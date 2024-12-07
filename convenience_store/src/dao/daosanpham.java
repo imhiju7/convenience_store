@@ -36,15 +36,14 @@ public class daosanpham {
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
                 dtosanpham sp = new dtosanpham();
-            sp.setMaSanPham(rs.getInt("maSanPham"));
-            sp.setTenSanPham(rs.getString("tenSanPham"));
-            sp.setSoLuong(rs.getInt("soLuong"));
-            sp.setNgayThem(rs.getDate("ngayThem"));
-            sp.setMaPhanLoai(rs.getInt("maPhanLoai"));
-            sp.setImg(rs.getString("img"));
-            sp.setMaNCC(rs.getInt("maNhaCungCap"));
-            sp.setHanSD(rs.getString("hanSuDung"));
-            list_sp.add(sp);
+                sp.setMaSanPham(rs.getInt("maSanPham"));
+                sp.setTenSanPham(rs.getString("tenSanPham"));
+                sp.setSoLuong(rs.getInt("soLuong"));
+                sp.setNgayThem(rs.getDate("ngayThem"));
+                sp.setMaPhanLoai(rs.getInt("maPhanLoai"));
+                sp.setImg(rs.getString("img"));
+                sp.setMaNCC(rs.getInt("maNhaCungCap"));
+                list_sp.add(sp);
             }
         } catch (SQLException e) {
             Logger.getLogger(daosanpham.class.getName()).log(Level.SEVERE, null, e);
@@ -88,7 +87,7 @@ public class daosanpham {
     }
     
     public boolean addSanpham(dtosanpham sp) {
-        String sql = "INSERT INTO sanpham (maPhanLoai, maSanPham, tenSanPham, soLuong, ngayThem, img, ishidden, maNhaCungCap, hanSuDung) "
+        String sql = "INSERT INTO sanpham (maPhanLoai, maSanPham, tenSanPham, soLuong, ngayThem, img, ishidden, maNhaCungCap) "
                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection con = connect.connection();
@@ -103,7 +102,6 @@ public class daosanpham {
             pst.setString(6, sp.getImg());
             pst.setInt(7, sp.getIshidden());
             pst.setInt(8, sp.getMaNCC());
-            pst.setString(9, sp.getHanSD());
 
             int rowsInserted = pst.executeUpdate();
             return rowsInserted > 0;
@@ -160,14 +158,13 @@ public class daosanpham {
     }
     public int updatesoluong(dtosanpham sp){
         Connection con = connect.connection();
-        String sql = "UPDATE SanPham set soLuong = ?,isHidden = ? WHERE maSanPham= ?";
+        String sql = "UPDATE SanPham set soLuong = ? WHERE maSanPham= ?";
         PreparedStatement pst;
         int rowaffect = 0;
         try {
             pst = con.prepareStatement(sql);
             pst.setInt(1, sp.getSoLuong());
-            pst.setInt(2, sp.getIshidden());
-            pst.setInt(3, sp.getMaSanPham());
+            pst.setInt(2, sp.getMaSanPham());
             rowaffect = pst.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(daosanpham.class.getName()).log(Level.SEVERE, null, ex);
@@ -336,7 +333,6 @@ public class daosanpham {
             sp.setMaPhanLoai(rs.getInt("maPhanLoai"));
             sp.setImg(rs.getString("img"));
             sp.setMaNCC(rs.getInt("maNhaCungCap"));
-            sp.setHanSD(rs.getString("hanSuDung"));
             list_sp.add(sp); // Add the product to the list
         }
     } catch (SQLException e) {

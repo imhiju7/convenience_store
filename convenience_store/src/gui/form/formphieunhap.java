@@ -694,7 +694,7 @@ public class formphieunhap extends javax.swing.JPanel {
                 busctpn.create(ct);
             }
             JOptionPane.showMessageDialog(null, "Nhập hàng thành công");
-            reset();
+            reset();  
         });
         
         JButton btnClear = new JButton("Clear all");
@@ -720,7 +720,7 @@ public class formphieunhap extends javax.swing.JPanel {
         txtNCCid.setEditable(true);
         cbNCCname.setEnabled(true);
     }
-    private Component createDetailTable() {
+    private Component createDetailTable(int maphieunhap) {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
 
         // Create table model
@@ -780,8 +780,8 @@ public class formphieunhap extends javax.swing.JPanel {
         // Add scrollPane to the panel
         panel.add(scrollPane, "growx"); // Adjust with growx to expand width
 
-        busctpn.getlist();
-                    int i = 1;
+        busctpn.getlist(maphieunhap);
+        int i = 1;
         for (dtoctphieunhap cc: busctpn.dsctpn){
 
             model.addRow(cc.toTableRow(i));
@@ -1048,7 +1048,7 @@ public class formphieunhap extends javax.swing.JPanel {
         panel.add(scroll, "height 50,grow,pushy");
         txtNote.setText(String.valueOf(pn.getGhiChu()));
 
-        panel.add(createDetailTable());
+        panel.add(createDetailTable(pn.getMaPhieuNhap()));
         return panel;
     }
     
