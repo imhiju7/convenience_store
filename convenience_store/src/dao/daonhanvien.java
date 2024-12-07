@@ -399,7 +399,7 @@ public class daonhanvien {
 
         try {
             con = connect.connection(); // Kết nối DB
-            String sql = "SELECT maNhanVien, tenNhanVien, maChucVu, img FROM nhanvien WHERE isDelete = 0";
+            String sql = "SELECT * FROM nhanvien WHERE isDelete = 0";
             pst = con.prepareStatement(sql);
             rs = pst.executeQuery();
 
@@ -409,6 +409,13 @@ public class daonhanvien {
                 nv.setTennhanvien(rs.getString("tenNhanVien"));
                 nv.setMachucvu(rs.getInt("maChucVu"));
                 nv.setImg(rs.getString("img"));
+                nv.setDiachi(rs.getString("diaChi"));
+                nv.setEmail(rs.getString("email"));
+                nv.setGioitinh(rs.getInt("gioiTinh"));
+                nv.setNgaysinh(rs.getDate("ngaySinh"));
+                nv.setSdt(rs.getString("soDienThoai"));
+                nv.setIsdelete(rs.getInt("isDelete"));
+                nv.setNgaytao(rs.getDate("ngayTao"));
                 list_nv.add(nv);
             }
         } catch (SQLException e) {

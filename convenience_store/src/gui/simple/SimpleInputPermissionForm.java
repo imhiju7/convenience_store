@@ -88,7 +88,7 @@ public class SimpleInputPermissionForm extends JPanel {
         add(lb, "gapy 5 0");
         add(new JSeparator(), "height 2!,gapy 0 0");
     }
-    private void updatePermission(int maChucVu) {
+    public void updatePermission(int maChucVu) {
         try {
             // Lấy danh sách chức năng đã chọn
             List<dtophanquyen> permissions = new ArrayList<>();

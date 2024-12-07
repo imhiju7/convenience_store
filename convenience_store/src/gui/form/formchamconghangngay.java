@@ -322,7 +322,6 @@ public class formchamconghangngay extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, 
                 "Thời gian làm việc: " + hours + " giờ " + minutes + " phút\nHình thức làm việc: " + workMode,
                 "Hoàn Tất Ca", JOptionPane.INFORMATION_MESSAGE);
-            
             dtochamcong cc = new dtochamcong();
             cc.setManhanvien(manv);
             cc.setThangchamcong(checkInTime.getMonthValue());
