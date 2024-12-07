@@ -4,7 +4,11 @@
  */
 package gui.form;
 
+import bus.buschamcong;
+import bus.buschitietchamcong;
 import bus.busnhanvien;
+import dto.dtochamcong;
+import dto.dtochitietchamcong;
 import dto.dtonhanvien;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -15,6 +19,11 @@ import java.time.Duration;
 import javax.swing.*;
 import java.awt.Image;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -24,9 +33,15 @@ public class formchamconghangngay extends javax.swing.JPanel {
 
     private LocalDateTime checkInTime;
     private LocalDateTime checkOutTime;
-    public formchamconghangngay(dtonhanvien nv) throws SQLException {
+    int manv = 0;
+    dtonhanvien nv = new dtonhanvien();
+    buschitietchamcong busctcc = new buschitietchamcong();
+    buschamcong buscc = new buschamcong();
+    busnhanvien busnv = new busnhanvien();
+    public formchamconghangngay(int manv) throws SQLException {
         startClock();
         initComponents();
+        nv.setManhanvien(manv);
         getInfo(nv);
         
     }
@@ -47,16 +62,22 @@ public class formchamconghangngay extends javax.swing.JPanel {
     }
     private void getInfo(dtonhanvien nv) throws SQLException {
         busnhanvien busnv = new busnhanvien();
-    String maNV = String.valueOf(nv.getManhanvien());
-    String tenNV = nv.getTennhanvien();
-    String chucVu = busnv.getChucVuByMaNhanVien(nv.getManhanvien());
-    String diaChi = nv.getDiachi();
-    String avtpath = nv.getImg();
-    maNVTextField.setText(maNV);
-    nameTextField.setText(tenNV);
-    chucVuTextField.setText(chucVu);
-    diaChiTextField.setText(diaChi);
-    
+        nv = busnv.getnv(nv);
+        String maNV = String.valueOf(nv.getManhanvien());
+        String tenNV = nv.getTennhanvien();
+        String chucVu = busnv.getChucVuByMaNhanVien(nv.getManhanvien());
+        String diaChi = nv.getDiachi();
+        String avtpath = nv.getImg();
+
+        maNVTextField.setText(maNV);
+        nameTextField.setText(tenNV);
+        chucVuTextField.setText(chucVu);
+        diaChiTextField.setText(diaChi);
+        
+        ImageIcon curImg = new ImageIcon(System.getProperty("user.dir") + "/src/source/image/nhanvien/" + avtpath);
+        Image scaledImg = curImg.getImage().getScaledInstance(170, 230, Image.SCALE_SMOOTH);
+        ImageIcon editImg = new ImageIcon(scaledImg);
+        imglabel.setIcon(editImg);
     }
    
     @SuppressWarnings("unchecked")
@@ -76,6 +97,7 @@ public class formchamconghangngay extends javax.swing.JPanel {
         nameTextField = new gui.swing.login.MyTextField();
         diaChiTextField = new gui.swing.login.MyTextField();
         imgpanel = new javax.swing.JPanel();
+        imglabel = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -132,6 +154,11 @@ public class formchamconghangngay extends javax.swing.JPanel {
         combobox1.setFont(new java.awt.Font("SansSerif", 0, 13)); // NOI18N
         combobox1.setLabeText("");
         combobox1.setLineColor(new java.awt.Color(51, 153, 0));
+        combobox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                combobox1ActionPerformed(evt);
+            }
+        });
 
         timeLabel.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         timeLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -177,18 +204,21 @@ public class formchamconghangngay extends javax.swing.JPanel {
             }
         });
 
-        imgpanel.setPreferredSize(new java.awt.Dimension(170, 210));
+        imgpanel.setPreferredSize(new java.awt.Dimension(170, 230));
 
         javax.swing.GroupLayout imgpanelLayout = new javax.swing.GroupLayout(imgpanel);
         imgpanel.setLayout(imgpanelLayout);
         imgpanelLayout.setHorizontalGroup(
             imgpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 170, Short.MAX_VALUE)
+            .addComponent(imglabel, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         imgpanelLayout.setVerticalGroup(
             imgpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 230, Short.MAX_VALUE)
+            .addComponent(imglabel, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
         );
+
+        imglabel.getAccessibleContext().setAccessibleName("imglabel");
+        imglabel.getAccessibleContext().setAccessibleDescription("");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -199,9 +229,12 @@ public class formchamconghangngay extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(maNVTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(chucVuTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(23, 23, 23)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(chucVuTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(23, 23, 23))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(maNVTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(nameTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(diaChiTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -239,8 +272,8 @@ public class formchamconghangngay extends javax.swing.JPanel {
                     .addComponent(timeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(imgpanel, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(44, 44, 44)
+                .addComponent(imgpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(56, 56, 56)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -284,11 +317,39 @@ public class formchamconghangngay extends javax.swing.JPanel {
             Duration duration = Duration.between(checkInTime, checkOutTime);
             long hours = duration.toHours();
             long minutes = duration.toMinutes() % 60;
-
+            
             String workMode = combobox1.getSelectedItem().toString();
             JOptionPane.showMessageDialog(this, 
                 "Thời gian làm việc: " + hours + " giờ " + minutes + " phút\nHình thức làm việc: " + workMode,
                 "Hoàn Tất Ca", JOptionPane.INFORMATION_MESSAGE);
+            dtochamcong cc = new dtochamcong();
+            cc.setManhanvien(manv);
+            cc.setThangchamcong(checkInTime.getMonthValue());
+            cc.setNamchamcong(checkInTime.getYear());
+            
+            cc = buscc.get(cc);
+            dtochitietchamcong ctcc = new dtochitietchamcong();
+
+            ctcc.setMachamcong(cc.getMachamcong());
+            ctcc.setGiobatdau(Timestamp.valueOf(checkInTime));
+            ctcc.setGioketthuc(Timestamp.valueOf(checkOutTime));
+            ctcc.setLoaichamcong(workMode);
+            ctcc.setNgaychamcong(Date.from(checkInTime.atZone(ZoneId.systemDefault()).toInstant()));
+            ctcc.setSogiolam(Integer.parseInt(duration.toString()));
+            ctcc.setTennhanvien(manv);
+            busctcc.create(ctcc);
+            
+            int time = (int) ((duration.toMinutes() - minutes)/60);
+            if(workMode.equals("Bình thường")){
+                cc.setSogiolamviec(cc.getSongaylamviec() + time);
+                cc.setSongaylamviec(cc.getSongaylamviec() + 1);
+                
+            }
+            else{
+                cc.setSogiolamthem(cc.getSogiolamthem() + time);
+                cc.setSongaylamviec(cc.getSongaylamviec() + 1);
+            }
+            buscc.update(cc);
         } else {
             JOptionPane.showMessageDialog(this, "Vui lòng thực hiện Check In và Check Out trước!", 
                 "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -316,13 +377,17 @@ public class formchamconghangngay extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_nameTextFieldActionPerformed
 
+    private void chucVuTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chucVuTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_chucVuTextFieldActionPerformed
+
     private void diaChiTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_diaChiTextFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_diaChiTextFieldActionPerformed
 
-    private void chucVuTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chucVuTextFieldActionPerformed
+    private void combobox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_combobox1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_chucVuTextFieldActionPerformed
+    }//GEN-LAST:event_combobox1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private gui.swing.login.Button button2;
@@ -331,6 +396,7 @@ public class formchamconghangngay extends javax.swing.JPanel {
     private gui.swing.login.MyTextField chucVuTextField;
     private gui.comp.Combobox combobox1;
     private gui.swing.login.MyTextField diaChiTextField;
+    private javax.swing.JLabel imglabel;
     private javax.swing.JPanel imgpanel;
     private javax.swing.JLabel jLabel1;
     private gui.swing.login.MyTextField maNVTextField;

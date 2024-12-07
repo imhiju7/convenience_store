@@ -2,6 +2,7 @@ package gui.comp;
 
 import bus.buschucvu;
 import bus.busnhanvien;
+import dto.dtonhanvien;
 import gui.form.frmlogin;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -22,8 +23,10 @@ public class Header extends javax.swing.JPanel {
         
         lbrole.setText(tencv);
         lbname.setText(tennv);
-        
-        pic.setIcon(new javax.swing.ImageIcon(getClass().getResource("/source/image/nhanvien/nv1.png")));
+        dtonhanvien nv = new dtonhanvien();
+        nv.setManhanvien(manv);
+        String image = busnv.getnv(nv).getImg();
+        pic.setIcon(new javax.swing.ImageIcon(getClass().getResource("/source/image/nhanvien/"+image)));
     }
     private void closeCurrentFrame() {
         // Lấy frame chứa panel hiện tại
