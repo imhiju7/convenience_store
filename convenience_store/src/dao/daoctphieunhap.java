@@ -125,13 +125,16 @@ public class daoctphieunhap {
         ArrayList<dtoctphieunhap> list = new ArrayList<>();
         java.sql.Connection con = connect.connection();
         String sql = "SELECT ctpn.* " +
-                        "FROM chitietphieunhap AS ctpn " +
-                        "JOIN sanpham AS sp " +
-                        "ON ctpn.maSanPham = sp.maSanPham " +
-                        "WHERE ctpn.isHidden = 0 " +
-                        "AND sp.isHidden = 0 " +
-                        "AND ctpn.soLuong < 10"
-                        +" and sp.maNhaCungCap = ?";
+                    "FROM chitietphieunhap AS ctpn " +
+                    "JOIN sanpham AS sp ON ctpn.maSanPham = sp.maSanPham " +
+                    "WHERE sp.maNhaCungCap = ?" +
+                    " AND sp.isHidden = 0" +
+                    " AND ctpn.isHidden = 0" +
+                    " AND (" +
+                    " SELECT SUM(soLuong)" +
+                    " FROM chitietphieunhap" +
+                    " WHERE maSanPham = ctpn.maSanPham" +
+                    " ) < 10;";
         try {
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, maNCC);
@@ -168,12 +171,14 @@ public class daoctphieunhap {
         java.sql.Connection con = connect.connection();
         String sql = "SELECT ctpn.* " +
                     "FROM chitietphieunhap AS ctpn " +
-                    "JOIN sanpham AS sp " +
-                    "ON ctpn.maSanPham = sp.maSanPham " +
-                    "WHERE ctpn.isHidden = 0 " +
-                    "AND sp.isHidden = 0 " +
-                    "AND ctpn.soLuong < 10;";
-
+                    "JOIN sanpham AS sp ON ctpn.maSanPham = sp.maSanPham " +
+                    "WHERE sp.isHidden = 0" +
+                    " AND ctpn.isHidden = 0" +
+                    " AND (" +
+                    " SELECT SUM(soLuong)" +
+                    " FROM chitietphieunhap" +
+                    " WHERE maSanPham = ctpn.maSanPham" +
+                    " ) < 10;";
         try {
             PreparedStatement pst = con.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();

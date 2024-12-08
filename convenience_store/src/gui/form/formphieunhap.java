@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.TableModel;
 
 import javax.swing.table.TableRowSorter;
 /**
@@ -244,13 +245,10 @@ public class formphieunhap extends javax.swing.JPanel {
     panel.add(scrollPane, BorderLayout.CENTER);
 
     // Populate the table with data
-    busctpn.needToFillList();
-    if(busctpn.dsctpn.isEmpty() ){
         for(dtosanpham sp : bussp.needToFillList()){
             additionalTable.addRow(sp.toAdditionalTableRow());
         }
-    }
-
+    busctpn.needToFillList();
     for (dtoctphieunhap cc : busctpn.dsctpn) {
         additionalTable.addRow(cc.toAdditionalTableRow());
     }
@@ -261,23 +259,19 @@ public class formphieunhap extends javax.swing.JPanel {
     private void reloadAdditionalTable(String maNCC){
         additionalTable.setRowCount(0);
         if(maNCC==null){
-            busctpn.needToFillList();
-            if(busctpn.dsctpn.isEmpty() ){
-                for(dtosanpham sp : bussp.needToFillList()){
+            for(dtosanpham sp : bussp.needToFillList()){
                     additionalTable.addRow(sp.toAdditionalTableRow());
-                }
             }
+                busctpn.needToFillList();
             for (dtoctphieunhap cc : busctpn.dsctpn) {
                 additionalTable.addRow(cc.toAdditionalTableRow());
             }
         }
         else{
-            if(busctpn.dsctpn.isEmpty()){
-                for(dtosanpham sp : bussp.needToFillList(Integer.valueOf(maNCC))){
-                    additionalTable.addRow(sp.toAdditionalTableRow());
-                }
+            for(dtosanpham sp : bussp.needToFillList(Integer.valueOf(maNCC))){
+                additionalTable.addRow(sp.toAdditionalTableRow());
             }
-            busctpn.needToFillList(Integer.valueOf(maNCC));
+                busctpn.needToFillList(Integer.valueOf(maNCC));
             for (dtoctphieunhap cc : busctpn.dsctpn) {
                 additionalTable.addRow(cc.toAdditionalTableRow());
             }
@@ -919,40 +913,9 @@ public class formphieunhap extends javax.swing.JPanel {
     }
 
     
-    private void searching(JTextField txtSearch, JComboBox cbmonth, JComboBox cbyear) {
-        String searchText = txtSearch.getText().trim();
-        String selectedMonth = (String) cbmonth.getSelectedItem();
-        String selectedYear = (String) cbyear.getSelectedItem();
-        if (searchText.isEmpty() && selectedMonth.equals("Tháng") && selectedYear.equals("Năm")) {
-            JOptionPane.showMessageDialog(this,
-                    "Vui lòng nhập/chọn thông tin tìm kiếm",
-                    "Thông báo",
-                    JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        TableRowSorter sorter = new TableRowSorter<>(generalTable.getModel());
-        generalTable.setRowSorter(sorter);
-        java.util.List<RowFilter<Object, Object>> filters = new ArrayList<>();
-        if(!searchText.isEmpty()){
-            if(searchText.chars().allMatch(Character::isDigit))
-                filters.add(RowFilter.regexFilter(searchText, 0));
-            else filters.add(RowFilter.regexFilter("(?i)" + searchText, 1));
-        } 
-        if(!selectedMonth.equals("Tháng")){
-            filters.add(RowFilter.regexFilter(selectedMonth.substring(selectedMonth.length() - 1), 2));
-        }
-        if(!selectedYear.equals("Năm")){
-            filters.add(RowFilter.regexFilter(selectedYear.substring(selectedYear.length() - 1), 3));
-        }
-        if (!filters.isEmpty()) {
-            sorter.setRowFilter(RowFilter.andFilter(filters));
-        }
-        if(generalTable.getRowCount() == 0)
-            JOptionPane.showMessageDialog(null, "Không có dữ liệu ");
-    }
-    
     private void searching(JTextField txtSearch) {
         String searchText = txtSearch.getText().trim();
+
         if (searchText.isEmpty()) {
             JOptionPane.showMessageDialog(this,
                     "Vui lòng nhập/chọn thông tin tìm kiếm",
@@ -960,24 +923,29 @@ public class formphieunhap extends javax.swing.JPanel {
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
-        TableRowSorter sorter = new TableRowSorter<>(generalTable.getModel());
+
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(generalTable.getModel());
         generalTable.setRowSorter(sorter);
-        java.util.List<RowFilter<Object, Object>> filters = new ArrayList<>();
 
-        if(searchText.chars().allMatch(Character::isDigit))
-            filters.add(RowFilter.regexFilter(searchText, 0));
-        else filters.add(RowFilter.regexFilter("(?i)" + searchText, 1));
-
-        if (!filters.isEmpty()) {
-            sorter.setRowFilter(RowFilter.andFilter(filters));
+        RowFilter<TableModel, Object> filter;
+        if (searchText.chars().allMatch(Character::isDigit)) {
+            java.util.List<RowFilter<TableModel, Object>> filters = new ArrayList<>();
+            filters.add(RowFilter.regexFilter("(?i)" + searchText, 2,0)); // Case-insensitive search in column 2
+            filter = RowFilter.andFilter(filters);
+        } else {
+            java.util.List<RowFilter<TableModel, Object>> filters = new ArrayList<>();
+            filters.add(RowFilter.regexFilter("(?i)" + searchText, 2,4)); // Case-insensitive search in column 2
+            filter = RowFilter.andFilter(filters);
         }
+        sorter.setRowFilter(filter);
+
         java.util.List<RowSorter.SortKey> sortKeys = new ArrayList<>();
-        sortKeys.add(new RowSorter.SortKey(3, SortOrder.DESCENDING)); // Year column, assuming column index 3
-        sortKeys.add(new RowSorter.SortKey(2, SortOrder.DESCENDING)); // Month column, assuming column index 2
+        sortKeys.add(new RowSorter.SortKey(1, SortOrder.DESCENDING));
         sorter.setSortKeys(sortKeys);
-        
-        if(generalTable.getRowCount() == 0)
-            JOptionPane.showMessageDialog(null, "Không có dữ liệu ");
+
+        if (generalTable.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "Không có dữ liệu");
+        }
     }
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {

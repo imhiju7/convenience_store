@@ -347,7 +347,7 @@ public class daosanpham {
     public ArrayList<dtosanpham> needToFillList(int maNhaCungCap) {
     ArrayList<dtosanpham> list_sp = new ArrayList<>();
     java.sql.Connection con = connect.connection();
-    String sql = "SELECT * FROM sanpham WHERE isHidden = 0 AND maNhaCungCap = ? and soLuong < 10";
+    String sql = "SELECT * FROM sanpham WHERE isHidden = 0 AND maNhaCungCap = ? AND maSanPham NOT IN (SELECT DISTINCT maSanPham FROM chitietphieunhap)";
     
     try {
         PreparedStatement pst = con.prepareStatement(sql);
@@ -382,7 +382,7 @@ public class daosanpham {
     public ArrayList<dtosanpham> needToFillList() {
     ArrayList<dtosanpham> list_sp = new ArrayList<>();
     java.sql.Connection con = connect.connection();
-    String sql = "SELECT * FROM sanpham WHERE isHidden = 0 and soLuong < 10 ORDER BY maNhaCungCap ASC";
+    String sql = "SELECT * FROM sanpham WHERE isHidden = 0 AND maSanPham NOT IN (SELECT DISTINCT maSanPham FROM chitietphieunhap)";
     
     try {
         PreparedStatement pst = con.prepareStatement(sql);
