@@ -5,6 +5,7 @@
 package dao;
 
 import dto.dtochamcong;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,8 +38,6 @@ public class daochamcong {
                     rs.getInt("maNhanVien"),
                     rs.getInt("soGioLamViec"),
                     rs.getInt("soNgayLamViec"),
-                    rs.getInt("soNgayNghi"),
-                    rs.getInt("soNgayTre"),
                     rs.getInt("soGioLamThem"),
                     rs.getString("chiTiet"),
                     rs.getInt("thangChamCong"),
@@ -73,8 +72,6 @@ public class daochamcong {
                 rs.getInt("maNhanVien"),
                 rs.getInt("soGioLamViec"),
                 rs.getInt("soNgayLamViec"),
-                rs.getInt("soNgayNghi"),
-                rs.getInt("soNgayTre"),
                 rs.getInt("soGioLamThem"),
                 rs.getString("chiTiet"),
                 rs.getInt("thangChamCong"),
@@ -96,7 +93,7 @@ public class daochamcong {
 
     
     public void create(dtochamcong chamCong) {
-        String sql = "INSERT INTO chamcong (maNhanVien, soGioLamViec, soNgayLamViec, soNgayNghi, soNgayTre, " +
+        String sql = "INSERT INTO chamcong (maNhanVien, soGioLamViec, soNgayLamViec, " +
                      "soGioLamThem, chiTiet, thangChamCong, namChamCong) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         java.sql.Connection con = connect.connection();
@@ -106,12 +103,10 @@ public class daochamcong {
             pst.setInt(1, chamCong.getManhanvien());
             pst.setInt(2, chamCong.getSogiolamviec());
             pst.setInt(3, chamCong.getSongaylamviec());
-            pst.setInt(4, chamCong.getSongaynghi());
-            pst.setInt(5, chamCong.getSongaytre());
-            pst.setInt(6, chamCong.getSogiolamthem());
-            pst.setString(7, chamCong.getChitiet());
-            pst.setInt(8, chamCong.getThangchamcong());
-            pst.setInt(9, chamCong.getNamchamcong());
+            pst.setInt(4, chamCong.getSogiolamthem());
+            pst.setString(5, chamCong.getChitiet());
+            pst.setInt(6, chamCong.getThangchamcong());
+            pst.setInt(7, chamCong.getNamchamcong());
 
             pst.executeUpdate();
         } catch (SQLException e) {
@@ -122,6 +117,35 @@ public class daochamcong {
             } catch (SQLException e) {
                 Logger.getLogger(daochamcong.class.getName()).log(Level.SEVERE, null, e);
             }
+        }
+    }
+    public void update(dtochamcong cc){
+        String sql = "update chamcong set maNhanVien = ?, soGioLamViec = ?, soNgayLamViec = ?, soGioLamThem = ?, chiTiet = ?, thangChamCong = ?, namChamCong = ? where maChamCong = ? ";
+        Connection con = connect.connection();
+        PreparedStatement pst;
+        try {
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, cc.getManhanvien());
+            pst.setInt(2, cc.getSogiolamviec());
+            pst.setInt(3, cc.getSongaylamviec());
+            pst.setInt(4, cc.getSogiolamthem());
+            pst.setString(6, cc.getChitiet());
+            pst.setInt(7, cc.getThangchamcong());
+            pst.setInt(8, cc.getNamchamcong());
+            pst.setInt(9, cc.getMachamcong());
+            int rowsAffected = pst.executeUpdate(); // Thực hiện câu lệnh cập nhật
+            if (rowsAffected > 0) {
+                System.out.println("Cập nhật thành công!");
+            } else {
+                System.out.println("Không cập nhật được nhân viên với mã đã cho.");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(daochamcong.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daochamcong.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     public int countchamcong() {
@@ -185,8 +209,6 @@ public class daochamcong {
                     rs.getInt("maNhanVien"),
                     rs.getInt("soGioLamViec"),
                     rs.getInt("soNgayLamViec"),
-                    rs.getInt("soNgayNghi"),
-                    rs.getInt("soNgayTre"),
                     rs.getInt("soGioLamThem"),
                     rs.getString("chiTiet"),
                     rs.getInt("thangChamCong"),

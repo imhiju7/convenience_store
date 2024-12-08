@@ -14,6 +14,7 @@ import java.sql.SQLException;
  */
 public class connect {
     public connect(){
+        
     }
     
     public static Connection connection(){

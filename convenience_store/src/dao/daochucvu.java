@@ -60,24 +60,45 @@ public class daochucvu {
 
     // Xóa chức vụ
     public void delete(int maChucVu) throws SQLException {
-        String sql = "UPDATE chucvu SET isDelete = 1 WHERE maChucVu = ?";
-        Connection con = connect.connection();
+    String softDeleteChucVuSql = "UPDATE chucvu SET isDelete = 1 WHERE maChucVu = ?";
+    String deletePhanQuyenSql = "DELETE FROM phanquyen WHERE maChucVu = ?";
+    Connection con = connect.connection();
 
-        try (PreparedStatement pst = con.prepareStatement(sql)) {
-            pst.setInt(1, maChucVu); // Gán giá trị cho mã chức vụ
+    try {
+        con.setAutoCommit(false); // Bắt đầu transaction
 
-            int rowsAffected = pst.executeUpdate(); // Thực hiện câu lệnh xóa mềm
+        // Thực hiện xóa mềm chức vụ
+        try (PreparedStatement pstChucVu = con.prepareStatement(softDeleteChucVuSql)) {
+            pstChucVu.setInt(1, maChucVu);
+            int rowsAffected = pstChucVu.executeUpdate();
+
             if (rowsAffected > 0) {
                 System.out.println("Xóa mềm chức vụ thành công!");
+
+                // Xóa tất cả các phân quyền liên quan đến chức vụ đó
+                try (PreparedStatement pstPhanQuyen = con.prepareStatement(deletePhanQuyenSql)) {
+                    pstPhanQuyen.setInt(1, maChucVu);
+                    pstPhanQuyen.executeUpdate();
+                    System.out.println("Xóa phân quyền liên quan thành công!");
+                }
             } else {
                 System.out.println("Không tìm thấy chức vụ với mã đã cho.");
             }
-        } finally {
-            if (con != null) {
-                con.close(); // Đảm bảo đóng kết nối
-            }
+        }
+
+        con.commit(); // Commit transaction
+    } catch (SQLException e) {
+        con.rollback(); // Rollback nếu xảy ra lỗi
+        e.printStackTrace();
+        throw e;
+    } finally {
+        if (con != null) {
+            con.setAutoCommit(true); // Đặt lại trạng thái mặc định
+            con.close(); // Đóng kết nối
         }
     }
+}
+
 
 
     public ArrayList<dtochucvu> getlist() {

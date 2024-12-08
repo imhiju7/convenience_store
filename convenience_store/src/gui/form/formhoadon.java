@@ -185,7 +185,7 @@ public class formhoadon extends javax.swing.JPanel {
     panel.add(scrollPane, "growx"); // Adjust with growx to expand width
 
     // Fill table data
-    buscthd.getlist(hdIDOnClick);
+    buscthd.getlistbyhoadon(hdIDOnClick);
     for (dtocthoadon hd : buscthd.dscthd) {
         model.addRow(hd.toTableRow());
     }

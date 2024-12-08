@@ -5,9 +5,7 @@
 package bus;
 import dao.daoctphieunhap;
 import dto.dtoctphieunhap;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
 /**
  *
@@ -31,7 +29,15 @@ public class busctphieunhap {
         dsctpn =  daoHD.getlist();
     }
     public void getlist(int maphieunhap) {
-        dsctpn =  daoHD.getlist(maphieunhap);
+        dsctpn =  daoHD.getlistpn(maphieunhap);
+    }
+    public int soluong(int masp){
+        int total = 0;
+        ArrayList<dtoctphieunhap> list = daoHD.getlistlo(masp);
+        for(dtoctphieunhap i : list){
+            total  += i.getSoluongtonkho();
+        }
+        return total;
     }
     
     // Business logic method to add a new HD record
@@ -52,49 +58,28 @@ public class busctphieunhap {
     public int maxID(){
         return daoHD.maxID();
     }
-    public dtoctphieunhap getspganhh(int masp){
-        ArrayList<dtoctphieunhap> list = daoHD.getalllist();
-        dtoctphieunhap sp= new dtoctphieunhap();
-        int day = 100000;
-        for(dtoctphieunhap i : list){
-            if(i.getMaSanPham() == masp){
-                int han = isganhh(i.getNgayhethan().toString());
-                if(han < day){
-                    day = han;
-                    sp = i;
-                }
-            }
-        }
-        return sp;
+    public dtoctphieunhap getspnhap(int masp){
+        ArrayList<dtoctphieunhap> list = daoHD.getlistlo(masp);
+        return list.get(0);
     }
     public void needToFillList(int maNCC) {
         daoHD = new daoctphieunhap();
         dsctpn =  daoHD.needToFillList(maNCC);
     }
     
-    public static void main(String[] args) {
-        // Create an instance of the BUS class
-        busctphieunhap bus = new busctphieunhap();
-            System.out.println(bus.maxID());
-           bus.needToFillList();
-        // Print each dtoctphieunhap object in the list
-        for (dtoctphieunhap HD : bus.dsctpn) {
-            System.out.println(HD);
-        }
-    }
-    public int isganhh(String birthday) {
-        // Định dạng ngày tháng từ chuỗi
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate birthDate = LocalDate.parse(birthday, formatter);
-        // Tính tuổi hiện tại
-        LocalDate currentDate = LocalDate.now();
-        Period age = Period.between(currentDate,birthDate);
-        return age.getDays();
-    }
-
     public void needToFillList() {
         daoHD = new daoctphieunhap();
         dsctpn =  daoHD.needToFillList();
+    }
+
+    public static void main(String[] args) {
+        // Create an instance of the BUS class
+        busctphieunhap bus = new busctphieunhap();
+           bus.needToFillList();
+           if(bus.dsctpn.isEmpty()) System.out.println("bus.busctphieunhap.main()");
+        for (dtoctphieunhap HD : bus.dsctpn) {
+            System.out.println(HD);
+        }
     }
 
     public void create(dtoctphieunhap ct) {

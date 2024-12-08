@@ -1,5 +1,6 @@
 package gui.form;
 
+import bus.busctphieunhap;
 import bus.busnhanvien;
 import bus.bussanpham;
 import gui.comp.NVCard;
@@ -60,6 +61,7 @@ public class formsanpham extends Form {
     
     
     private bussanpham busSP = new bussanpham();
+    private busctphieunhap busctpn = new busctphieunhap();
     private ArrayList<dtosanpham> list_SP;
     
     private List<SPCard> cards;
@@ -139,7 +141,7 @@ public class formsanpham extends Form {
                         if (ctpn.getMaSanPham() == sp.getMaSanPham()) {
                             if(ctpn.getSoluongtonkho() != 0){
                                 sp.setGiaBan(ctpn.getGiaBan());
-                                sp.setSoLuong(ctpn.getSoluongtonkho());
+                                sp.setSoLuong(busctpn.soluong(sp.getMaSanPham()));
 //                                System.out.println("Giá bán : " + sp.getGiaBan());
                                 SPCard card = new SPCard(sp, createEventCard1());
                                 cards.add(card);
@@ -223,7 +225,6 @@ public class formsanpham extends Form {
                 addField(leftPanel, leftGbc, "Mã phân loại", 5, String.valueOf(e.getMaPhanLoai()));
                 addField(leftPanel, leftGbc, "Giá nhập", 6, String.valueOf(e.getGiaBan()));
                 addField(leftPanel, leftGbc, "Nhà cung cấp", 7, String.valueOf(e.getMaNCC()));
-                addField(leftPanel, leftGbc, "Hạn sử dụng", 8, String.valueOf(e.getHanSD()));
                 
                 // Panel phải chứa ảnh và nút chọn ảnh
                 rightPanel = new JPanel(new GridBagLayout());

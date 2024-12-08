@@ -4,7 +4,7 @@
  */
 package dto;
 
-import bus.buschamcong;
+import bus.busnhanvien;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -95,8 +95,8 @@ public class dtochitietchamcong {
         this.gioketthuc = gioketthuc;
     }
     public void setTennhanvien(int manhanvien) {
-        buschamcong buscc = new buschamcong();
-        this.tennhanvien = buscc.get(manhanvien).getTennhanvien();
+        busnhanvien busnv= new busnhanvien();
+        this.tennhanvien = busnv.gettennvbymanv(manhanvien);
     }
 
     public int getManhanvien() {
@@ -104,8 +104,8 @@ public class dtochitietchamcong {
     }
 
     public void setManhanvien(int manhanvien) {
-        buschamcong buscc = new buschamcong();
-        this.manhanvien = buscc.get(manhanvien).getManhanvien();
+        busnhanvien busnv= new busnhanvien();
+        this.tennhanvien = busnv.gettennvbymanv(manhanvien);
     }
     
     @Override
