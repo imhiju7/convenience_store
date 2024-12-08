@@ -177,7 +177,21 @@ public class daouudai {
         Collections.sort(list, (dtouudai person1, dtouudai person2) -> Integer.compare(person1.getMocUuDai(), person2.getMocUuDai()));
         return list;
     }
-    
+    public ArrayList<String> layDanhSachMaUuDai() {
+    ArrayList<String> danhSachMaUuDai = new ArrayList<>();
+    try (Connection con = connect.connection()) {
+        String sql = "SELECT maUuDai FROM uudai WHERE isDelete = 0";
+        PreparedStatement pst = con.prepareStatement(sql);
+        ResultSet rs = pst.executeQuery();
+        while (rs.next()) {
+            danhSachMaUuDai.add(String.valueOf(rs.getInt("maUuDai"))); // Lấy mã ưu đãi
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return danhSachMaUuDai;
+}
+
     public static void main(String[] args) {
         new daouudai().Update(new dtouudai(12,1200,12,0));
     }

@@ -37,7 +37,10 @@ public class busuudai {
     public int getMaxMaUuDai(){
         return daoUuDai.getMaxMaUuDai();
     }
-    
+    public ArrayList<String> layDanhSachMaUuDai() {
+    return daoUuDai.layDanhSachMaUuDai();
+}
+
     public dtouudai getud(dtouudai i){
         return daoUuDai.getud(i);
     }
