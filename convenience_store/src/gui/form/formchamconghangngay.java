@@ -310,6 +310,26 @@ public class formchamconghangngay extends javax.swing.JPanel {
         checkInTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/YYYY");
         myTextField1.setText(checkInTime.format(formatter));
+        
+        
+        // insert
+        dtochamcong cc = new dtochamcong();
+        cc.setManhanvien(manv);
+        cc.setThangchamcong(checkInTime.getMonthValue());
+        cc.setNamchamcong(checkInTime.getYear());
+        String workMode = combobox1.getSelectedItem().toString();
+        cc = buscc.get(cc);
+        
+        dtochitietchamcong ctcc = new dtochitietchamcong();
+        
+        ctcc.setMachamcong(cc.getMachamcong());
+        ctcc.setGiobatdau(Timestamp.valueOf(checkInTime));
+        ctcc.setLoaichamcong(workMode);
+        System.out.println(cc);
+        
+        // update chamcong
+        
+        //
     }//GEN-LAST:event_button2ActionPerformed
 
     private void button3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button3ActionPerformed

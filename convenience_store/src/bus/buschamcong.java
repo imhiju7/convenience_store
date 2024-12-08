@@ -27,8 +27,8 @@ public class buschamcong {
         return dao.getListYears();
     }
     public ArrayList<dtochamcong> getAllChamCong() {
-    return dao.getAllChamCong();
-}
+        return dao.getAllChamCong();
+    }
 
 
     public void create(dtochamcong cc){
@@ -44,6 +44,16 @@ public class buschamcong {
             }
         }
         return null;
+    }
+    public ArrayList<dtochamcong> getlistthang(int currMonth,int currYear){
+        ArrayList<dtochamcong> list = dao.getlist();
+        ArrayList<dtochamcong> listluong = new ArrayList<>();
+        for (dtochamcong cc: list){
+            if(cc.getThangchamcong() == currMonth && cc.getNamchamcong() == currYear){
+                listluong.add(cc);
+            }
+        }
+        return listluong;
     }
     
     public int countchamcong(){

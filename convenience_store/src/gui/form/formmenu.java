@@ -111,7 +111,7 @@ public class formmenu extends Form {
                         if (ctpn.getMaSanPham() == sp.getMaSanPham()) {
                             if(ctpn.getSoluongtonkho() != 0){
                                 sp.setGiaBan(ctpn.getGiaBan());
-                                sp.setSoLuong(busctpn.soluong(sp.getMaSanPham()));
+                                sp.setSoLuong(ctpn.getSoluongtonkho());
                                 list_SP_has_money.add(sp);
                                 MenuCard card = new MenuCard(sp, createEventCard());
                                 cards.add(card);
