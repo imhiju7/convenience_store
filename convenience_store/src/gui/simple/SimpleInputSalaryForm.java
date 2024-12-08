@@ -163,8 +163,6 @@ public class SimpleInputSalaryForm extends JPanel {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày nhận lương!");
                 return;
             }
-            String ngayNhanLuong = new SimpleDateFormat("yyyy-MM-dd").format(ngayNhanLuongDate);
-
             // Lấy thông tin nhân viên
             dtonhanvien selectedNhanVien = (dtonhanvien) cboTenNhanVien.getSelectedItem();
             int maNhanVien = selectedNhanVien != null ? selectedNhanVien.getManhanvien() : 0;
@@ -173,7 +171,7 @@ public class SimpleInputSalaryForm extends JPanel {
             int maChamCong = (int) cboMaChamCong.getSelectedItem();
 
             // Tạo DTO và lưu vào cơ sở dữ liệu
-            dtoluong luong = new dtoluong(0, maChamCong, phuCap, luongThucTe, luongThuong, khoanBaoHiem, khoanThue, 0, luongLamThem, ngayNhanLuong, maNhanVien);
+            dtoluong luong = new dtoluong(0, maChamCong, phuCap, luongThucTe, luongThuong, khoanBaoHiem, khoanThue, 0, luongLamThem, ngayNhanLuongDate, maNhanVien);
             daoLuong.add(luong);
 
             JOptionPane.showMessageDialog(this, "Thông tin lương đã được thêm thành công!");
@@ -205,7 +203,7 @@ public class SimpleInputSalaryForm extends JPanel {
         txtKhoanThue.setText(String.valueOf(luong.getKhoanThue()));
         txtLuongLamThem.setText(String.valueOf(luong.getLuongLamThem()));
         try {
-            Date ngayNhanLuong = new SimpleDateFormat("yyyy-MM-dd").parse(luong.getNgayNhanLuong());
+            Date ngayNhanLuong = new SimpleDateFormat("yyyy-MM-dd").parse(luong.getNgayNhanLuong().toString());
             dateChooserNgayNhanLuong.setDate(ngayNhanLuong);
         } catch (Exception e) {
             e.printStackTrace();
@@ -231,10 +229,9 @@ public class SimpleInputSalaryForm extends JPanel {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày nhận lương!");
             return;
         }
-        String ngayNhanLuong = new SimpleDateFormat("yyyy-MM-dd").format(ngayNhanLuongDate);
 
         // Tạo đối tượng lương
-        dtoluong luong = new dtoluong(maLuong, maChamCong, phuCap, luongThucTe, luongThuong, khoanBaoHiem, khoanThue, 0, luongLamThem, ngayNhanLuong, maNhanVien);
+        dtoluong luong = new dtoluong(maLuong, maChamCong, phuCap, luongThucTe, luongThuong, khoanBaoHiem, khoanThue, 0, luongLamThem, ngayNhanLuongDate, maNhanVien);
 
         // Cập nhật lương qua bus
         busluong bus = new busluong();

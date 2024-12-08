@@ -42,9 +42,9 @@ public class daohopdong {
         }
         return null;
     }
-        public dtohopdong gethopdongnhanvien(int ma_nv){
-        dtohopdong hd = new dtohopdong();
-        try (java.sql.Connection con = connect.connection()) {
+    public dtohopdong gethopdongnhanvien(int ma_nv){
+            dtohopdong hd = new dtohopdong();
+            try (java.sql.Connection con = connect.connection()) {
             String sql = "select * from hopdonglaodong where maNhanVien = ? ";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1,ma_nv);

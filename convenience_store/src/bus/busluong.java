@@ -1,8 +1,11 @@
 package bus;
 
 import dao.daoluong;
+import dto.dtochamcong;
 import dto.dtoluong;
+import static java.lang.Math.round;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class busluong {
@@ -17,7 +20,7 @@ public class busluong {
     public ArrayList<dtoluong> getAllLuong() {
         return daoLuong.getList();
     }
-
+    
     // Lấy thông tin lương theo ID
     public dtoluong getLuongById(int maLuong) {
         return daoLuong.getById(maLuong);
@@ -54,10 +57,61 @@ public class busluong {
     public int countLuong() {
         return daoLuong.countLuong();
     }
+    public boolean isExist(Date day) {
+        ArrayList<dtoluong> list = getAllLuong();
+
+        // Lấy tháng và năm từ đối tượng Date (ngày hiện tại)
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(day); // Thiết lập ngày
+        int currMonth = cal.get(Calendar.MONTH) + 1; // Tháng (0-based, cần +1 để đúng tháng thực tế)
+        int currYear = cal.get(Calendar.YEAR); // Năm
+
+        for (dtoluong luong : list) {
+            Date dluong = luong.getNgayNhanLuong();
+
+            // Lấy tháng và năm từ dluong
+            Calendar calLuong = Calendar.getInstance();
+            calLuong.setTime(dluong);
+            int luongMonth = calLuong.get(Calendar.MONTH) + 1;
+            int luongYear = calLuong.get(Calendar.YEAR);
+
+            // So sánh tháng và năm
+            if (luongMonth == currMonth && luongYear == currYear) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public ArrayList<dtoluong> getlistthang(int month,int year){
+        ArrayList<dtoluong> list = getAllLuong();
+        ArrayList<dtoluong> listluong = new ArrayList<>();
+        for (dtoluong luong : list) {
+            Date dluong = luong.getNgayNhanLuong();
+
+            // Lấy tháng và năm từ dluong
+            Calendar calLuong = Calendar.getInstance();
+            calLuong.setTime(dluong);
+            int luongMonth = calLuong.get(Calendar.MONTH) + 1;
+            int luongYear = calLuong.get(Calendar.YEAR);
+
+            // So sánh tháng và năm
+            if (luongMonth == month && luongYear == year) {
+                listluong.add(luong);
+            }
+        }
+        return listluong;
+    }
 
     // Xử lý nghiệp vụ tính lương thực lãnh (có thể áp dụng logic riêng)
-    public double calculateThuclanh(double luongThucTe, double phuCap, double luongThuong, double khoanBaoHiem, double khoanThue) {
-        return luongThucTe + phuCap + luongThuong - khoanBaoHiem - khoanThue;
+    public double calculateLuong(double luongThucTe, double phuCap, double luongThuong, double khoanBaoHiem, double luongLamThem,double khoanTru) {
+        return luongThucTe + luongLamThem + phuCap + luongThuong - khoanBaoHiem - khoanTru;
+    }
+    public double calculateThue(double luongThucTe, double phuCap, double luongThuong, double khoanBaoHiem, double luongLamThem,double khoanTru) {
+        double Thuclanh = calculateLuong(luongThucTe, phuCap,luongThuong, khoanBaoHiem,luongLamThem,khoanTru);
+        if(Thuclanh > 1000000){
+            return Math.round(Thuclanh*10/100);
+        }
+        return 0;
     }
 
     // Kiểm tra hợp lệ trước khi thêm hoặc cập nhật lương
