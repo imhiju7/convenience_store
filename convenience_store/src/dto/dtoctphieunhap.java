@@ -25,7 +25,6 @@ public class dtoctphieunhap {
         this.ngayhethan = ngayhethan;
         this.soluongtonkho = soluongtonkho;
         this.ghichu = ghichu;
-        setIshidden();
     }
 
     public int getMaCTPhieuNhap() {
@@ -70,11 +69,6 @@ public class dtoctphieunhap {
 
     public int getIshidden() {
         return ishidden;
-    }
-
-    public void setIshidden() {
-        if(this.soluongtonkho == 0 || this.ngayhethan.before(new Date())) this.ishidden = 1;
-        else this.ishidden = 0;
     }
 
     public String getGhichu() {
