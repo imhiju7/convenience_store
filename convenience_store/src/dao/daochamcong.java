@@ -95,7 +95,7 @@ public class daochamcong {
     public void create(dtochamcong chamCong) {
         String sql = "INSERT INTO chamcong (maNhanVien, soGioLamViec, soNgayLamViec, " +
                      "soGioLamThem, chiTiet, thangChamCong, namChamCong) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
         java.sql.Connection con = connect.connection();
 
         try {

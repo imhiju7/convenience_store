@@ -1,5 +1,8 @@
 package dto;
 
+import bus.busnhanvien;
+import java.util.Date;
+
 public class dtoluong {
     private int maLuong;
     private int maChamCong;
@@ -9,14 +12,14 @@ public class dtoluong {
     private double khoanBaoHiem;
     private double khoanThue;
     private double thuclanh;
-    private int luongLamThem;
-    private String ngayNhanLuong;
+    private double luongLamThem;
+    private Date ngayNhanLuong;
     private int maNhanVien;
 
     // Constructor đầy đủ
     public dtoluong(int maLuong, int maChamCong, double phuCap, double luongThucTe, double luongThuong,
-                    double khoanBaoHiem, double khoanThue, double thuclanh, int luongLamThem, 
-                    String ngayNhanLuong, int maNhanVien) {
+                    double khoanBaoHiem, double khoanThue, double thuclanh, double luongLamThem, 
+                    Date ngayNhanLuong, int maNhanVien) {
         this.maLuong = maLuong;
         this.maChamCong = maChamCong;
         this.phuCap = phuCap;
@@ -95,19 +98,19 @@ public class dtoluong {
         this.thuclanh = thuclanh;
     }
 
-    public int getLuongLamThem() {
+    public double getLuongLamThem() {
         return luongLamThem;
     }
 
-    public void setLuongLamThem(int luongLamThem) {
+    public void setLuongLamThem(double luongLamThem) {
         this.luongLamThem = luongLamThem;
     }
 
-    public String getNgayNhanLuong() {
+    public Date getNgayNhanLuong() {
         return ngayNhanLuong;
     }
 
-    public void setNgayNhanLuong(String ngayNhanLuong) {
+    public void setNgayNhanLuong(Date ngayNhanLuong) {
         this.ngayNhanLuong = ngayNhanLuong;
     }
 
@@ -135,5 +138,11 @@ public class dtoluong {
                 ", ngayNhanLuong='" + ngayNhanLuong + '\'' +
                 ", maNhanVien=" + maNhanVien +
                 '}';
+    }
+    public Object[] toTableRowGeneral() {
+        //NumberFormat nf = new DecimalFormat("$ #,##0.##");
+        busnhanvien busnv = new busnhanvien();
+        String tennhanvien = busnv.gettennvbymanv(maNhanVien);
+        return new Object[]{maLuong , tennhanvien, phuCap, luongThucTe, luongThuong, khoanBaoHiem, khoanThue, thuclanh, luongLamThem,ngayNhanLuong};
     }
 }

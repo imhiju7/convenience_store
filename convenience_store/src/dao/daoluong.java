@@ -33,8 +33,8 @@ public class daoluong {
                          rs.getDouble("khoanBaoHiem"),
                          rs.getDouble("khoanThue"),
                          rs.getDouble("thuclanh"),
-                         rs.getInt("luongLamThem"),
-                         rs.getString("ngayNhanLuong"),
+                         rs.getDouble("luongLamThem"),
+                         rs.getDate("ngayNhanLuong"),
                          rs.getInt("maNhanVien")
                 );
             }
@@ -95,8 +95,8 @@ public class daoluong {
                          rs.getDouble("khoanBaoHiem"),
                          rs.getDouble("khoanThue"),
                          rs.getDouble("thuclanh"),
-                         rs.getInt("luongLamThem"),
-                         rs.getString("ngayNhanLuong"),
+                         rs.getDouble("luongLamThem"),
+                         rs.getDate("ngayNhanLuong"),
                          rs.getInt("maNhanVien")
                 );
                 list.add(luong);
@@ -133,8 +133,8 @@ public class daoluong {
                          rs.getDouble("khoanBaoHiem"),
                          rs.getDouble("khoanThue"),
                          rs.getDouble("thuclanh"),
-                         rs.getInt("luongLamThem"),
-                         rs.getString("ngayNhanLuong"),
+                         rs.getDouble("luongLamThem"),
+                         rs.getDate("ngayNhanLuong"),
                          rs.getInt("maNhanVien")
                 );
                 list.add(luong);
@@ -167,7 +167,7 @@ public class daoluong {
             pst.setDouble(6, luong.getKhoanThue());
             pst.setDouble(7, luong.getThuclanh());
             pst.setDouble(8, luong.getLuongLamThem());
-            pst.setString(9, luong.getNgayNhanLuong());
+            pst.setDate(9, new java.sql.Date(luong.getNgayNhanLuong().getTime()));
             pst.setInt(10, luong.getMaNhanVien());
             pst.executeUpdate();
         } catch (SQLException e) {
@@ -198,9 +198,9 @@ public class daoluong {
             pst.setDouble(5, luong.getKhoanBaoHiem());
             pst.setDouble(6, luong.getKhoanThue());
             pst.setDouble(7, luong.getThuclanh());
-            pst.setInt(8, luong.getLuongLamThem());
+            pst.setDouble(8, luong.getLuongLamThem());
             pst.setInt(9, luong.getMaNhanVien());
-            pst.setString(10, luong.getNgayNhanLuong()); // Chú ý định dạng ngày phải khớp với cơ sở dữ liệu
+            pst.setDate(10, new java.sql.Date(luong.getNgayNhanLuong().getTime()));// Chú ý định dạng ngày phải khớp với cơ sở dữ liệu
             pst.executeUpdate();
         } catch (SQLException e) {
             Logger.getLogger(daoluong.class.getName()).log(Level.SEVERE, null, e);
@@ -239,7 +239,7 @@ public class daoluong {
 
     public static void main(String[] args) {
         daoluong daoLuong = new daoluong();
-
+        /*
         // 1. Thử thêm một bản ghi mới
         dtoluong newLuong = new dtoluong(
                  0, // maLuong (Auto Increment trong DB)
@@ -254,7 +254,7 @@ public class daoluong {
                  "2024-11-29", // ngayNhanLuong
                  1 // maNhanVien
         );
-        daoLuong.add(newLuong);
+        daoLuong.add(newLuong);*/
         System.out.println("Thêm mới thành công!");
 
         // 2. Thử lấy danh sách lương

@@ -334,12 +334,10 @@ public class formchamcong extends javax.swing.JPanel {
             return;
         }
         int count = buscc.countchamcong();
-        System.out.print("dem ma cham cong"+ count);
             busnv.getlist();
 
         for (dtonhanvien nhanvien : busnv.list_nv) {
             dtochamcong cc = new dtochamcong(++count , nhanvien.getManhanvien(), 0, 0, 0, "", currMonth, currYear);
-            System.out.print("ma cham cong tu dong"+ count);
             buscc.create(cc);
         }
         refreshGeneralTable((DefaultTableModel) generalTable.getModel());
