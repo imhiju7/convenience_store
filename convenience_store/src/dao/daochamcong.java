@@ -129,10 +129,10 @@ public class daochamcong {
             pst.setInt(2, cc.getSogiolamviec());
             pst.setInt(3, cc.getSongaylamviec());
             pst.setInt(4, cc.getSogiolamthem());
-            pst.setString(6, cc.getChitiet());
-            pst.setInt(7, cc.getThangchamcong());
-            pst.setInt(8, cc.getNamchamcong());
-            pst.setInt(9, cc.getMachamcong());
+            pst.setString(5, cc.getChitiet());
+            pst.setInt(6, cc.getThangchamcong());
+            pst.setInt(7, cc.getNamchamcong());
+            pst.setInt(8, cc.getMachamcong());
             int rowsAffected = pst.executeUpdate(); // Thực hiện câu lệnh cập nhật
             if (rowsAffected > 0) {
                 System.out.println("Cập nhật thành công!");

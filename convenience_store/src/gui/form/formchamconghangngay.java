@@ -18,9 +18,14 @@ import java.time.format.DateTimeFormatter;
 import java.time.Duration;
 import javax.swing.*;
 import java.awt.Image;
+import static java.lang.String.valueOf;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,6 +83,28 @@ public class formchamconghangngay extends javax.swing.JPanel {
         Image scaledImg = curImg.getImage().getScaledInstance(170, 230, Image.SCALE_SMOOTH);
         ImageIcon editImg = new ImageIcon(scaledImg);
         imglabel.setIcon(editImg);
+        
+        Date day = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(day);
+        
+        int Month  = cal.get(Calendar.MONTH) + 1;
+        int Year = cal.get(Calendar.YEAR);
+        dtochamcong cc = new dtochamcong();
+        cc.setManhanvien(manv);
+        cc.setThangchamcong(Month);
+        cc.setNamchamcong(Year);
+        
+        cc = buscc.get(cc);
+        
+        dtochitietchamcong ctcc = busctcc.getctcc(day, cc.getMachamcong());
+        if(ctcc.getGiobatdau() != null){
+            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss dd/MM/YYYY");
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+            myTextField1.setText(formatter.format(ctcc.getGiobatdau()));
+            combobox1.setSelectedItem(ctcc.getLoaichamcong());
+            checkInTime = LocalDateTime.parse(ctcc.getGiobatdau().toString(), format);
+        }
     }
    
     @SuppressWarnings("unchecked")
@@ -307,29 +334,61 @@ public class formchamconghangngay extends javax.swing.JPanel {
     }//GEN-LAST:event_myTextField2ActionPerformed
 
     private void button2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button2ActionPerformed
-        checkInTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/YYYY");
-        myTextField1.setText(checkInTime.format(formatter));
-        
-        
-        // insert
-        dtochamcong cc = new dtochamcong();
-        cc.setManhanvien(manv);
-        cc.setThangchamcong(checkInTime.getMonthValue());
-        cc.setNamchamcong(checkInTime.getYear());
-        String workMode = combobox1.getSelectedItem().toString();
-        cc = buscc.get(cc);
-        
-        dtochitietchamcong ctcc = new dtochitietchamcong();
-        
-        ctcc.setMachamcong(cc.getMachamcong());
-        ctcc.setGiobatdau(Timestamp.valueOf(checkInTime));
-        ctcc.setLoaichamcong(workMode);
-        System.out.println(cc);
-        
-        // update chamcong
-        
-        //
+        if(myTextField1.getText().isEmpty()){
+            checkInTime = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/YYYY");
+            
+            String formattedTime = checkInTime.format(formatter);
+            
+            LocalTime[] startTimes = {
+                LocalTime.of(5, 50),
+                LocalTime.of(12, 50),
+                LocalTime.of(17, 50),
+                LocalTime.of(23, 00)
+            };
+            LocalTime[] endTimes = {
+                LocalTime.of(6, 0),
+                LocalTime.of(13, 0),
+                LocalTime.of(18, 0),
+                LocalTime.of(23, 50)
+            };
+            
+            LocalTime currentTime = checkInTime.toLocalTime();
+            
+            boolean isValidTime = false;
+            for (int i = 0; i < startTimes.length; i++) {
+                if (!currentTime.isBefore(startTimes[i]) && !currentTime.isAfter(endTimes[i])) {
+                    isValidTime = true;
+                    break;
+                }
+            }
+            if (!isValidTime) {
+                JOptionPane.showMessageDialog(null, "Check-in không hợp lệ! Vui lòng check-in trong các khoảng thời gian quy định.");
+                return;
+            }
+            myTextField1.setText(checkInTime.format(formatter));
+            // insert
+            dtochamcong cc = new dtochamcong();
+            cc.setManhanvien(manv);
+            cc.setThangchamcong(checkInTime.getMonthValue());
+            cc.setNamchamcong(checkInTime.getYear());
+            String workMode = combobox1.getSelectedItem().toString();
+            cc = buscc.get(cc);
+
+            dtochitietchamcong ctcc = new dtochitietchamcong();
+
+            ctcc.setMachamcong(cc.getMachamcong());
+            ctcc.setGiobatdau(Timestamp.valueOf(checkInTime));
+            ctcc.setLoaichamcong(workMode);
+            ctcc.setNgaychamcong(Date.from(checkInTime.atZone(ZoneId.systemDefault()).toInstant()));
+            ctcc.setSogiolam(0);
+            ctcc.setTennhanvien(manv);
+
+            busctcc.create(ctcc);
+        }
+        else{
+            JOptionPane.showMessageDialog(this,"Bạn đã thực hiện check-in ở lần trước đó!");
+        }
     }//GEN-LAST:event_button2ActionPerformed
 
     private void button3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button3ActionPerformed
@@ -348,26 +407,17 @@ public class formchamconghangngay extends javax.swing.JPanel {
             cc.setNamchamcong(checkInTime.getYear());
             
             cc = buscc.get(cc);
-            dtochitietchamcong ctcc = new dtochitietchamcong();
-
-            ctcc.setMachamcong(cc.getMachamcong());
-            ctcc.setGiobatdau(Timestamp.valueOf(checkInTime));
-            ctcc.setGioketthuc(Timestamp.valueOf(checkOutTime));
-            ctcc.setLoaichamcong(workMode);
-            ctcc.setNgaychamcong(Date.from(checkInTime.atZone(ZoneId.systemDefault()).toInstant()));
-            ctcc.setSogiolam(Integer.parseInt(duration.toString()));
-            ctcc.setTennhanvien(manv);
-            busctcc.create(ctcc);
+            dtochitietchamcong ctcc = busctcc.getctccab(Date.from(checkInTime.atZone(ZoneId.systemDefault()).toInstant()), Timestamp.valueOf(checkInTime), Timestamp.valueOf(checkOutTime));
             
-            int time = (int) ((duration.toMinutes() - minutes)/60);
+            int time = ctcc.getSogiolam();
             if(workMode.equals("Bình thường")){
-                cc.setSogiolamviec(cc.getSongaylamviec() + time);
-                cc.setSongaylamviec(cc.getSongaylamviec() + 1);
-                
+                cc.setSogiolamviec(cc.getSogiolamviec() + time);
             }
             else{
                 cc.setSogiolamthem(cc.getSogiolamthem() + time);
-                cc.setSongaylamviec(cc.getSongaylamviec() + 1);
+            }
+            if(busctcc.getctccdathuchien(Date.from(checkInTime.atZone(ZoneId.systemDefault()).toInstant()), cc.getMachamcong()).size() < 2){
+                cc.setSongaylamviec(cc.getSongaylamviec()+1);
             }
             buscc.update(cc);
         } else {
@@ -377,16 +427,67 @@ public class formchamconghangngay extends javax.swing.JPanel {
     }//GEN-LAST:event_button3ActionPerformed
 
     private void button5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button5ActionPerformed
-         if (checkInTime == null) {
-        JOptionPane.showMessageDialog(this, "Vui lòng thực hiện Check In trước!", 
+        if (myTextField1.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng thực hiện Check In trước!", 
             "Lỗi", JOptionPane.ERROR_MESSAGE);
-        return; // Dừng lại và không cho phép Check Out
-    }
+            return; // Dừng lại và không cho phép Check Out
+        }
     
-    // Nếu đã Check In, lưu thời gian Check Out
-    checkOutTime = LocalDateTime.now();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/YYYY");
-    myTextField2.setText(checkOutTime.format(formatter));
+        if(myTextField2.getText().isEmpty()){
+            checkOutTime = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/YYYY");
+            
+            String formattedTime = checkOutTime.format(formatter);
+            
+            LocalTime[] startTimes = {
+                LocalTime.of(5, 50),
+                LocalTime.of(12, 50),
+                LocalTime.of(17, 50),
+                LocalTime.of(0, 00)
+            };
+            LocalTime[] endTimes = {
+                LocalTime.of(6, 0),
+                LocalTime.of(13, 0),
+                LocalTime.of(18, 0),
+                LocalTime.of(2, 50)
+            };
+            
+            LocalTime currentTime = checkOutTime.toLocalTime();
+            
+            boolean isValidTime = false;
+            for (int i = 0; i < startTimes.length; i++) {
+                if (!currentTime.isBefore(startTimes[i]) && !currentTime.isAfter(endTimes[i])) {
+                    isValidTime = true;
+                    break;
+                }
+            }
+            if (!isValidTime) {
+                JOptionPane.showMessageDialog(null, "Check-out không hợp lệ! Vui lòng check-out trong các khoảng thời gian quy định.");
+                return;
+            }
+            Duration duration = Duration.between(checkInTime, checkOutTime);
+            long hours = duration.toHours();
+            if(hours < 2){
+                JOptionPane.showMessageDialog(null, "Vui lòng làm đủ thời gian của 1 ca làm việc!");
+                return;
+            }
+            myTextField2.setText(checkOutTime.format(formatter));
+            // insert
+            dtochamcong cc = new dtochamcong();
+            cc.setManhanvien(manv);
+            cc.setThangchamcong(checkInTime.getMonthValue());
+            cc.setNamchamcong(checkInTime.getYear());
+            
+            cc = buscc.get(cc);
+            Date day = new Date();
+            dtochitietchamcong ctcc = busctcc.getctcc(day, cc.getMachamcong());
+            ctcc.setGioketthuc(Timestamp.valueOf(checkOutTime));
+            ctcc.setSogiolam((int) hours);
+            busctcc.update(ctcc);
+        }
+        else{
+            JOptionPane.showMessageDialog(this,"Bạn đã thực hiện check-out ở lần trước đó!");
+        }
     }//GEN-LAST:event_button5ActionPerformed
 
     private void maNVTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maNVTextFieldActionPerformed
