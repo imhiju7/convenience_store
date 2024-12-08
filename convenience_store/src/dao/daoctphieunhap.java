@@ -20,6 +20,7 @@ import java.util.Date;
  */
 public class daoctphieunhap {
     public daoctphieunhap() {
+        
     }
     
     public ArrayList<dtoctphieunhap> getlist() {
@@ -58,18 +59,19 @@ public class daoctphieunhap {
     public ArrayList<dtoctphieunhap> needToFillList(int maNCC) {
         ArrayList<dtoctphieunhap> list = new ArrayList<>();
         java.sql.Connection con = connect.connection();
-        String sql = "SELECT ctpn.*" +
-                        "FROM chitietphieunhap ctpn" +
-                        "JOIN sanpham sp ON ctpn.maSanPham = sp.maSanPham" +
-                        "JOIN nhacungcap ncc ON sp.maNhaCungCap = ncc.maNhaCungCap" +
-                        "JOIN (" +
-                        "    SELECT maSanPham, SUM(soLuongTonKho) AS totalSoLuongTonKho" +
-                        "    FROM chitietphieunhap" +
-                        "    GROUP BY maSanPham" +
-                        ") AS totalStock ON ctpn.maSanPham = totalStock.maSanPham" +
-                        "WHERE ncc.maNhaCungCap = ?" +
-                        "  AND totalSoLuongTonKho < 10" +
-                        "  AND sp.isHidden = 0;";
+        String sql = "SELECT " +
+                        "    ctpn.* " +
+                        "FROM " +
+                        "    chitietphieunhap AS ctpn" +
+                        "JOIN " +
+                        "    sanpham AS sp " +
+                        "ON " +
+                        "    ctpn.maSanPham = sp.maSanPham" +
+                        "WHERE " +
+                        "    ctpn.isHidden = 0 " +
+                        "    AND sp.isHidden = 0 " +
+                        "    AND ctpn.soLuong < 10"
+                        + "and sp.maNhaCungCap = ?;";
         try {
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, maNCC);
@@ -104,17 +106,19 @@ public class daoctphieunhap {
     public ArrayList<dtoctphieunhap> needToFillList() {
         ArrayList<dtoctphieunhap> list = new ArrayList<>();
         java.sql.Connection con = connect.connection();
-        String sql = "SELECT ctpn.* " +
-             "FROM chitietphieunhap ctpn " +
-             "JOIN sanpham sp ON ctpn.maSanPham = sp.maSanPham " +
-             "JOIN nhacungcap ncc ON sp.maNhaCungCap = ncc.maNhaCungCap " +
-             "JOIN ( " +
-             "    SELECT maSanPham, SUM(soLuongTonKho) AS totalSoLuongTonKho " +
-             "    FROM chitietphieunhap " +
-             "    GROUP BY maSanPham " +
-             ") AS totalStock ON ctpn.maSanPham = totalStock.maSanPham " +
-             "WHERE totalSoLuongTonKho < 10 " +
-             "  AND sp.isHidden = 0;";
+        String sql = "SELECT " +
+                    "    ctpn.* " +
+                    "FROM " +
+                    "    chitietphieunhap AS ctpn " +
+                    "JOIN " +
+                    "    sanpham AS sp " +
+                    "ON " +
+                    "    ctpn.maSanPham = sp.maSanPham " +
+                    "WHERE " +
+                    "    ctpn.isHidden = 0 " +
+                    "    AND sp.isHidden = 0 " +
+                    "    AND ctpn.soLuong < 10;";
+
         try {
             PreparedStatement pst = con.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
@@ -205,6 +209,41 @@ public class daoctphieunhap {
             }
         }
     }
+    public static void updateSLtonkho() {
+        Connection con = connect.connection();
+        String sql = 
+                    "SELECT " +
+                    "    ctpn.* " +
+                    "FROM " +
+                    "    chitietphieunhap AS ctpn" +
+                    "JOIN " +
+                    "    sanpham AS sp " +
+                    "ON " +
+                    "    ctpn.maSanPham = sp.maSanPham" +
+                    "WHERE " +
+                    "    ctpn.isHidden = 0 " +
+                    "    AND sp.isHidden = 0 " +
+                    "    AND ctpn.soLuong < 10;" +
+                    "" +
+                
+                    "UPDATE sanpham sp" +
+                    "JOIN (" +
+                    "    SELECT maSanPham, SUM(soLuongTonKho) AS totalSoLuongTonKho" +
+                    "    FROM chitietphieunhap" +
+                    "    WHERE isHidden = 0" +
+                    "    GROUP BY maSanPham" +
+                    ") ctpn ON sp.maSanPham = ctpn.maSanPham" +
+                    "SET sp.soLuong = ctpn.totalSoLuongTonKho" +
+                    "WHERE sp.isHidden = 0;";
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.executeUpdate();
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daoctphieunhap.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
         public int updatectphieunhap(dtoctphieunhap ctpn){
         Connection con = connect.connection();
         String sql = "UPDATE chitietphieunhap set maPhieuNhap= ?,maSanPham = ? ,soLuong= ?, giaNhap= ?, ngayHetHan = ?, ishidden=?,ghiChu = ?,soLuongTonKho = ?,giaBan = ? WHERE maCTPhieuNhap= ?";
@@ -216,7 +255,7 @@ public class daoctphieunhap {
             pst.setInt(2, ctpn.getMaSanPham());
             pst.setInt(3, ctpn.getSoLuong());
             pst.setDouble(4, ctpn.getGiaNhap());
-            pst.setTimestamp(5, new java.sql.Timestamp (ctpn.getNgayhethan().getTime()));
+            pst.setDate(5, (java.sql.Date) ctpn.getNgayhethan());
             pst.setInt(6,ctpn.getIshidden());
             pst.setString(7, ctpn.getGhichu());
             pst.setInt(8, ctpn.getSoluongtonkho());

@@ -258,11 +258,17 @@ public class formphieunhap extends javax.swing.JPanel {
     panel.add(scrollPane, BorderLayout.CENTER);
 
     // Populate the table with data
-    busctpn.needToFillList();
+        busctpn.needToFillList();
+    if(busctpn.dsctpn == null ){
+        for(dtosanpham sp : bussp.needToFillList()){
+            additionalTable.addRow(sp.toAdditionalTableRow());
+        }
+    }
+
     for (dtoctphieunhap cc : busctpn.dsctpn) {
         additionalTable.addRow(cc.toAdditionalTableRow());
     }
-
+    
     return panel;
 }
 
@@ -693,6 +699,7 @@ public class formphieunhap extends javax.swing.JPanel {
             for(dtoctphieunhap ct : nhapHangList){
                 busctpn.create(ct);
             }
+            busctphieunhap.updateSLtonkho();
             JOptionPane.showMessageDialog(null, "Nhập hàng thành công");
             reset();
         });

@@ -1,5 +1,6 @@
 package gui.main;
 
+import bus.busctphieunhap;
 import bus.busnhanvien;
 
 
@@ -63,7 +64,7 @@ public class Guimain extends javax.swing.JFrame {
         bg.setLayout(layout);
         
         busnhanvien busnv = new busnhanvien();
-    
+        busctphieunhap.updateSLtonkho();
         int macv = busnv.getmachucvu(manv);
         
         menu = new Menu();

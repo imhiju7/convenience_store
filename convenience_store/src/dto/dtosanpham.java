@@ -139,5 +139,7 @@ public class dtosanpham {
     public String toString() {
         return "dtosanpham{" + "maPhanLoai=" + maPhanLoai + ", maSanPham=" + maSanPham + ", tenSanPham=" + tenSanPham + ", giaBan=" + giaBan + ", soLuong=" + soLuong + ", ngayThem=" + ngayThem + ", img=" + img + ", ishidden=" + ishidden + ", maNCC=" + maNCC + ", hanSD=" + hanSD + ", giaNhap=" + giaNhap + '}';
     }
-    
+    public Object[] toAdditionalTableRow() {
+        return new Object[]{maNCC, maSanPham , tenSanPham, "", soLuong};
+    }
 }
