@@ -725,32 +725,32 @@ public class formchucvu extends javax.swing.JPanel {
         JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin phân quyền cho chức vụ có mã " + maChucVu);
         return;
     }
-
+     
     // Tạo Option cho ModalDialog
     Option option = ModalDialog.createOption();
     option.getLayoutOption().setSize(-1, 1f).setLocation(Location.TRAILING, Location.TOP);
 
     // Tạo form phân quyền
-    SimpleInputPermissionForm permissionForm = new SimpleInputPermissionForm();
+        SimpleInputPermissionForm permissionForm = new SimpleInputPermissionForm();
+         for (int i = 0; i < permissionForm.cboChucVu.getItemCount(); i++) {
+            dtochucvu chucVu = permissionForm.cboChucVu.getItemAt(i);
+            if (chucVu.getMachucvu() == maChucVu) {
+                permissionForm.cboChucVu.setSelectedItem(chucVu);
+                break;
+            }
+        }
 
-    if (maChucVu == 1) { // Giả sử mã '1' là admin
-        // Đánh dấu tất cả các checkbox
+
         for (int i = 0; i < permissionForm.pnlChucNang.getComponentCount(); i++) {
             JCheckBox chk = (JCheckBox) permissionForm.pnlChucNang.getComponent(i);
-            chk.setSelected(true);
-        }
-    } else {
-        // Đánh dấu các checkbox dựa trên dữ liệu từ permissions
-        for (dtophanquyen permission : permissions) {
-            for (int i = 0; i < permissionForm.pnlChucNang.getComponentCount(); i++) {
-                JCheckBox chk = (JCheckBox) permissionForm.pnlChucNang.getComponent(i);
-                int maChucNang = (int) chk.getClientProperty("maChucNang");
+            int maChucNang = (int) chk.getClientProperty("maChucNang");
+            for (dtophanquyen permission : permissions) {
                 if (maChucNang == permission.getMaChucNang()) {
                     chk.setSelected(true);
                 }
             }
         }
-    }
+
 
     // Hiển thị modal với form
     ModalDialog.showModal(this, new SimpleModalBorder(
@@ -761,7 +761,7 @@ public class formchucvu extends javax.swing.JPanel {
                     if (result == JOptionPane.YES_OPTION) {
                         try {
                             // Lưu thay đổi
-                            permissionForm.savePermissions();
+                            permissionForm.updatePermission(maChucVu);
                             JOptionPane.showMessageDialog(null, "Cập nhật thông tin phân quyền thành công!");
                             loadPhanQuyenDataToTable(); // Tải lại bảng dữ liệu
                         } catch (Exception e) {
