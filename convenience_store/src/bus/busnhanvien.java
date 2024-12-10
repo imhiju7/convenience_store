@@ -37,7 +37,16 @@ public class busnhanvien {
         daonv = new daonhanvien();
         return daonv.gettennvbymanv(manv);
     }
-
+    
+    public String gettennvbymanv2(int manv){
+        daonv = new daonhanvien();
+        return daonv.gettennvbymanv2(manv);
+    }
+    
+    public int getMaNhanVienByTenNV(String ten){
+        return new daonhanvien().getMaNhanVienByTenNV(ten);
+    }
+    
     public void list() throws SQLException{
         daonv = new daonhanvien();
         list_nv = daonv.list();

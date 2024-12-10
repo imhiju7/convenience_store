@@ -116,6 +116,56 @@ public class daohopdong {
         return list;
     }
     
+    
+    public ArrayList<dtohopdong> getlistByMaHopDong(int mahopdong){
+        ArrayList<dtohopdong> list = new ArrayList<>();
+        try (java.sql.Connection con = connect.connection()) {
+            String sql = "select * from hopdonglaodong where isDelete=0 and mahopdong=?";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, mahopdong);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                int mahd = rs.getInt("mahopdong");
+                String tungay = rs.getDate("tungay")+"";
+                String denngay = rs.getDate("denngay")+"";
+                double luongcb = rs.getFloat("luongcoban");
+                int manv = rs.getInt("maNhanVien");
+                int isDelete = rs.getInt("isDelete");
+                dtohopdong hd = new dtohopdong(mahd, tungay, denngay, luongcb, manv, isDelete);
+                list.add(hd);
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public ArrayList<dtohopdong> getlistByMaNhanVien(int maNV){
+        ArrayList<dtohopdong> list = new ArrayList<>();
+        try (java.sql.Connection con = connect.connection()) {
+            String sql = "select * from hopdonglaodong where isDelete=0 and maNhanVien=?";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, maNV);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                int mahd = rs.getInt("mahopdong");
+                String tungay = rs.getDate("tungay")+"";
+                String denngay = rs.getDate("denngay")+"";
+                double luongcb = rs.getFloat("luongcoban");
+                int manv = rs.getInt("maNhanVien");
+                int isDelete = rs.getInt("isDelete");
+                dtohopdong hd = new dtohopdong(mahd, tungay, denngay, luongcb, manv, isDelete);
+                list.add(hd);
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    
     public int getMaxMaHopDong() {
         int maxMaHopDong = 0;
         try (java.sql.Connection con = connect.connection()) {

@@ -38,6 +38,7 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.Calendar;
 import com.toedter.calendar.JDateChooser;
+import dao.daonhanvien;
 import dto.dtonhanvien;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -87,7 +88,7 @@ public class formhopdong extends javax.swing.JPanel {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
 
         // create table model
-        columns = new Object[]{"Mã HĐ", "Từ ngày", "Đến ngày", "Lương cơ bản", "Mã nhân viên"};
+        columns = new Object[]{"Mã HĐ", "Từ ngày", "Đến ngày", "Lương cơ bản", "Mã nhân viên", "Họ tên"};
         model = setDataTable(columns, bushd.getlist());
 
         // create table and assign to generalTable
@@ -105,9 +106,7 @@ public class formhopdong extends javax.swing.JPanel {
         });
 
         // style
-        generalTable.putClientProperty(FlatClientProperties.STYLE, "" +
-                "arc:20;" +
-                "background:$Table.background;");
+        
         generalTable.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
                 "height:30;" +
                 "hoverBackground:null;" +
@@ -149,7 +148,7 @@ public class formhopdong extends javax.swing.JPanel {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
 
         // Create table model
-        columns = new Object[]{"Mã HD", "Từ ngày", "Đến ngày", "Lương cơ bản", "Mã nhân viên"};
+        columns = new Object[]{"Mã HD", "Từ ngày", "Đến ngày", "Lương cơ bản", "Mã nhân viên", "Họ tên"};
         model = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -210,7 +209,7 @@ public class formhopdong extends javax.swing.JPanel {
         //JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[]10[fill,230]10[]push[]10[]10[]", "[]"));
         JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[]10[fill,100]10[]push[]10[]10[]", "[]"));
         // Tạo JComboBox cho các tùy chọn tìm kiếm
-        String[] searchOptions = {"Mã hợp đồng", "Mã nhân viên"};
+        String[] searchOptions = {"Mã hợp đồng", "Mã nhân viên", "Họ tên"};
         JComboBox<String> cmbSearchOptions = new JComboBox<>(searchOptions);
         
         // Tạo các thành phần bên trái
@@ -222,15 +221,30 @@ public class formhopdong extends javax.swing.JPanel {
             @Override
             public void keyReleased(KeyEvent e) {
                 if("Mã hợp đồng".equals(cmbSearchOptions.getSelectedItem()+"")){
-                    model.setRowCount(0);
-                    model = setDataTable(columns, bushd.getlistConditon("mahopdong",txtSearch.getText()));
-                    generalTable.setModel(model);
+                    if(isPositiveInteger(txtSearch.getText())){
+                        model.setRowCount(0);
+                        int mahd = Integer.parseInt(txtSearch.getText());
+                        model = setDataTable(columns, bushd.getlistByMaHopDong(mahd));
+                        generalTable.setModel(model);
+                    }
                 }
                 
                 if("Mã nhân viên".equals(cmbSearchOptions.getSelectedItem()+"")){
-                    model.setRowCount(0);
-                    model = setDataTable(columns, bushd.getlistConditon("maNhanVien",txtSearch.getText()));
-                    generalTable.setModel(model);
+                    if(isPositiveInteger(txtSearch.getText())){
+                        model.setRowCount(0);
+                        int manv = Integer.parseInt(txtSearch.getText());
+                        model = setDataTable(columns, bushd.getlistByMaNhanVien(manv));
+                        generalTable.setModel(model);
+                    }
+                }
+                
+                if("Họ tên".equals(cmbSearchOptions.getSelectedItem()+"")){
+                    if(!txtSearch.getText().equals("")){
+                        model.setRowCount(0);
+                        int manv = new busnhanvien().getMaNhanVienByTenNV(txtSearch.getText());
+                        model = setDataTable(columns, bushd.getlistByMaNhanVien(manv));
+                        generalTable.setModel(model);
+                    }
                 }
                 
                 if(txtSearch.getText().equals("")){
@@ -347,14 +361,33 @@ public class formhopdong extends javax.swing.JPanel {
     }
 
     
-   
+    private boolean isPositiveInteger(String input) {// Lấy giá trị nhập vào
+        try {
+            int value = Integer.parseInt(input); // Thử chuyển chuỗi thành số nguyên
+            return value > 0; // Kiểm tra xem có phải số nguyên dương hay không
+        } catch (NumberFormatException e) {
+            return false; // Không phải số nguyên
+    }
+}
     
     
-    public DefaultTableModel setDataTable(Object columns1 [], ArrayList<dtohopdong> arr){
+    /*public DefaultTableModel setDataTable(Object columns1 [], ArrayList<dtohopdong> arr){
         DefaultTableModel model1 = new DefaultTableModel(columns1, 0);
         for (dtohopdong hd : arr) {
             Object[] row = {
                 hd.getMaHopDong(),hd.getTuNgay(),hd.getDenNgay(),hd.getLuongCoBan(),hd.getMaNV()
+            };
+            model1.addRow(row); // Thêm hàng vào DefaultTableModel
+        }
+        return model1;
+    }*/
+    
+    public DefaultTableModel setDataTable(Object columns1 [], ArrayList<dtohopdong> arr){
+        DefaultTableModel model1 = new DefaultTableModel(columns1, 0);
+        for (dtohopdong hd : arr) {
+            String tenNV = new busnhanvien().gettennvbymanv2(hd.getMaNV());
+            Object[] row = {
+                hd.getMaHopDong(),hd.getTuNgay(),hd.getDenNgay(),hd.getLuongCoBan(),hd.getMaNV(),tenNV
             };
             model1.addRow(row); // Thêm hàng vào DefaultTableModel
         }

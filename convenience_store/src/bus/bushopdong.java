@@ -28,6 +28,14 @@ public class bushopdong {
         return new daohopdong().getlistConditon(columnName, conditonValue);
     }
     
+    public ArrayList<dtohopdong> getlistByMaHopDong(int maHopDong){
+        return new daohopdong().getlistByMaHopDong(maHopDong);
+    }
+    
+    public ArrayList<dtohopdong> getlistByMaNhanVien(int maNV){
+        return new daohopdong().getlistByMaNhanVien(maNV);
+    }
+    
     public int getMaxMaHopDong() {
         return new daohopdong().getMaxMaHopDong();
     }

@@ -312,6 +312,53 @@ public class daonhanvien {
         }
         return tennv;
     }
+    
+    public String gettennvbymanv2(int manv){
+        Connection con = connect.connection();
+        String sql = "SELECT * FROM nhanvien where maNhanVien = ?";
+        String tennv = "";
+        try{
+            PreparedStatement pst =  con.prepareStatement(sql);
+            pst.setInt(1, manv);
+        
+
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                tennv = rs.getString("tenNhanVien");
+            }
+        } catch (SQLException e) {
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daonhanvien.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return tennv;
+    }
+    
+    public int getMaNhanVienByTenNV(String ten){
+        Connection con = connect.connection();
+        String sql = "SELECT * FROM nhanvien where tenNhanVien = ?";
+        int ma = 0;
+        try{
+            PreparedStatement pst =  con.prepareStatement(sql);
+            pst.setString(1, ten);
+        
+
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                ma = rs.getInt("maNhanVien");
+            }
+        } catch (SQLException e) {
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(daonhanvien.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ma;
+    }
+    
     public String gettennvbyemail(String email){
         Connection con = connect.connection();
         String sql = "SELECT * FROM nhanvien where isDelete= 0 and email = ?";
@@ -457,7 +504,6 @@ public class daonhanvien {
         // daonhanvien bus = new daonhanvien();
         // for(dtonhanvien nv:bus.getlist()){
         //     System.out.print(nv);
-
         // }
     }
 
