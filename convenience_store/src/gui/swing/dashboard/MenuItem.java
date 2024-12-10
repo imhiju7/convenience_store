@@ -2,6 +2,7 @@ package gui.swing.dashboard;
 
 import gui.event.EventMenu;
 import gui.event.EventMenuSelected;
+import gui.main.Guimain;
 import gui.model.ModelMenu;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -41,7 +42,7 @@ public class MenuItem extends javax.swing.JPanel {
     public int getIndex() {
         return index;
     }
-
+    private String selectedMenuText;
     private float alpha;
     private ModelMenu menu;
     private boolean open;
@@ -70,16 +71,21 @@ public class MenuItem extends javax.swing.JPanel {
         add(firstItem);
         int subMenuIndex = -1;
         for (String st : menu.getSubMenu()) {
-            MenuButton item = new MenuButton(st);
-            item.setIndex(++subMenuIndex);
-            item.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent ae) {
-                    eventSelected.menuSelected(index, item.getIndex());
-                }
-            });
-            add(item);
+    MenuButton item = new MenuButton(st);
+    item.setIndex(++subMenuIndex);
+    item.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            // In tên submenu
+            if (eventSelected != null) {
+                eventSelected.menuSelected(st); // Gọi phương thức mới
+            }
+ 
+//            eventSelected.menuSelected(index, item.getIndex());
         }
+    });
+    add(item);
+}
     }
 
     @SuppressWarnings("unchecked")

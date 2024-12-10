@@ -23,6 +23,7 @@ import gui.form.frmlogin;
 import gui.form.formkhachhang;
 import gui.form.formluong;
 import gui.form.formnhacungcap;
+import gui.form.formphanloai;
 import gui.form.formtaikhoan;
 import gui.form.formthanhtoan;
 import gui.form.formthongkesp;
@@ -31,6 +32,7 @@ import gui.swing.dashboard.MenuItem;
 import gui.swing.dashboard.PopupMenu;
 import gui.swing.icon.GoogleMaterialDesignIcons;
 import gui.swing.icon.IconFontSwing;
+import helper.UnicodeUtils;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -57,12 +59,12 @@ public class Guimain extends javax.swing.JFrame {
     private MainForm main;
     private Animator animator;
     private dtonhanvien nv;
-    
+    private String submenuText;
     public Guimain(int manv) throws SQLException, ParseException {
         initComponents();
         init(manv);
     }
-
+    
     private void init(int manv) throws SQLException, ParseException {
         layout = new MigLayout("fill", "0[]0[100%, fill]0", "0[fill, top]0");
         bg.setLayout(layout);
@@ -81,205 +83,23 @@ public class Guimain extends javax.swing.JFrame {
         
         main = new MainForm();
         
-        menu.addEvent((int menuIndex, int subMenuIndex) -> {
-             if (subMenuIndex == -1) {
-            main.setVisible(true);
-        } else {
-//                 Danh mục Order
-                 if ((menuIndex==0)&&(subMenuIndex==0)) {
-                     try {
-                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                     try {
-                         main.showForm(new formmenu(manv));
-                     } catch (SQLException ex) {
-                         Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
-                     }
-                 }
-                 if ((menuIndex==0)&&(subMenuIndex==1)) {
-                     try {
-                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                     main.showForm(new formhoadon());
-                 }
-                
-//                 Danh mục Kho
-                if ((menuIndex==1)&&(subMenuIndex==0)) {
-                     try {
-                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                     try {
-                         main.showForm(new formsanpham());
-                     } catch (SQLException ex) {
-                         Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
-                     }
-                 }
-                if ((menuIndex==1)&&(subMenuIndex==1)) {
-                     try {
-                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                     main.showForm(new formnhacungcap());
-                 }
-                if ((menuIndex==1)&&(subMenuIndex==2)) {
-                     try {
-                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                     main.showForm(new formphieunhap(manv));
-                 }
-                
-//                 Danh mục Nhân viên
-                 if ((menuIndex==2)&&(subMenuIndex==0)) {
-                     try {
-                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                     try {
-                         main.showForm(new formnhanvien());
-                     } catch (SQLException ex) {
-                         Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
-                     }
-                 }
-                 if ((menuIndex==2)&&(subMenuIndex==1)) {
-                     try {
-                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                     try {
-                        main.showForm(new formtaikhoan());
-                    } catch (SQLException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                 }
-                 if ((menuIndex==2)&&(subMenuIndex==2)) {
-                     try {
-                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                     try {
-                         main.showForm(new formchucvu());
-                     } catch (SQLException ex) {
-                         Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
-                     } catch (ParseException ex) {
-                         Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
-                     }
-                 }
-  
-                 if ((menuIndex==2)&&(subMenuIndex==3)) {
-                     try {
-                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                     main.showForm(new formchamcong());
-                 }
-                 
-                  if ((menuIndex==2)&&(subMenuIndex==4)) {
-                     try {
-                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                     main.showForm(new formluong());
-                 }
-
-                  if ((menuIndex==2)&&(subMenuIndex==5)) {
-                     try {
-                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                     try {
-                         main.showForm(new formhopdong());
-                     } catch (SQLException ex) {
-                         Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
-                     }
-                 }
-  
-                // Danh mục Khách hàng
-                //Thông tin khách hàng
-                if ((menuIndex == 3) && (subMenuIndex == 0)) { // menuIndex=3: Khách hàng, subMenuIndex=0: danh sách khách hàng
-                    try {
-                        UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        main.showForm(new formkhachhang());
-                    } catch (Exception ex) { // Đổi từ SQLException thành Exception
-                        Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-                //Thông tin ưu đãi, khuyến mãi
-                if ((menuIndex == 3) && (subMenuIndex == 1)) { // menuIndex=3: Khách hàng, subMenuIndex=0: danh sách khách hàng
-                                   try {
-                                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-                                   } catch (Exception e) {
-                                       e.printStackTrace();
-                                   }
-                                   try {
-                                       main.showForm(new formuudaivakhuyenmai());
-                                   } catch (Exception ex) { // Đổi từ SQLException thành Exception
-                                       Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
-                                   }
-                               }
-//                 Danh mục Thống kê
-                  if ((menuIndex==4)&&(subMenuIndex==0)) {
-                     try {
-                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                     main.showForm(new formthongke());
-                 }
-                  if ((menuIndex==4)&&(subMenuIndex==1)) {
-                     try {
-                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                     try {
-                         main.showForm(new formthongkesp());
-                     } catch (SQLException ex) {
-                         Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
-                     }
-                 }
-//                 Danh mục Cài đặt
-					  if ((menuIndex==5)&&(subMenuIndex==0)) {
-                     try {
-                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                     main.showForm(new formchucnang());
-                 }
-                    if ((menuIndex==5)&&(subMenuIndex==2)) {
-                     try {
-                       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                     try {
-                         main.showForm(new formchamconghangngay(nv));
-                     } catch (SQLException ex) {
-                         Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
-                     }
-                 }
+        menu.addEvent(new EventMenuSelected() {
+    @Override
+    public void menuSelected(int menuIndex, int subMenuIndex) {
+        
     }
-        });
+
+    @Override
+    public void menuSelected(String submenuName) {
+        submenuText = UnicodeUtils.removeAccent(submenuName);
+        try {
+            navigateForm(submenuText);
+        } catch (SQLException ex) {
+            Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+}); 
+        
         menu.addEventShowPopup((Component com) -> {
             MenuItem item = (MenuItem) com;
             PopupMenu popup = new PopupMenu(Guimain.this, item.getIndex(), item.getEventSelected(), item.getMenu().getSubMenu());
@@ -334,7 +154,70 @@ public class Guimain extends javax.swing.JFrame {
         
         IconFontSwing.register(GoogleMaterialDesignIcons.getIconFont());
     }
+    public void navigateForm(String submenuName) throws SQLException {
+    try {
+        UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
 
+    switch (submenuName) {
+         case "Menu":
+        main.showForm(new formmenu(nv.getManhanvien()));
+        break;
+    case "Hoa don": // Thay "Hóa đơn" thành "Hoa don"
+        main.showForm(new formhoadon());
+        break;
+    case "San pham": // Thay "Sản phẩm" thành "San pham"
+        main.showForm(new formsanpham());
+        break;
+    case "Nha cung cap": // Thay "Nhà cung cấp" thành "Nha cung cap"
+        main.showForm(new formnhacungcap());
+        break;
+    case "Phieu nhap": // Thay "Phiếu nhập" thành "Phieu nhap"
+        main.showForm(new formphieunhap(nv.getManhanvien()));
+        break;
+    case "Thong tin nhan vien": // Thay "Thông tin nhân viên" thành "Thong tin nhan vien"
+        main.showForm(new formnhanvien());
+        break;
+    case "Tai khoan": // Thay "Tài khoản" thành "Tai khoan"
+        main.showForm(new formtaikhoan());
+        break;
+    case "Cham cong": // Thay "Chấm công" thành "Cham cong"
+        main.showForm(new formchamcong());
+        break;
+    case "Luong": // Thay "Lương" thành "Luong"
+        main.showForm(new formluong());
+        break;
+    case "Hop dong lao dong": // Thay "Hợp đồng lao động" thành "Hop dong lao dong"
+        main.showForm(new formhopdong());
+        break;
+    case "Thong tin khach hang": // Thay "Thông tin khách hàng" thành "Thong tin khach hang"
+        main.showForm(new formkhachhang());
+        break;
+    case "Uu dai & khuyen mai": // Thay "Ưu đãi & khuyến mãi" thành "Uu dai & khuyen mai"
+        main.showForm(new formuudaivakhuyenmai());
+        break;
+    case "Tong quan": // Thay "Tổng quan" thành "Tong quan"
+        main.showForm(new formthongke());
+        break;
+    case "Thong ke san pham": // Thay "Thống kê sản phẩm" thành "Thong ke san pham"
+        main.showForm(new formthongkesp());
+        break;
+    case "Chuc nang": // Thay "Chức năng" thành "Chuc nang"
+        main.showForm(new formchucnang());
+        break;
+    case "Phan loai": // Thay "Phân loại" thành "Phan loai"
+        main.showForm(new formphanloai());
+        break;
+    case "Cham cong hang ngay": // Thay "Chấm công hằng ngày" thành "Cham cong hang ngay"
+        main.showForm(new formchamconghangngay(nv));
+        break;
+    default:
+        System.out.println("Khong tim thay form cho submenu: " + submenuName);
+        break;
+    }
+}
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
