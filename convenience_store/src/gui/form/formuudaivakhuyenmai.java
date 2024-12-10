@@ -103,8 +103,7 @@ public class formuudaivakhuyenmai extends javax.swing.JPanel {
         });
 
         // style
-        generalTable.putClientProperty(FlatClientProperties.STYLE, ""
-                + "arc:20;"
+        generalTable.putClientProperty(FlatClientProperties.STYLE, ""               
                 + "background:$Table.background;");
         generalTable.getTableHeader().putClientProperty(FlatClientProperties.STYLE, ""
                 + "height:30;"
@@ -160,7 +159,7 @@ public class formuudaivakhuyenmai extends javax.swing.JPanel {
         });
 
         // style
-        generalTableKM.putClientProperty(FlatClientProperties.STYLE, "" + "arc:20;" + "background:$Table.background;");
+        generalTableKM.putClientProperty(FlatClientProperties.STYLE, "" + "" + "background:$Table.background;");
         generalTableKM.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" + "height:30;" + "hoverBackground:null;" + "pressedBackground:null;" + "separatorColor:$TableHeader.background;");
         generalTableKM.putClientProperty(FlatClientProperties.STYLE, "" + "rowHeight:30;" + "showHorizontalLines:true;" + "intercellSpacing:0,1;" + "cellFocusColor:$TableHeader.hoverBackground;" + "selectionBackground:$TableHeader.hoverBackground;" + "selectionInactiveBackground:$TableHeader.hoverBackground;" + "selectionForeground:$Table.foreground;");
         scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" + "trackArc:$ScrollBar.thumbArc;" + "trackInsets:3,3,3,3;" + "thumbInsets:3,3,3,3;" + "background:$Table.background;");

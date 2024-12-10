@@ -150,7 +150,7 @@ public class formchamcong extends javax.swing.JPanel {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
 
         // create table model
-        Object columns[] = new Object[]{"Mã nhân viên", "Tên nhân viên", "Tháng", "Năm", "Số ngày nghỉ", "Số ngày trễ", "Giờ làm thêm", "Tổng giờ làm", "Tổng ngày làm", "Chi tiết"};
+        Object columns[] = new Object[]{"Mã nhân viên", "Tên nhân viên", "Tháng", "Năm", "Giờ làm thêm", "Tổng giờ làm", "Tổng ngày làm", "Chi tiết"};
         DefaultTableModel model = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -334,12 +334,10 @@ public class formchamcong extends javax.swing.JPanel {
             return;
         }
         int count = buscc.countchamcong();
-        System.out.print("dem ma cham cong"+ count);
             busnv.getlist();
 
         for (dtonhanvien nhanvien : busnv.list_nv) {
-            dtochamcong cc = new dtochamcong(++count , nhanvien.getManhanvien(), 0, 0, 0, 0, 0, "", currMonth, currYear);
-            System.out.print("ma cham cong tu dong"+ count);
+            dtochamcong cc = new dtochamcong(++count , nhanvien.getManhanvien(), 0, 0, 0, "", currMonth, currYear);
             buscc.create(cc);
         }
         refreshGeneralTable((DefaultTableModel) generalTable.getModel());

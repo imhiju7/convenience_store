@@ -13,20 +13,15 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import bus.busphieunhap;
 import bus.busctphieunhap;
 import bus.busnhacungcap;
-import bus.busnhanvien;
 import bus.bussanpham;
-import dto.dtophieunhap;
 import dto.dtoctphieunhap;
 import dto.dtonhacungcap;
 import dto.dtophieunhap;
-import dto.dtonhanvien;
 import dto.dtosanpham;
-import gui.comp.Combobox;
 import gui.modal.ModalDialog;
 import gui.modal.component.SimpleModalBorder;
 import gui.modal.option.Location;
 import gui.modal.option.Option;
-import gui.simple.SimpleInputForms;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
@@ -36,28 +31,22 @@ import gui.table.TableHeaderAlignment;
 import java.awt.event.ActionEvent;
 
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.Year;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+
 import javax.swing.table.TableRowSorter;
-import org.apache.xmlbeans.impl.jam.JPackage;
 /**
  *
  * @author PHUONG ANH
@@ -69,7 +58,6 @@ public class formphieunhap extends javax.swing.JPanel {
     private bussanpham bussp = new bussanpham();
     private JButton btnDetail;
     private int manv, index = -1;
-    boolean activate = false;
     JTextField txtNCCid, txtSL, txtGiaNhap, txtGiaBan, txtSPid, txtTotal, txtLoiNhuan;
     JTextArea txtNote;
     JComboBox<String> cbNCCname;
@@ -77,7 +65,6 @@ public class formphieunhap extends javax.swing.JPanel {
     private ArrayList<dtoctphieunhap> nhapHangList= new ArrayList<>();
     AtomicBoolean dialogShown = new AtomicBoolean(false);
     DefaultTableModel modelNhapHang, additionalTable;
-    //private busnhanvien busnv = new busnhanvien();
     /**
      * Creates new form phieunhap
      */
@@ -170,8 +157,6 @@ public class formphieunhap extends javax.swing.JPanel {
     txtNote.setLineWrap(true);
     JScrollPane scroll = new JScrollPane(txtNote);
     
-    dtophieunhap pn = new dtophieunhap();
-
     midLeft.add(new JLabel("Chọn nhà cung cấp"));
     midLeft.add(txtNCCid, "split 2, gapy 5 0,wmin 50");  
     midLeft.add(cbNCCname, "growx, wrap");
@@ -191,6 +176,7 @@ public class formphieunhap extends javax.swing.JPanel {
                 }
                 String providerName = busncc.getById(Integer.parseInt(id)).getTenNhaCungCap(); 
                 cbNCCname.setSelectedItem(providerName);
+                reloadAdditionalTable(String.valueOf(id));
             }
         }
     });
@@ -201,8 +187,9 @@ public class formphieunhap extends javax.swing.JPanel {
             if(cbNCCname.getSelectedItem().equals("")) return;
             String selectedName = (String) cbNCCname.getSelectedItem();
             if (selectedName != null) {
-                int providerId = busncc.getByName(selectedName).getMaNhaCungCap(); // Replace with actual method to get ID
-                txtNCCid.setText(String.valueOf(providerId));
+                String providerId = String.valueOf(busncc.getByName(selectedName).getMaNhaCungCap()); // Replace with actual method to get ID
+                txtNCCid.setText(providerId);
+                reloadAdditionalTable(providerId);
             }
         }
     });
@@ -258,20 +245,36 @@ public class formphieunhap extends javax.swing.JPanel {
     panel.add(scrollPane, BorderLayout.CENTER);
 
     // Populate the table with data
+        for(dtosanpham sp : bussp.needToFillList()){
+            additionalTable.addRow(sp.toAdditionalTableRow());
+        }
     busctpn.needToFillList();
     for (dtoctphieunhap cc : busctpn.dsctpn) {
         additionalTable.addRow(cc.toAdditionalTableRow());
     }
-
+    
     return panel;
 }
 
-    private void reloadAdditionalTable(){
-        
+    private void reloadAdditionalTable(String maNCC){
         additionalTable.setRowCount(0);
-            busctpn.needToFillList();
-        for (dtoctphieunhap cc : busctpn.dsctpn) {
-            additionalTable.addRow(cc.toAdditionalTableRow());
+        if(maNCC==null){
+            for(dtosanpham sp : bussp.needToFillList()){
+                    additionalTable.addRow(sp.toAdditionalTableRow());
+            }
+                busctpn.needToFillList();
+            for (dtoctphieunhap cc : busctpn.dsctpn) {
+                additionalTable.addRow(cc.toAdditionalTableRow());
+            }
+        }
+        else{
+            for(dtosanpham sp : bussp.needToFillList(Integer.valueOf(maNCC))){
+                additionalTable.addRow(sp.toAdditionalTableRow());
+            }
+                busctpn.needToFillList(Integer.valueOf(maNCC));
+            for (dtoctphieunhap cc : busctpn.dsctpn) {
+                additionalTable.addRow(cc.toAdditionalTableRow());
+            }
         }
     }
     private Component nhapHangTable() {
@@ -300,7 +303,6 @@ public class formphieunhap extends javax.swing.JPanel {
                 return SwingConstants.CENTER;
             }
         });
-
 
         table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
                 "height:30;" +
@@ -693,8 +695,10 @@ public class formphieunhap extends javax.swing.JPanel {
             for(dtoctphieunhap ct : nhapHangList){
                 busctpn.create(ct);
             }
+            busctphieunhap.updateSLtonkho();
             JOptionPane.showMessageDialog(null, "Nhập hàng thành công");
-            reset();
+            reset();  
+            reloadGeneralTable();
         });
         
         JButton btnClear = new JButton("Clear all");
@@ -713,14 +717,14 @@ public class formphieunhap extends javax.swing.JPanel {
         txtNCCid.setText("");
         cbNCCname.setSelectedItem("");
         txtNote.setText("");
-        reloadAdditionalTable();
         nhapHangList = new ArrayList<>();
         reloadDataToNhapHangTable();
         txtTotal.setText("");
         txtNCCid.setEditable(true);
         cbNCCname.setEnabled(true);
+        reloadAdditionalTable(null);
     }
-    private Component createDetailTable() {
+    private Component createDetailTable(int maphieunhap) {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
 
         // Create table model
@@ -780,8 +784,8 @@ public class formphieunhap extends javax.swing.JPanel {
         // Add scrollPane to the panel
         panel.add(scrollPane, "growx"); // Adjust with growx to expand width
 
-        busctpn.getlist();
-                    int i = 1;
+        busctpn.getlist(maphieunhap);
+        int i = 1;
         for (dtoctphieunhap cc: busctpn.dsctpn){
 
             model.addRow(cc.toTableRow(i));
@@ -882,19 +886,8 @@ public class formphieunhap extends javax.swing.JPanel {
         JButton btnClear = new JButton("Reload");
         btnClear.addActionListener(e -> {
             txtSearch.setText("");
-            // Clear the row sorter to display all rows
-            generalTable.setRowSorter(null);
-            DefaultTableModel model = (DefaultTableModel) generalTable.getModel();
-            model.setRowCount(0); // Clear existing rows
+            reloadGeneralTable();
             
-            // Refresh the data source
-            buspn.getlist(); 
-            // Reload the data into the table
-            for (dtophieunhap pn : buspn.dspn) {
-                model.addRow(pn.toTableRow());
-            }
-            // Notify table model of data changes
-            model.fireTableDataChanged();
         });
 
         panel.add(txtSearch, "split 2");
@@ -906,43 +899,23 @@ public class formphieunhap extends javax.swing.JPanel {
         panel.putClientProperty(FlatClientProperties.STYLE, "background:null;");
         return panel;
     }
-
-
-    
-    private void searching(JTextField txtSearch, JComboBox cbmonth, JComboBox cbyear) {
-        String searchText = txtSearch.getText().trim();
-        String selectedMonth = (String) cbmonth.getSelectedItem();
-        String selectedYear = (String) cbyear.getSelectedItem();
-        if (searchText.isEmpty() && selectedMonth.equals("Tháng") && selectedYear.equals("Năm")) {
-            JOptionPane.showMessageDialog(this,
-                    "Vui lòng nhập/chọn thông tin tìm kiếm",
-                    "Thông báo",
-                    JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        TableRowSorter sorter = new TableRowSorter<>(generalTable.getModel());
-        generalTable.setRowSorter(sorter);
-        java.util.List<RowFilter<Object, Object>> filters = new ArrayList<>();
-        if(!searchText.isEmpty()){
-            if(searchText.chars().allMatch(Character::isDigit))
-                filters.add(RowFilter.regexFilter(searchText, 0));
-            else filters.add(RowFilter.regexFilter("(?i)" + searchText, 1));
-        } 
-        if(!selectedMonth.equals("Tháng")){
-            filters.add(RowFilter.regexFilter(selectedMonth.substring(selectedMonth.length() - 1), 2));
-        }
-        if(!selectedYear.equals("Năm")){
-            filters.add(RowFilter.regexFilter(selectedYear.substring(selectedYear.length() - 1), 3));
-        }
-        if (!filters.isEmpty()) {
-            sorter.setRowFilter(RowFilter.andFilter(filters));
-        }
-        if(generalTable.getRowCount() == 0)
-            JOptionPane.showMessageDialog(null, "Không có dữ liệu ");
+    public void reloadGeneralTable(){
+        generalTable.setRowSorter(null);
+            DefaultTableModel model = (DefaultTableModel) generalTable.getModel();
+        model.setRowCount(0); // Clear existing rows
+            
+            // Refresh the data source
+            buspn.getlist(); 
+            // Reload the data into the table
+            for (dtophieunhap pn : buspn.dspn) {
+                model.addRow(pn.toTableRow());
+            }
     }
+
     
     private void searching(JTextField txtSearch) {
         String searchText = txtSearch.getText().trim();
+
         if (searchText.isEmpty()) {
             JOptionPane.showMessageDialog(this,
                     "Vui lòng nhập/chọn thông tin tìm kiếm",
@@ -950,24 +923,29 @@ public class formphieunhap extends javax.swing.JPanel {
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
-        TableRowSorter sorter = new TableRowSorter<>(generalTable.getModel());
+
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(generalTable.getModel());
         generalTable.setRowSorter(sorter);
-        java.util.List<RowFilter<Object, Object>> filters = new ArrayList<>();
 
-        if(searchText.chars().allMatch(Character::isDigit))
-            filters.add(RowFilter.regexFilter(searchText, 0));
-        else filters.add(RowFilter.regexFilter("(?i)" + searchText, 1));
-
-        if (!filters.isEmpty()) {
-            sorter.setRowFilter(RowFilter.andFilter(filters));
+        RowFilter<TableModel, Object> filter;
+        if (searchText.chars().allMatch(Character::isDigit)) {
+            java.util.List<RowFilter<TableModel, Object>> filters = new ArrayList<>();
+            filters.add(RowFilter.regexFilter("(?i)" + searchText, 2,0)); // Case-insensitive search in column 2
+            filter = RowFilter.andFilter(filters);
+        } else {
+            java.util.List<RowFilter<TableModel, Object>> filters = new ArrayList<>();
+            filters.add(RowFilter.regexFilter("(?i)" + searchText, 2,4)); // Case-insensitive search in column 2
+            filter = RowFilter.andFilter(filters);
         }
+        sorter.setRowFilter(filter);
+
         java.util.List<RowSorter.SortKey> sortKeys = new ArrayList<>();
-        sortKeys.add(new RowSorter.SortKey(3, SortOrder.DESCENDING)); // Year column, assuming column index 3
-        sortKeys.add(new RowSorter.SortKey(2, SortOrder.DESCENDING)); // Month column, assuming column index 2
+        sortKeys.add(new RowSorter.SortKey(1, SortOrder.DESCENDING));
         sorter.setSortKeys(sortKeys);
-        
-        if(generalTable.getRowCount() == 0)
-            JOptionPane.showMessageDialog(null, "Không có dữ liệu ");
+
+        if (generalTable.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "Không có dữ liệu");
+        }
     }
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {
@@ -1048,7 +1026,7 @@ public class formphieunhap extends javax.swing.JPanel {
         panel.add(scroll, "height 50,grow,pushy");
         txtNote.setText(String.valueOf(pn.getGhiChu()));
 
-        panel.add(createDetailTable());
+        panel.add(createDetailTable(pn.getMaPhieuNhap()));
         return panel;
     }
     
@@ -1061,6 +1039,7 @@ public class formphieunhap extends javax.swing.JPanel {
 
                 // Add the formphieunhap panel to the frame
                 formphieunhap panel = new formphieunhap(2);
+
                 frame.add(panel);
 
                 // Set frame size and make it visible

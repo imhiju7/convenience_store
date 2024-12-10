@@ -31,6 +31,10 @@ public class bushopdong {
     public int getMaxMaHopDong() {
         return new daohopdong().getMaxMaHopDong();
     }
+     public dtohopdong gethdnhanvien(int manv) {
+        return new daohopdong().gethopdongnhanvien(manv);
+    }
+    
     
     
     public ArrayList<String> getListMaNV(){

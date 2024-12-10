@@ -22,14 +22,13 @@ public class dtosanpham {
     private String img;
     private int ishidden;
     private int maNCC;
-    private String hanSD;
     private double giaNhap;
 
     
     public dtosanpham(){
     }
     
-     public dtosanpham(int maPhanLoai, int maSanPham, String tenSanPham, double giaBan, int soLuong, Date ngayThem, String img, int ishidden, int maNCC, String hanSD, double giaNhap) {
+     public dtosanpham(int maPhanLoai, int maSanPham, String tenSanPham, double giaBan, int soLuong, Date ngayThem, String img, int ishidden, int maNCC, double giaNhap) {
         this.maPhanLoai = maPhanLoai;
         this.maSanPham = maSanPham;
         this.tenSanPham = tenSanPham;
@@ -39,7 +38,6 @@ public class dtosanpham {
         this.img = img;
         this.ishidden = ishidden;
         this.maNCC = maNCC;
-        this.hanSD = hanSD;
         this.giaNhap = giaNhap;
     }
 
@@ -118,14 +116,6 @@ public class dtosanpham {
     public void setMaNCC(int maNCC) {
         this.maNCC = maNCC;
     }
-
-    public String getHanSD() {
-        return hanSD;
-    }
-
-    public void setHanSD(String hanSD) {
-        this.hanSD = hanSD;
-    }
     
     public double getGiaNhap() {
         return giaNhap;
@@ -137,7 +127,9 @@ public class dtosanpham {
 
     @Override
     public String toString() {
-        return "dtosanpham{" + "maPhanLoai=" + maPhanLoai + ", maSanPham=" + maSanPham + ", tenSanPham=" + tenSanPham + ", giaBan=" + giaBan + ", soLuong=" + soLuong + ", ngayThem=" + ngayThem + ", img=" + img + ", ishidden=" + ishidden + ", maNCC=" + maNCC + ", hanSD=" + hanSD + ", giaNhap=" + giaNhap + '}';
+        return "dtosanpham{" + "maPhanLoai=" + maPhanLoai + ", maSanPham=" + maSanPham + ", tenSanPham=" + tenSanPham + ", giaBan=" + giaBan + ", soLuong=" + soLuong + ", ngayThem=" + ngayThem + ", img=" + img + ", ishidden=" + ishidden + ", maNCC=" + maNCC + ", giaNhap=" + giaNhap + '}';
     }
-    
+    public Object[] toAdditionalTableRow() {
+        return new Object[]{maNCC, maSanPham , tenSanPham, "", soLuong};
+    }
 }

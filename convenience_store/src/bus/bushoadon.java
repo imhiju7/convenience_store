@@ -25,9 +25,8 @@ public class bushoadon {
         daoHD.add(HD);
     }
     
-    public dtohoadon gethdgannhat() {
-       int count = dshd.size();
-       return dshd.get(count - 1);
+    public int maxID() {
+       return daoHD.maxID();
     }
     public dtohoadon get(int mahoadon){
         for(dtohoadon hd: dshd){
@@ -40,14 +39,14 @@ public class bushoadon {
     public double getTongDoanhThu(){
         return daoHD.getTongDoanhThu();
     } 
-    public int addhdnokmkh(dtohoadon i){
-        return daoHD.addhdnokhkm(i);
+    public void addhdnokmkh(dtohoadon i){
+        daoHD.addhdnokhkm(i);
     }
-    public int addhdnokm(dtohoadon i){
-        return daoHD.addhdnokm(i);
+    public void addhdnokm(dtohoadon i){
+       daoHD.addhdnokm(i);
     }
-    public int addhdnokh(dtohoadon i){
-        return daoHD.addhdnokh(i);
+    public void addhdnokh(dtohoadon i){
+        daoHD.addhdnokh(i);
     }
 }
 

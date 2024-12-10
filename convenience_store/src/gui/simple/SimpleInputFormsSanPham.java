@@ -163,7 +163,6 @@ public class SimpleInputFormsSanPham extends JPanel {
         sp.setNgayThem(null);
         sp.setImg(nameImg);
         sp.setSoLuong(0);
-        sp.setHanSD("0");
         sp.setIshidden(0);
         Integer maNCC = categoryMaNCC.get(comboxBoxNCC.getSelectedItem());
         sp.setMaNCC(maNCC);

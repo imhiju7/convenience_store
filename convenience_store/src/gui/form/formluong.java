@@ -4,6 +4,9 @@
  */
 package gui.form;
 
+import bus.buschamcong;
+import bus.busnhanvien;
+import bus.bushopdong;
 import bus.busluong;
 import gui.comp.*;
 import com.formdev.flatlaf.FlatClientProperties;
@@ -12,7 +15,10 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import dao.daoluong;
+import dto.dtochamcong;
+import dto.dtohopdong;
 import dto.dtoluong;
+import dto.dtonhanvien;
 import gui.modal.ModalDialog;
 import gui.modal.component.SimpleModalBorder;
 import gui.modal.option.Location;
@@ -27,7 +33,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.Year;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,10 +76,13 @@ public class formluong extends JPanel {
     private JTable table; // Biến instance cho table
     private DefaultTableModel model; // Biến instance cho model
     private busluong busLuong;
-
+    private buschamcong buscc = new buschamcong();
+    private busnhanvien busnv = new busnhanvien();
+    private bushopdong  bushd = new bushopdong();
     public formluong() {
         init();
         busLuong = new busluong();
+        
     }
 
     private void init() {
@@ -203,7 +215,7 @@ public class formluong extends JPanel {
         // Thêm sự kiện cho các nút (Thêm, Sửa, Xóa, Xuất Excel)
         cmdCreate.addActionListener(e -> {
             try {
-                showLuongModal();
+                create();
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this, "Lỗi khi mở form thêm lương: " + ex.getMessage());
             }
@@ -258,8 +270,6 @@ public class formluong extends JPanel {
                 luong.getThuclanh(),
                 luong.getLuongLamThem(),
                 luong.getNgayNhanLuong(),
-                luong.getMaChamCong(), // Mã chấm công (ẩn)
-                luong.getMaNhanVien() // Mã nhân viên (ẩn)
             };
             model.addRow(row);
         }
@@ -327,8 +337,9 @@ public class formluong extends JPanel {
         sorter.setRowFilter(combinedFilter);
     }
 
-    private void showLuongModal() throws SQLException {
+    private void create() throws SQLException {
         // Tạo đối tượng Option cho ModalDialog (tuỳ chỉnh thêm nếu cần)
+        /*
         Option option = ModalDialog.createOption();
         option.getLayoutOption().setSize(-1, 1f).setLocation(Location.TRAILING, Location.TOP);
 
@@ -359,8 +370,46 @@ public class formluong extends JPanel {
                          controller.close();
                      }
                  }), option);
-    }
+            */
+        Date day = new Date();
 
+        if(busLuong.isExist(day)){
+            JOptionPane.showMessageDialog(null, "Bảng lương tháng này đã tồn tại");
+            return;
+        }
+        int count = busLuong.countLuong();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(day);
+        int currMonth = calendar.get(Calendar.MONTH)+1;
+        int currYear = calendar.get(Calendar.YEAR);
+        ArrayList<dtochamcong> listcc = buscc.getlistthang(currMonth, currYear);
+
+        for (dtochamcong cc : listcc) {
+            int manv = cc.getManhanvien();
+            dtonhanvien nv = new dtonhanvien();
+            nv.setManhanvien(manv);
+            nv = busnv.getnv(nv);
+            int mahd = nv.getMahopdong();
+            dtohopdong hd = bushd.gethdnhanvien(manv);
+            double luongcoban = hd.getLuongCoBan();
+            double phuCap = 0;
+            double luongThucTe = cc.getSogiolamviec()*luongcoban;
+            double luongLamThem = cc.getSogiolamthem()*luongcoban;
+            double luongThuong = 0;
+            double khoanBH = 0;
+            double khoanTru = 0;
+            double khoanThue = busLuong.calculateThue(luongThucTe, phuCap, luongThuong, khoanBH, luongLamThem, khoanTru);
+            double thucLanh = busLuong.calculateLuong(luongThucTe, phuCap, luongThuong, khoanBH, luongLamThem, khoanTru) - khoanThue;
+            dtoluong luong = new dtoluong(count++,cc.getMachamcong(), phuCap,luongThucTe,luongThuong,
+                    khoanBH,khoanThue,thucLanh,luongLamThem, 
+                    day, manv);
+            busLuong.addLuong(luong);
+        }
+        
+        
+        JOptionPane.showMessageDialog(null, "Bảng lương mới cập nhật thành công");
+        loadDataToTable();
+    }
     private void showEditLuongModal(int maLuong) throws SQLException {
         // Lấy thông tin lương từ cơ sở dữ liệu dựa trên maLuong
         dtoluong luong = busLuong.getLuongById(maLuong); // Giả sử có phương thức getLuongById() trong busLuong

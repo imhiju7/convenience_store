@@ -27,20 +27,33 @@ public class buschamcong {
         return dao.getListYears();
     }
     public ArrayList<dtochamcong> getAllChamCong() {
-    return dao.getAllChamCong();
-}
+        return dao.getAllChamCong();
+    }
 
 
     public void create(dtochamcong cc){
         dao.create(cc);
     }
-    public dtochamcong get(int machamcong){
+    public void update(dtochamcong cc){
+        dao.update(cc);
+    }
+    public dtochamcong get(dtochamcong chamcong){
         for (dtochamcong cc: dscc){
-            if(cc.getMachamcong() == (machamcong)){
+            if(cc.getThangchamcong() == chamcong.getThangchamcong() && cc.getNamchamcong() == chamcong.getNamchamcong()){
                 return cc;
             }
         }
         return null;
+    }
+    public ArrayList<dtochamcong> getlistthang(int currMonth,int currYear){
+        ArrayList<dtochamcong> list = dao.getlist();
+        ArrayList<dtochamcong> listluong = new ArrayList<>();
+        for (dtochamcong cc: list){
+            if(cc.getThangchamcong() == currMonth && cc.getNamchamcong() == currYear){
+                listluong.add(cc);
+            }
+        }
+        return listluong;
     }
     
     public int countchamcong(){

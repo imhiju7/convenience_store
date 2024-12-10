@@ -149,10 +149,9 @@ public class daophanquyen {
     public List<dtophanquyen> getByChucVu(int maChucVu, int maPhanQuyen) throws SQLException {
         Connection con = connect.connection();
         List<dtophanquyen> phanQuyenList = new ArrayList<>();
-        String sql = "SELECT * FROM PhanQuyen WHERE maChucVu = ? AND maPhanQuyen = ?";
+        String sql = "SELECT * FROM PhanQuyen WHERE maChucVu = ?";
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setInt(1, maChucVu);
-            stmt.setInt(2, maPhanQuyen);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     dtophanquyen phanQuyen = new dtophanquyen(

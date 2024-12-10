@@ -1,5 +1,6 @@
 package gui.form;
 
+import bus.busctphieunhap;
 import bus.bussanpham;
 import gui.comp.SPCard;
 import com.formdev.flatlaf.FlatClientProperties;
@@ -72,7 +73,7 @@ public class formmenu extends Form {
     private ArrayList<dtoctphieunhap> list_CTPN;
     private int manv;
     private ArrayList<dtosanpham> list_SP_has_money = new ArrayList<>();
-    
+    private busctphieunhap busctpn = new busctphieunhap();
     public formmenu(int ma_nv) throws SQLException {
         init();
         formInit();
@@ -213,7 +214,6 @@ public class formmenu extends Form {
                 addField(leftPanel, leftGbc, "Ngày thêm:", 4, String.valueOf(e.getNgayThem()));
                 addField(leftPanel, leftGbc, "Phân loại", 5, tenpl);
                 addField(leftPanel, leftGbc, "Nhà cung cấp", 7, tenncc);
-                addField(leftPanel, leftGbc, "Hạn sử dụng", 8, String.valueOf(e.getHanSD() + " Ngày"));
                 
                 // Panel phải chứa ảnh và nút chọn ảnh
                 rightPanel = new JPanel(new GridBagLayout());

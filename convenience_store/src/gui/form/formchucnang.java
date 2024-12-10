@@ -147,7 +147,7 @@ public class formchucnang extends JPanel {
         JTextField txtSearch = new JTextField();
         txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Tìm kiếm...");
         txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON,
-                new FlatSVGIcon("source/image/icon/search.svg", 0.4f));
+                new FlatSVGIcon("/source/image/icon/search.svg", 0.4f));
 
         // Nút chức năng
         JButton cmdCreate = new JButton("Thêm");

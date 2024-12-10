@@ -26,9 +26,11 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import net.miginfocom.swing.MigLayout;
 
@@ -204,10 +206,6 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
 
         txtPass.setSuffixIcon(resizeIcon(new ImageIcon(getClass().getResource("/source/image/icon/eye.png")), 20, 20));
         login.add(txtPass, "w 60%"); 
-        JCheckBox btnReme = new JCheckBox("Stay Logged In");
-        btnReme.setFocusable(false);
-        btnReme.setBackground(new Color(255,255,255));
-        login.add(btnReme, " wrap, w 60%"); 
 
         Button cmd = new Button();
         cmd.setBackground(new Color(7, 164, 121));
@@ -290,7 +288,9 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         }
         int manv = bustk.getmanhanvien(tendangnhap);
         try {
+            closeCurrentFrame();
             new Guimain(manv).setVisible(true);
+            
         } catch (ParseException ex) {
             Logger.getLogger(PanelLoginAndRegister.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -334,7 +334,18 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
 
         add(fgpwd, "card2");
     }// </editor-fold>//GEN-END:initComponents
+private void closeCurrentFrame() {
+        // Lấy frame chứa panel hiện tại
+        JFrame currentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
 
+        // Kiểm tra nếu là frame
+        if (currentFrame != null && currentFrame instanceof JFrame) {
+            // Đóng frame
+            currentFrame.dispose();
+        } else {
+            System.out.println("Không tìm thấy frame chứa panel.");
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel fgpwd;
     private javax.swing.JPanel login;

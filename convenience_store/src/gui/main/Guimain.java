@@ -1,5 +1,6 @@
 package gui.main;
 
+import bus.busctphieunhap;
 import bus.busnhanvien;
 import dto.dtonhanvien;
 
@@ -70,6 +71,7 @@ public class Guimain extends javax.swing.JFrame {
         bg.setLayout(layout);
         
         busnhanvien busnv = new busnhanvien();
+        busctphieunhap.updateSLtonkho();
         ArrayList<dtonhanvien> nvlist = busnv.getNhanVienList();
         for (dtonhanvien i : nvlist) {
             if (i.getManhanvien()==manv) {
@@ -83,12 +85,12 @@ public class Guimain extends javax.swing.JFrame {
         
         main = new MainForm();
         
+        
         menu.addEvent(new EventMenuSelected() {
     @Override
     public void menuSelected(int menuIndex, int subMenuIndex) {
         
     }
-
     @Override
     public void menuSelected(String submenuName) {
         submenuText = UnicodeUtils.removeAccent(submenuName);
@@ -96,7 +98,10 @@ public class Guimain extends javax.swing.JFrame {
             navigateForm(submenuText);
         } catch (SQLException ex) {
             Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(Guimain.class.getName()).log(Level.SEVERE, null, ex);
         }
+                  
     }
 }); 
         
@@ -154,7 +159,7 @@ public class Guimain extends javax.swing.JFrame {
         
         IconFontSwing.register(GoogleMaterialDesignIcons.getIconFont());
     }
-    public void navigateForm(String submenuName) throws SQLException {
+    public void navigateForm(String submenuName) throws SQLException, ParseException {
     try {
         UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
     } catch (Exception e) {
@@ -186,6 +191,9 @@ public class Guimain extends javax.swing.JFrame {
     case "Cham cong": // Thay "Chấm công" thành "Cham cong"
         main.showForm(new formchamcong());
         break;
+    case "Chuc vu": // Thay "Chấm công hằng ngày" thành "Cham cong hang ngay"
+        main.showForm(new formchucvu());
+        break;
     case "Luong": // Thay "Lương" thành "Luong"
         main.showForm(new formluong());
         break;
@@ -211,7 +219,7 @@ public class Guimain extends javax.swing.JFrame {
         main.showForm(new formphanloai());
         break;
     case "Cham cong hang ngay": // Thay "Chấm công hằng ngày" thành "Cham cong hang ngay"
-        main.showForm(new formchamconghangngay(nv));
+        main.showForm(new formchamconghangngay(nv.getManhanvien()));
         break;
     default:
         System.out.println("Khong tim thay form cho submenu: " + submenuName);

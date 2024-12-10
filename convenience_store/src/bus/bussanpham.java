@@ -35,7 +35,17 @@ public class bussanpham {
         list_sp = daoSanPham.listByNhaCungCapID(maNCC);
         return list_sp;
     }
-
+    public ArrayList<dtosanpham> needToFillList (int maNCC){
+        daoSanPham = new daosanpham();
+        list_sp = daoSanPham.needToFillList(maNCC);
+        return list_sp;
+    }
+    public ArrayList<dtosanpham> needToFillList (){
+        daoSanPham = new daosanpham();
+        list_sp = daoSanPham.needToFillList();
+        return list_sp;
+    }
+    
     public ArrayList<dtosanpham> getList(){
         return list_sp;
     }

@@ -53,6 +53,35 @@ public class daocthoadon {
         }
         return list;
     }
+    public ArrayList<dtocthoadon> getlistbyhoadon(int mahd) {
+        ArrayList<dtocthoadon> list = new ArrayList<>();
+        Connection con = connect.connection(); 
+        String sql = "SELECT * FROM chitiethoadon WHERE maHoaDon = ?";
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, mahd);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                dtocthoadon detail = new dtocthoadon(
+                    rs.getInt("maSanPham"),
+                    rs.getInt("maHoaDon"),
+                    rs.getInt("soLuong"),
+                    rs.getDouble("donGia"),
+                    rs.getInt("maCTHoaDon")
+                );
+                list.add(detail);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(daocthoadon.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                Logger.getLogger(daocthoadon.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+        return list;
+    }
 
     // Method to add a new chitietchamcong record
     public void add(dtocthoadon detail) {

@@ -7,6 +7,7 @@ package bus;
 import dao.daochitietchamcong;
 import dto.dtochitietchamcong;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -30,7 +31,18 @@ public class buschitietchamcong {
     public void create (dtochitietchamcong detail) {
         daoChiTietChamCong.create(detail);
     }
-    
+    public boolean update(dtochitietchamcong ctcc){
+        return daoChiTietChamCong.updatectchamcong(ctcc);
+    }
+    public dtochitietchamcong getctcc(Date day,int macc){
+        return daoChiTietChamCong.getctchamcong(day, macc);
+    }
+    public ArrayList<dtochitietchamcong> getctccdathuchien(Date day,int macc){
+        return daoChiTietChamCong.getctchamcongdathuchien(day, macc);
+    }
+    public dtochitietchamcong getctccab(Date day,java.sql.Timestamp gioBatDau,java.sql.Timestamp gioKetThuc){
+        return daoChiTietChamCong.getctccab(day, gioBatDau, gioKetThuc);
+    }
     public static void main(String[] args) {
         // Create an instance of the BUS class
         buschitietchamcong bus = new buschitietchamcong();

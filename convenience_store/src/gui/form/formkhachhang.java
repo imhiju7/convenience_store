@@ -6,6 +6,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import dto.dtokhachhang;
 import bus.buskhachhang;
+import bus.busuudai;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +19,9 @@ public class formkhachhang extends JPanel {
     private JButton btnThem, btnSua, btnHuy;
     private JTextField txtTimKiem;
     private JComboBox<String> cbTimKiem;
+    // Khai báo JComboBox bên ngoài để có thể truy cập trong các phương thức khác
+    private JComboBox<String> comboBoxMaUuDai;
+    private busuudai busUuDai = new busuudai();
 
     public formkhachhang() {
         initUI();
@@ -59,9 +63,11 @@ public class formkhachhang extends JPanel {
         txtDiemTichLuy.setEnabled(false);  // Không chỉnh sửa điểm tích lũy
         panelDetails.add(txtDiemTichLuy);
         panelDetails.add(new JLabel("Mã ưu đãi:"));
-        txtMaUuDai = new JTextField();
-        txtMaUuDai.setEnabled(false);  
-        panelDetails.add(txtMaUuDai);
+        comboBoxMaUuDai = new JComboBox<>();
+        comboBoxMaUuDai.setPreferredSize(new Dimension(200, 25));
+        panelDetails.add(comboBoxMaUuDai);
+        // Tải danh sách mã ưu đãi
+        loadDanhSachMaUuDai();
 
         // Panel for buttons and search
         JPanel panelTop = createTopPanel();
@@ -76,13 +82,25 @@ public class formkhachhang extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
         add(panelDetails, BorderLayout.SOUTH);
     }
+        private void loadDanhSachMaUuDai() {
+            // Lấy danh sách mã ưu đãi từ BUS
+            ArrayList<String> danhSachMaUuDai = busUuDai.layDanhSachMaUuDai();
+
+            // Thêm "0" làm giá trị mặc định
+            comboBoxMaUuDai.addItem("1");
+
+            // Thêm các mã ưu đãi vào JComboBox
+            for (String maUuDai : danhSachMaUuDai) {
+                comboBoxMaUuDai.addItem(maUuDai);
+            }
+        }
 
     private JPanel createTopPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
 
         // Search field and combo box
         txtTimKiem = new JTextField(20);
-        cbTimKiem = new JComboBox<>(new String[]{"Mã KH", "Tên KH", "SĐT"});
+        cbTimKiem = new JComboBox<>(new String[]{"Mã khách hàng", "Tên khách hàng", "Số điện thoại"});
         JButton btnTimKiem = new JButton("Tìm kiếm");
         btnTimKiem.addActionListener(e -> onSearchCustomer());
 
@@ -187,7 +205,7 @@ public class formkhachhang extends JPanel {
             txtSDT.setText(model.getValueAt(selectedRow, 1).toString());
             txtTenKH.setText(model.getValueAt(selectedRow, 2).toString());
             txtDiemTichLuy.setText(model.getValueAt(selectedRow, 3).toString());
-            txtMaUuDai.setText(model.getValueAt(selectedRow, 4).toString());
+            comboBoxMaUuDai.setSelectedItem(model.getValueAt(selectedRow, 4).toString());
         }
     });
 
@@ -209,7 +227,7 @@ public class formkhachhang extends JPanel {
     String sdt = txtSDT.getText();
     String tenKH = txtTenKH.getText();
     String diemTichLuyStr = "0";
-    String maUuDaiStr = txtMaUuDai.getText();
+    String maUuDaiStr = comboBoxMaUuDai.getSelectedItem().toString();
         buskhachhang busKH = new buskhachhang();
 
     // Kiểm tra nếu các trường dữ liệu trống
@@ -269,7 +287,7 @@ private void onEditCustomer() throws SQLException {
         String sdt = txtSDT.getText();
         String tenKH = txtTenKH.getText();
         String diemTichLuyStr = txtDiemTichLuy.getText();
-        String maUuDaiStr = txtMaUuDai.getText();
+        String maUuDaiStr = comboBoxMaUuDai.getSelectedItem().toString();
         buskhachhang busKH = new buskhachhang();
 
         // Kiểm tra nếu các trường dữ liệu trống
@@ -362,7 +380,7 @@ private void clearForm() {
     txtSDT.setText("");
     txtTenKH.setText("");
     txtDiemTichLuy.setText("");
-    txtMaUuDai.setText("");
+    comboBoxMaUuDai.setSelectedItem("1");
     txtTimKiem.setText("");  // Reset ô tìm kiếm
     cbTimKiem.setSelectedIndex(0);  // Đặt lại combo box về giá trị mặc định (Mã KH)
     table.clearSelection();  // Xóa lựa chọn bảng
@@ -378,6 +396,6 @@ private void onReset() {
     private void enableEditing(boolean enable) {
         txtSDT.setEnabled(enable);
         txtTenKH.setEnabled(enable);
-        txtMaUuDai.setEnabled(enable);
+        comboBoxMaUuDai.setEnabled(enable);
     }
 }
