@@ -287,7 +287,7 @@ comboBoxYear.setSelectedIndex(-1);
    private void reloadData(int selectedYear) throws SQLException {
     // Cập nhật lại dữ liệu cho từng biểu đồ
 
-       createPieChart(selectedYear);
+    
     // Cập nhật dữ liệu cho các Pie Chart
     pieChart1.setDataset(createPieData(selectedYear, "doanhThu"));
     pieChart2.setDataset(createPieData(selectedYear, "chiPhi"));

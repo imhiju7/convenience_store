@@ -209,9 +209,9 @@ public class Guimain extends javax.swing.JFrame {
     case "Tong quan": // Thay "Tổng quan" thành "Tong quan"
         main.showForm(new formthongke());
         break;
-    case "Thong ke san pham": // Thay "Thống kê sản phẩm" thành "Thong ke san pham"
-        main.showForm(new formthongkesp());
-        break;
+//    case "Thong ke san pham": // Thay "Thống kê sản phẩm" thành "Thong ke san pham"
+//        main.showForm(new formthongkesp());
+//        break;
     case "Chuc nang": // Thay "Chức năng" thành "Chuc nang"
         main.showForm(new formchucnang());
         break;

@@ -106,7 +106,7 @@ public class formhopdong extends javax.swing.JPanel {
 
         // style
         generalTable.putClientProperty(FlatClientProperties.STYLE, "" +
-                "arc:20;" +
+                "" +
                 "background:$Table.background;");
         generalTable.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
                 "height:30;" +
@@ -175,7 +175,7 @@ public class formhopdong extends javax.swing.JPanel {
 
         // Style settings for generalTable
         table.putClientProperty(FlatClientProperties.STYLE, "" +
-                "arc:20;" +
+                "" +
                 "background:$Table.background;");
         table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
                 "height:30;" +
