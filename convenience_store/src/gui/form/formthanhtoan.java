@@ -168,8 +168,6 @@ public class formthanhtoan extends javax.swing.JFrame {
         });
 
         nameTextField.setToolTipText("");
-        nameTextField.setEnabled(false);
-        nameTextField.setFocusable(false);
         nameTextField.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         nameTextField.setHint("Tên khách hàng");
         nameTextField.addActionListener(new java.awt.event.ActionListener() {
@@ -190,7 +188,11 @@ public class formthanhtoan extends javax.swing.JFrame {
         newCustomerBtn.setBackground(new java.awt.Color(0, 204, 204));
         newCustomerBtn.setText("Tạo mới");
         newCustomerBtn.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-
+        newCustomerBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newCustomerBtnActionPerformed(evt);
+            }
+        });
 
         paymentTable.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         paymentTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -451,7 +453,7 @@ layout.setVerticalGroup(
                     g2d.setFont(new Font("Times New Roman",Font.PLAIN,9));
 //                    g2d.drawImage(s);
                     g2d.drawString("-------------------------------------------------------------", a, y);y+=yShift;
-                    g2d.drawString("            CỬA HÀNG TIỆN LỢI Mimi                           ", a, y);y+=yShift;
+                    g2d.drawString("            CỬA HÀNG TIỆN LỢI ABC                           ", a, y);y+=yShift;
                     g2d.drawString("       ĐỊA CHỈ: xxxxxxxxxxxxxxxxxx                          ", a, y);y+=yShift;
                     g2d.drawString("       SĐT: xxxxxxxxxxxxxxxxxx                              ", a, y);y+=yShift;
                     g2d.drawString("       Ngày mua: "+hd.getNgayMua()+"                         ", a, y);y+=yShift;
@@ -766,8 +768,21 @@ layout.setVerticalGroup(
     }// </editor-fold>//GEN-END:initComponents
 
     private void newCustomerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newCustomerBtnActionPerformed
-        // TODO add your handling code here:
-        
+        buskhachhang buskh = new buskhachhang();
+        String sdt = phoneTextField.getText();
+        String tenkh = nameTextField.getText();
+        dtokhachhang khmoi = new dtokhachhang(1,sdt,tenkh, 0, 1);
+        System.out.println(sdt);
+        System.out.println(tenkh);
+        if (sdt.isEmpty()||tenkh.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Nhập đầy đủ thông tin");
+        }
+        else {
+        boolean result = buskh.addKhachHang(khmoi);
+        if (result) {
+            JOptionPane.showMessageDialog(null, "Đã thêm khách hàng mới thành công");
+        }
+        }
     }//GEN-LAST:event_newCustomerBtnActionPerformed
 
     private void checkPhoneBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkPhoneBtnActionPerformed
@@ -779,6 +794,7 @@ layout.setVerticalGroup(
                 
                 kh = khachhang.getkhbyphone(phone);
                 hd.setMaKhachHang(kh.getMaKhachHang());
+                nameTextField.setText(kh.getTenKhachHang());
                 ud.setMaUuDai(kh.getMaUudai());
                 ud = uudai.getud(ud);
                 double tienud = (tongtien*ud.getTiLeGiam())/100;
@@ -922,6 +938,7 @@ layout.setVerticalGroup(
         } catch (PrinterException ex) {
             ex.printStackTrace();
         }
+        
         this.dispose();
     }//GEN-LAST:event_thanhToanBtnActionPerformed
      public static void main(String[] args) {

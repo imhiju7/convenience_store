@@ -516,6 +516,7 @@ public class formmenu extends Form {
         btnReset.addActionListener( e -> {
             txtSearch.setText("");
             comboMaPL.setSelectedIndex(0);
+            list_donhang.clear();
             formInit();
         });
         
@@ -752,7 +753,7 @@ public class formmenu extends Form {
                     formth.setSize(510, 750);
                     formth.setResizable(false);
                     formth.setLocationRelativeTo(null);
-                   
+                   list_donhang.clear();
                     formth.setVisible(true);
                     formth.toFront();
                     

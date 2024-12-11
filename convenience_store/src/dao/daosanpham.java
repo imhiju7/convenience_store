@@ -289,7 +289,7 @@ public class daosanpham {
     }
     
     public ArrayList<dtoctphieunhap> listCTPN(Integer mapn) throws SQLException {
-        String sql = "SELECT * FROM chitietphieunhap WHERE maPhieuNhap = ? AND ishidden = 0 AND ngayHetHan > NOW()";
+        String sql = "SELECT * FROM chitietphieunhap WHERE maPhieuNhap = ? AND ishidden = 0 AND ngayHetHan > NOW() AND soLuongTonKho > 0";
         Connection  con = connect.connection();
         PreparedStatement pst = con.prepareStatement(sql);
         pst.setInt(1, mapn);
