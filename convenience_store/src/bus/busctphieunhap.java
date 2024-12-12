@@ -18,8 +18,8 @@ public class busctphieunhap {
     public busctphieunhap() {
         getlist() ;
     }
-    public static void updateSLtonkho(){
-        daoctphieunhap.updateSLtonkho();
+    public static void updateEXP(){
+        daoctphieunhap.updateEXP();
     }
     public busctphieunhap(int maphieunhap) {
         getlist(maphieunhap) ;
