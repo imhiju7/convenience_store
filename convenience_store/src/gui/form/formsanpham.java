@@ -84,7 +84,8 @@ public class formsanpham extends Form {
     public formsanpham() throws SQLException {
         init();
         formInit();
-        
+        busctphieunhap.updateEXP();
+
     }
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {

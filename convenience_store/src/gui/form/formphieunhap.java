@@ -128,7 +128,6 @@ public class formphieunhap extends javax.swing.JPanel {
     return panel;
     }
 
-
     private JPanel createMidLeftPanel() {
         
     busnhacungcap busncc = new busnhacungcap();
@@ -347,12 +346,19 @@ public class formphieunhap extends javax.swing.JPanel {
     private void reloadDataToNhapHangTable(){
 
         modelNhapHang.setRowCount(0);
-        if (nhapHangList == null) return;
+        if (nhapHangList == null) {
+            txtTotal.setText("");
+            return;
+        }
+            
         int i = 1;
+        int total = 0;
         for (dtoctphieunhap cc: nhapHangList){
             modelNhapHang.addRow(cc.toTableRow(i));
+            total += cc.getGiaNhap()*cc.getSoLuong();
             i+=1;
         }
+        txtTotal.setText(String.valueOf(total));
         index = -1;
         
     }
@@ -361,10 +367,12 @@ public class formphieunhap extends javax.swing.JPanel {
 
         JButton btnAdd = new JButton("Thêm sản phẩm nhập");
         btnAdd.addActionListener(e -> {
-            if(txtNCCid.getText().isEmpty()){
-                JOptionPane.showMessageDialog(panel, "Mã Nhà cung cấp không thể bỏ trống", "Invalid ID", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
+            String text = txtNCCid.getText().trim();
+                if (text.equals("0") || text.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Mã nhà cung cấp không hợp lệ", "Invalid ID", JOptionPane.WARNING_MESSAGE);
+                    txtNCCid.requestFocus(); // Bring the focus back to the text field
+                    return ;
+                }
             showModal();
             }
         );
@@ -432,10 +440,7 @@ public class formphieunhap extends javax.swing.JPanel {
                 
                 if (action == SimpleModalBorder.YES_OPTION) {
                     
-                    if(txtSPid.getText().isEmpty() || txtGiaNhap.getText().isEmpty() || dateChooser.getDate() == null || txtLoiNhuan.getText().isEmpty()){
-                        JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin", "Cannot add", JOptionPane.WARNING_MESSAGE);
-                        return;
-                    }
+                    checkEmpty();
                     
                     double total = txtTotal.getText().isEmpty() ? 0 : doubleValueofTextField(txtTotal);
                         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -485,8 +490,7 @@ public class formphieunhap extends javax.swing.JPanel {
                 
                 if (action == SimpleModalBorder.YES_OPTION) {
                     
-                    if(txtSPid.getText().isEmpty() || txtGiaNhap.getText().isEmpty() || dateChooser.getDate() == null || txtLoiNhuan.getText().isEmpty()){
-                        JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin", "Cannot add", JOptionPane.WARNING_MESSAGE);
+                    if(checkEmpty()){
                         return;
                     }
                     
@@ -519,7 +523,6 @@ public class formphieunhap extends javax.swing.JPanel {
                             cbNCCname.setEnabled(false); // Works with new LookAndFeel settings
                         }
                 }
-                controller.close();
             }
         ),
         option
@@ -533,7 +536,7 @@ public class formphieunhap extends javax.swing.JPanel {
     }
     private Component SimpleInputForms() {
         JPanel panel = new JPanel();
-                JLabel imageDisplayLabel = new JLabel();
+        JLabel imageDisplayLabel = new JLabel();
         imageDisplayLabel.setPreferredSize(new Dimension(330, 350));
         panel.setLayout(new MigLayout("fillx,wrap,insets 5 35 5 35,width 400", "[fill]", ""));
         ArrayList<dtosanpham> products = bussp.listByNhaCungCapID(Integer.parseInt(txtNCCid.getText()));
@@ -565,7 +568,6 @@ public class formphieunhap extends javax.swing.JPanel {
                     Image scaledImg = curImg.getImage().getScaledInstance(330, 350, Image.SCALE_SMOOTH);
                     ImageIcon editImg = new ImageIcon(scaledImg);
                     imageDisplayLabel.setIcon(editImg);
-
                 }
                     return; // Stop further processing if product is found
                 }
@@ -586,6 +588,13 @@ public class formphieunhap extends javax.swing.JPanel {
             String selectedName = (String) txtSPname.getSelectedItem();
             if (selectedName != null && !selectedName.isEmpty()) {
                 txtSPid.setText(String.valueOf(bussp.getByName(selectedName).getMaSanPham()));
+                String imgPath = bussp.getById(intValueofTextField(txtSPid)).getImg();
+                if(!imgPath.isEmpty()){
+                    ImageIcon curImg = new ImageIcon(System.getProperty("user.dir") + "/src/source/image/sanpham/" + imgPath);
+                    Image scaledImg = curImg.getImage().getScaledInstance(330, 350, Image.SCALE_SMOOTH);
+                    ImageIcon editImg = new ImageIcon(scaledImg);
+                    imageDisplayLabel.setIcon(editImg);
+                }
             }
         });
 
@@ -608,33 +617,53 @@ public class formphieunhap extends javax.swing.JPanel {
         // Placeholder styling (use your placeholder library)
         txtSPid.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nhập mã SP");
 
-        // Input validation for txtSPid
         txtSPid.addKeyListener(new KeyAdapter() {
-            public void keyTyped(KeyEvent e) {
-                char c = e.getKeyChar();
-                if (!Character.isDigit(c)) {
-                    e.consume(); // Reject non-numeric characters
+        public void keyTyped(KeyEvent e) {
+            char c = e.getKeyChar();
+            if (!Character.isDigit(c)) {
+                e.consume(); // Reject non-numeric characters
+            } else {
+                // Check if the current input will result in a number <= 0
+                String currentText = txtSPid.getText();
+                String updatedText = currentText + c;
+                if (Integer.parseInt(updatedText) <= 0) {
+                    e.consume(); // Reject numbers <= 0
                 }
             }
-        });
+        }
+    });
 
-        // Input validation for txtGiaNhap and txtLoiNhuan
-        txtGiaNhap.addKeyListener(new KeyAdapter() {
-            public void keyTyped(KeyEvent e) {
-                char c = e.getKeyChar();
-                if (!Character.isDigit(c)) {
+    // Input validation for txtGiaNhap and txtLoiNhuan
+    txtGiaNhap.addKeyListener(new KeyAdapter() {
+        public void keyTyped(KeyEvent e) {
+            char c = e.getKeyChar();
+            if (!Character.isDigit(c)) {
+                e.consume();
+            } else {
+                String currentText = txtGiaNhap.getText();
+                String updatedText = currentText + c;
+                if (Integer.parseInt(updatedText) <= 0) {
                     e.consume();
                 }
             }
-        });
-        txtLoiNhuan.addKeyListener(new KeyAdapter() {
-            public void keyTyped(KeyEvent e) {
-                char c = e.getKeyChar();
-                if (!Character.isDigit(c)) {
+        }
+    });
+
+    txtLoiNhuan.addKeyListener(new KeyAdapter() {
+        public void keyTyped(KeyEvent e) {
+            char c = e.getKeyChar();
+            if (!Character.isDigit(c)) {
+                e.consume();
+            } else {
+                String currentText = txtLoiNhuan.getText();
+                String updatedText = currentText + c;
+                if (Integer.parseInt(updatedText) <= 0) {
                     e.consume();
                 }
             }
-        });
+        }
+    });
+
 
         // Prevent past dates in dateChooser
         dateChooser.getDateEditor().addPropertyChangeListener(evt -> {
@@ -699,9 +728,8 @@ public class formphieunhap extends javax.swing.JPanel {
     }
 
     private Component SimpleInputForms(dtoctphieunhap pn) {
+        
         JPanel panel = new JPanel();
-        JLabel imageDisplayLabel = new JLabel();
-        imageDisplayLabel.setPreferredSize(new Dimension(330, 350));
         panel.setLayout(new MigLayout("fillx,wrap,insets 5 35 5 35,width 400", "[fill]", ""));
 
         int id = pn.getMaSanPham();
@@ -712,12 +740,19 @@ public class formphieunhap extends javax.swing.JPanel {
         txtSPname.setText(pn.getTenSP(id));
         txtSPname.setEditable(false);
 
+        JLabel imageDisplayLabel = new JLabel();
+        imageDisplayLabel.setPreferredSize(new Dimension(330, 350));
+        String imgPath = bussp.getById(intValueofTextField(txtSPid)).getImg();
+        ImageIcon curImg = new ImageIcon(System.getProperty("user.dir") + "/src/source/image/sanpham/" + imgPath);
+        Image scaledImg = curImg.getImage().getScaledInstance(330, 350, Image.SCALE_SMOOTH);
+        ImageIcon editImg = new ImageIcon(scaledImg);
+        imageDisplayLabel.setIcon(editImg);
         
         JPanel p = quantity();
         p.setMaximumSize(new Dimension(100, 28));
-         dateChooser = new JDateChooser();
+        dateChooser = new JDateChooser();
         dateChooser.getDateEditor().getUiComponent().setEnabled(true); // Keeps it visually enabled
-        ((JTextField) dateChooser.getDateEditor().getUiComponent()).setText(String.valueOf(pn.getNgayhethan()));
+        dateChooser.setDate(pn.getNgayhethan());
         ((JTextField) dateChooser.getDateEditor().getUiComponent()).setEditable(false);
         dateChooser.setMaximumSize(new Dimension(180, 28));
         txtGiaNhap = new JTextField();
@@ -727,42 +762,63 @@ public class formphieunhap extends javax.swing.JPanel {
         txtLoiNhuan.setMaximumSize(new Dimension(100, 28));
         JComboBox<String> unit = new JComboBox<>(new String[]{"Đồng", "%"});
         unit.setMaximumSize(new Dimension(80, 28));
-         txtGiaBan = new JTextField();
-         txtGiaBan.setText(String.valueOf(pn.getGiaBan()));
+        txtGiaBan = new JTextField();
+        txtGiaBan.setText(String.valueOf(pn.getGiaBan()));
         txtGiaBan.setEditable(false);
         txtGiaBan.setMinimumSize(new Dimension(120, 28));
-
+        txtSL.setText(String.valueOf(pn.getSoLuong()));
         txtLoiNhuan.setText(String.valueOf(pn.getGiaBan() - pn.getGiaNhap()));
         // Placeholder styling (use your placeholder library)
         txtSPid.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nhập mã SP");
 
         // Input validation for txtSPid
+        
         txtSPid.addKeyListener(new KeyAdapter() {
-            public void keyTyped(KeyEvent e) {
-                char c = e.getKeyChar();
-                if (!Character.isDigit(c)) {
-                    e.consume(); // Reject non-numeric characters
+        public void keyTyped(KeyEvent e) {
+            char c = e.getKeyChar();
+            if (!Character.isDigit(c)) {
+                e.consume(); // Reject non-numeric characters
+            } else {
+                // Check if the current input will result in a number <= 0
+                String currentText = txtSPid.getText();
+                String updatedText = currentText + c;
+                if (Integer.parseInt(updatedText) <= 0) {
+                    e.consume(); // Reject numbers <= 0
                 }
             }
-        });
+        }
+    });
 
-        // Input validation for txtGiaNhap and txtLoiNhuan
-        txtGiaNhap.addKeyListener(new KeyAdapter() {
-            public void keyTyped(KeyEvent e) {
-                char c = e.getKeyChar();
-                if (!Character.isDigit(c)) {
+    // Input validation for txtGiaNhap and txtLoiNhuan
+    txtGiaNhap.addKeyListener(new KeyAdapter() {
+        public void keyTyped(KeyEvent e) {
+            char c = e.getKeyChar();
+            if (!Character.isDigit(c)) {
+                e.consume();
+            } else {
+                String currentText = txtGiaNhap.getText();
+                String updatedText = currentText + c;
+                if (Integer.parseInt(updatedText) <= 0) {
                     e.consume();
                 }
             }
-        });
-        txtLoiNhuan.addKeyListener(new KeyAdapter() {
-            public void keyTyped(KeyEvent e) {
-                char c = e.getKeyChar();
-                if (!Character.isDigit(c)) {
+        }
+    });
+
+    txtLoiNhuan.addKeyListener(new KeyAdapter() {
+        public void keyTyped(KeyEvent e) {
+            char c = e.getKeyChar();
+            if (!Character.isDigit(c)) {
+                e.consume();
+            } else {
+                String currentText = txtLoiNhuan.getText();
+                String updatedText = currentText + c;
+                if (Integer.parseInt(updatedText) <= 0) {
                     e.consume();
                 }
             }
-        });
+        }
+    });
 
         // Prevent past dates in dateChooser
         dateChooser.getDateEditor().addPropertyChangeListener(evt -> {
@@ -822,7 +878,6 @@ public class formphieunhap extends javax.swing.JPanel {
         txtGiaNhap.addKeyListener(recalculateGiaBan);
         txtLoiNhuan.addKeyListener(recalculateGiaBan);
 
-
         return panel;
     }
 
@@ -832,8 +887,16 @@ public class formphieunhap extends javax.swing.JPanel {
 
         txtSL = new JTextField("1");
         txtSL.setHorizontalAlignment(JTextField.CENTER);
+        txtSL.addKeyListener(new KeyAdapter() {
+        public void keyTyped(KeyEvent e) {
+            char c = e.getKeyChar();
+            if (!Character.isDigit(c)) {
+                e.consume();
+            }
+            }
+        });
 
-
+        
         JButton plusButton = new JButton("+");
         JButton minusButton = new JButton("-");
 
@@ -882,6 +945,35 @@ public class formphieunhap extends javax.swing.JPanel {
     return panel;
 }
 
+    private boolean checkEmpty(){
+        
+        String text = txtSPid.getText().trim();
+                if (text.equals("0") || text.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "ID sản phẩm không hợp lệ", "Invalid ID", JOptionPane.WARNING_MESSAGE);
+                    txtSPid.requestFocus(); // Bring the focus back to the text field
+                    return true;
+                }
+                
+        text = txtSL.getText().trim();
+                if (text.equals("0") || text.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Số lượng sản phẩm không hợp lệ", "Invalid Input", JOptionPane.WARNING_MESSAGE);
+                    txtSL.requestFocus(); // Bring the focus back to the text field
+                    return true;
+                }
+        text = txtGiaBan.getText().trim();
+                if (text.equals("0") || text.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Giá bán không hợp lệ", "Invalid Input", JOptionPane.WARNING_MESSAGE);
+                    txtGiaBan.requestFocus(); // Bring the focus back to the text field
+                    return true;
+                }
+        text = txtLoiNhuan.getText().trim();
+                if (text.equals("0") || text.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Lợi nhuận chưa có giá trị", "Invalid Input", JOptionPane.WARNING_MESSAGE);
+                    txtLoiNhuan.requestFocus(); // Bring the focus back to the text field
+                    return true;
+                }
+        return false;
+    }
     private Component createNhapHangHeader() {
         JPanel panel = new JPanel(new MigLayout("insets 5 0 5 20", "[grow,fill]push[][]")); 
         // create title
@@ -892,7 +984,7 @@ public class formphieunhap extends javax.swing.JPanel {
         JButton btnConfirm = new JButton("Xác nhận");
         btnConfirm.addActionListener(e -> {
             if(nhapHangList == null || txtNCCid.getText().isEmpty()){
-            JOptionPane.showMessageDialog(null, "Chưa đủ thông tin để tạo phiếu nhập");
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn nhà cung cấp và thêm sản phẩm nhập hàng để tạo phiếu nhập");
             return;
             }
             dtophieunhap pn = new dtophieunhap(buspn.maxID() + 1, Timestamp.valueOf(LocalDateTime.now().withNano((LocalDateTime.now().getNano() / 1_000_000) * 1_000_000)), doubleValueofTextField(txtTotal), intValueofTextField(txtNCCid), manv, String.valueOf(txtNote.getText()));

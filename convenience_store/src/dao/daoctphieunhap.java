@@ -273,6 +273,8 @@ public class daoctphieunhap {
         String sql = "UPDATE chitietphieunhap SET ishidden = 1 WHERE ngayHetHan < CURRENT_DATE;" ;
         try {
             PreparedStatement pst = con.prepareStatement(sql);
+            pst.executeUpdate();
+
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(daoctphieunhap.class.getName()).log(Level.SEVERE, null, ex);
