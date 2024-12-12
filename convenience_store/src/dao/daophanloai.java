@@ -155,6 +155,25 @@ public class daophanloai {
         }
         return count;
     }
+    public boolean checkTenPhanLoaiExists(String tenPhanLoai) throws SQLException {
+        Connection con = connect.connection();
+        String query = "SELECT COUNT(*) FROM phanloai WHERE tenPhanLoai = ?";
+
+        try (
+                 PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setString(1, tenPhanLoai);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0; // Nếu có kết quả thì tên phân loại đã tồn tại
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Lỗi khi kiểm tra tên phân loại", e);
+        }
+        return false;
+    }
 
     // Main method để kiểm tra
     public static void main(String[] args) {

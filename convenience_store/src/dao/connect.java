@@ -22,7 +22,7 @@ public class connect {
         // luu y cho Toan: 3307 con lai: 3306
         String username = "root";
 
-        String password = "142004"; // password tuy moi nguoi dat cho cai connect trong mysql
+        String password = "Tanle1298"; // password tuy moi nguoi dat cho cai connect trong mysql
 
         /*Hieu: ToilaHieuday7 */
         Connection con = null;

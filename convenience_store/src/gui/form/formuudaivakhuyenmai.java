@@ -184,7 +184,7 @@ public class formuudaivakhuyenmai extends javax.swing.JPanel {
         JTextField txtSearch = new JTextField();
         txtSearch.setPreferredSize(new Dimension(250, 28));
         txtSearch.setMaximumSize(new Dimension(260, 28));
-        txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("../../source/image/icon/search.png", 0.4f));
+        txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("source/image/icon/search.svg", 0.4f));
         txtSearch.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {

@@ -64,6 +64,11 @@ public class busnhacungcap {
         }
         return null; // Không tìm thấy nhà cung cấp với mã đó
     }
+    public boolean isNhaCungCapExists(String tenNhaCungCap, String SDT, String email) throws SQLException {
+        return daoNCC.isNhaCungCapExists(tenNhaCungCap, SDT, email);
+    }
+
+
     public static void main(String[] args) {
         // Tạo một instance của lớp BUS
         busnhacungcap bus = new busnhacungcap();

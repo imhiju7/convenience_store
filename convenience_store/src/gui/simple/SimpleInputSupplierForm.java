@@ -57,50 +57,57 @@ public class SimpleInputSupplierForm extends JPanel {
         });
     }
 
-   public void addNhaCungCap() {
-    try {
-        String tenNhaCungCap = txtTenNhaCungCap.getText().trim();
-        String SDT = txtSDT.getText().trim();
-        String email = txtEmail.getText().trim();
-        String diaChi = txtDiaChi.getText().trim();
+    public void addNhaCungCap() {
+        try {
+            String tenNhaCungCap = txtTenNhaCungCap.getText().trim();
+            String SDT = txtSDT.getText().trim();
+            String email = txtEmail.getText().trim();
+            String diaChi = txtDiaChi.getText().trim();
 
-        // Kiểm tra các trường thông tin có trống không
-        if (tenNhaCungCap.isEmpty() || SDT.isEmpty() || email.isEmpty() || diaChi.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin!");
-            return; // Dừng lại nếu thông tin chưa đầy đủ
+            // Kiểm tra các trường thông tin có trống không
+            if (tenNhaCungCap.isEmpty() || SDT.isEmpty() || email.isEmpty() || diaChi.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin!");
+                return;
+            }
+
+            // Kiểm tra định dạng số điện thoại (chỉ chứa 10 chữ số)
+            if (!SDT.matches("\\d{10}")) {
+                JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ! Vui lòng nhập đúng 10 chữ số.");
+                txtSDT.requestFocus();
+                return;
+            }
+
+            // Kiểm tra định dạng email
+            if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) {
+                JOptionPane.showMessageDialog(this, "Email không hợp lệ! Vui lòng nhập đúng định dạng (ví dụ: example@mail.com).");
+                txtEmail.requestFocus();
+                return;
+            }
+
+            // Kiểm tra xem nhà cung cấp đã tồn tại chưa
+            if (busNhaCungCap.isNhaCungCapExists(tenNhaCungCap, SDT, email)) {
+                JOptionPane.showMessageDialog(this, "Nhà cung cấp đã tồn tại (tên, số điện thoại hoặc email bị trùng)!");
+                return;
+            }
+
+            // Tạo đối tượng nhà cung cấp và thêm vào cơ sở dữ liệu
+            dtonhacungcap nhaCungCap = new dtonhacungcap(0, tenNhaCungCap, SDT, email, diaChi, 0); // Mã nhà cung cấp sẽ được tạo tự động
+            busNhaCungCap.add(nhaCungCap);
+
+            JOptionPane.showMessageDialog(this, "Nhà cung cấp đã được thêm thành công!");
+
+            // Xóa dữ liệu trên form sau khi thêm thành công
+            txtTenNhaCungCap.setText("");
+            txtSDT.setText("");
+            txtEmail.setText("");
+            txtDiaChi.setText("");
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi không xác định: " + e.getMessage());
+            e.printStackTrace();
         }
-
-        // Kiểm tra định dạng số điện thoại (chỉ chứa 10 chữ số)
-        if (!SDT.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ! Vui lòng nhập đúng 10 chữ số.");
-            txtSDT.requestFocus(); // Đặt lại con trỏ vào trường nhập SDT
-            return; // Dừng lại nếu số điện thoại không hợp lệ
-        }
-
-        // Kiểm tra định dạng email
-        if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) {
-            JOptionPane.showMessageDialog(this, "Email không hợp lệ! Vui lòng nhập đúng định dạng (ví dụ: example@mail.com).");
-            txtEmail.requestFocus(); // Đặt lại con trỏ vào trường nhập email
-            return; // Dừng lại nếu email không hợp lệ
-        }
-
-        // Tạo đối tượng nhà cung cấp và thêm vào cơ sở dữ liệu
-        dtonhacungcap nhaCungCap = new dtonhacungcap(0, tenNhaCungCap, SDT, email, diaChi, 0); // Mã nhà cung cấp sẽ được tạo tự động
-        busNhaCungCap.add(nhaCungCap);
-
-        JOptionPane.showMessageDialog(this, "Nhà cung cấp đã được thêm thành công!");
-
-        // Xóa dữ liệu trên form sau khi thêm thành công
-        txtTenNhaCungCap.setText("");
-        txtSDT.setText("");
-        txtEmail.setText("");
-        txtDiaChi.setText("");
-
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi không xác định: " + e.getMessage());
-        e.printStackTrace(); // In ra lỗi để kiểm tra
     }
-}
+
 
 
 

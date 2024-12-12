@@ -191,4 +191,19 @@ public class daochucnang {
         }
         return list;
     }
+      public boolean isChucNangExists(String tenChucNang, int maDanhMuc) throws SQLException {
+        Connection con = connect.connection();
+        String query = "SELECT COUNT(*) FROM chucnang WHERE TenChucNang = ? AND MaDanhMuc = ?";
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, tenChucNang);
+            ps.setInt(2, maDanhMuc);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Trả về true nếu đã tồn tại
+                }
+            }
+        }
+        return false; // Không tìm thấy
+    }
 }

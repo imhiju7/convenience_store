@@ -226,6 +226,23 @@ public class daonhacungcap {
         }
         return count;
     }
+    public boolean isNhaCungCapExists(String tenNhaCungCap, String SDT, String email) throws SQLException {
+        java.sql.Connection con = connect.connection();
+        String query = "SELECT COUNT(*) FROM nhacungcap WHERE TenNhaCungCap = ? OR SDT = ? OR Email = ?";
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, tenNhaCungCap);
+            ps.setString(2, SDT);
+            ps.setString(3, email);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Kiểm tra nếu số lượng lớn hơn 0
+                }
+            }
+        }
+        return false; // Không tìm thấy bản ghi trùng lặp
+    }
+
 
     // Main method để kiểm tra
     public static void main(String[] args) {

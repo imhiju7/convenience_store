@@ -8,29 +8,31 @@ import dao.daochucvu;
 import dto.dtochucvu;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 /**
  *
  * @author Hieu PC
  */
 public class buschucvu {
+
     daochucvu daoCV = new daochucvu();
-    public ArrayList<dtochucvu> list_cv; 
+    public ArrayList<dtochucvu> list_cv;
 
     public buschucvu() throws SQLException {
-        this.daoCV = new daochucvu(); 
-        getList(); 
+        this.daoCV = new daochucvu();
+        getList();
     }
 
     // Lấy danh sách tất cả các chức vụ
     public ArrayList<dtochucvu> getList() throws SQLException {
         list_cv = daoCV.getlist();
-        return list_cv; 
+        return list_cv;
     }
 
     // Thêm một chức vụ mới
     public void addchucvu(dtochucvu cv) throws SQLException {
-        daoCV.add(cv); 
-        getList(); 
+        daoCV.add(cv);
+        getList();
     }
 
     // Cập nhật một chức vụ
@@ -62,12 +64,24 @@ public class buschucvu {
             System.out.println(cv); // In ra danh sách chức vụ
         }
     }
-     public int getSoLuongChucVu() throws SQLException {
+
+    public int getSoLuongChucVu() throws SQLException {
         // Giả sử bạn có một phương thức trong dao để đếm số lượng chức vụ
         return daoCV.getCountChucVu(); // Gọi phương thức để lấy số lượng chức vụ từ dao
     }
-    
-    public String gettencvbymacv(int macv){
+
+    public String gettencvbymacv(int macv) {
         return daoCV.gettencvbymacv(macv);
     }
+    // Kiểm tra tên chức vụ đã tồn tại hay chưa
+
+    public boolean isTenChucVuExists(String tenChucVu) throws SQLException {
+        for (dtochucvu cv : list_cv) {
+            if (cv.getTenchucvu().equalsIgnoreCase(tenChucVu)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

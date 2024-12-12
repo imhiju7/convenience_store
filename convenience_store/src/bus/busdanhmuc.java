@@ -46,6 +46,10 @@ public class busdanhmuc {
     public int getSoLuongDanhMuc() throws SQLException {
         return daoDM.getCountDanhMuc(); // Gọi phương thức từ DAO để đếm số lượng danh mục
     }
+    public boolean isDanhMucExists(String tenDanhMuc) throws SQLException {
+    // Gọi lớp DAO để kiểm tra trong cơ sở dữ liệu
+    return daoDM.checkDanhMucExists(tenDanhMuc);
+}
 
     // Main method để kiểm tra
     public static void main(String[] args) {

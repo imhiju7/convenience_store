@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class busphanloai {
+
     private daophanloai daoPL = new daophanloai();
     public ArrayList<dtophanloai> dsPL;
 
@@ -47,6 +48,10 @@ public class busphanloai {
         return daoPL.getCountPhanLoai(); // Gọi phương thức từ DAO để đếm số lượng phân loại
     }
 
+    public boolean checkTenPhanLoaiExists(String tenPhanLoai) throws SQLException {
+        return daoPL.checkTenPhanLoaiExists(tenPhanLoai); // Gọi phương thức trong DAO để kiểm tra tên phân loại
+    }
+
     // Main method để kiểm tra
     public static void main(String[] args) {
         // Tạo một instance của lớp BUS
@@ -57,6 +62,5 @@ public class busphanloai {
             System.out.println(pl);
         }
 
-      
     }
 }

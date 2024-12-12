@@ -69,34 +69,30 @@ public class SimpleInputFunctionForm extends JPanel {
     }
 
     public void addChucNang() {
-        try {
-            // Lấy giá trị từ các trường nhập liệu
-            String tenChucNang = txtTenChucNang.getText();
-            if (tenChucNang.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập tên chức năng!");
-                return;
-            }
-
-            // Lấy danh mục đã chọn
-            dtodanhmuc selectedDanhMuc = (dtodanhmuc) cboDanhMuc.getSelectedItem();
-            if (selectedDanhMuc == null) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn danh mục!");
-                return;
-            }
-
-            // Tạo đối tượng chức năng
-            dtochucnang chucNang = new dtochucnang(0, tenChucNang, selectedDanhMuc.getMaDanhMuc(),0);
-            
-            // Thêm chức năng vào cơ sở dữ liệu
-            daoChucNang.add(chucNang);
-
-            JOptionPane.showMessageDialog(this, "Chức năng đã được thêm thành công!");
-            resetFields(); // Reset các trường nhập liệu
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
-            ex.printStackTrace();
+    try {
+        String tenChucNang = txtTenChucNang.getText().trim();
+        dtodanhmuc selectedDanhMuc = (dtodanhmuc) cboDanhMuc.getSelectedItem();
+        if (selectedDanhMuc == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn danh mục!");
+            return;
         }
+
+        // Kiểm tra trùng lặp
+        if (daoChucNang.isChucNangExists(tenChucNang, selectedDanhMuc.getMaDanhMuc())) {
+            JOptionPane.showMessageDialog(this, "Chức năng đã tồn tại trong danh mục này!");
+            return;
+        }
+
+        dtochucnang chucNang = new dtochucnang(0, tenChucNang, selectedDanhMuc.getMaDanhMuc(), 1);
+        daoChucNang.add(chucNang);
+        JOptionPane.showMessageDialog(this, "Chức năng đã được thêm thành công!");
+        resetFields();
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
+        ex.printStackTrace();
     }
+}
+
     public void setDefaultValues(dtochucnang chucNang) {
         // Điền tên chức năng vào trường txtTenChucNang
         txtTenChucNang.setText(chucNang.getTenChucNang());

@@ -79,6 +79,11 @@ public class SimpleInputDirectoryForm extends JPanel {
                 JOptionPane.showMessageDialog(this, "Tên danh mục không được để trống!");
                 return;
             }
+            if (busDanhMuc.isDanhMucExists(tenDanhMuc)) {
+                JOptionPane.showMessageDialog(this, "Tên danh mục đã tồn tại, vui lòng nhập tên khác!");
+                return;
+            }
+
 
             // Kiểm tra nếu người dùng chọn biểu tượng
             String iconPath = null;

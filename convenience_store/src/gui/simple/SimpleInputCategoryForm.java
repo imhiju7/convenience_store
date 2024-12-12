@@ -51,19 +51,24 @@ public class SimpleInputCategoryForm extends JPanel {
                 return;
             }
 
-            dtophanloai phanloai = new dtophanloai(0, tenPhanLoai,0); // Mã phân loại sẽ được tạo tự động
+            // Kiểm tra tên phân loại có bị trùng không
+            if (busPhanLoai.checkTenPhanLoaiExists(tenPhanLoai)) {
+                JOptionPane.showMessageDialog(this, "Tên phân loại đã tồn tại!");
+                return;
+            }
+
+            dtophanloai phanloai = new dtophanloai(0, tenPhanLoai, 0); // Mã phân loại sẽ được tạo tự động
             busPhanLoai.add(phanloai); // Gọi phương thức thêm từ bus
 
             JOptionPane.showMessageDialog(this, "Phân loại đã được thêm thành công!");
             txtTenPhanLoai.setText(""); // Xóa các trường nhập sau khi thêm
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi không xác định: " + e.getMessage());
             e.printStackTrace(); // In ra lỗi để kiểm tra
         }
-       
-        
     }
+
 
     public dtophanloai getPhanLoai() throws SQLException {
         busphanloai bus = new busphanloai(); // Khởi tạo bus phân loại

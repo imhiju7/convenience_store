@@ -85,7 +85,6 @@ public class formchucvu extends javax.swing.JPanel {
     private JTable chucVuTable;
     private DefaultTableModel phanQuyenModel;
     private JTable phanQuyenTable;
-    private busphanquyen busPhanQuyen;
     private DefaultTableModel danhMucModel;
     private JTable danhMucTable;
 
@@ -571,19 +570,26 @@ public class formchucvu extends javax.swing.JPanel {
             }
         });
         cmdEdit.addActionListener(e -> {
-        int row = phanQuyenTable.getSelectedRow(); // Lấy hàng được chọn
-        if (row == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn một bản ghi phân quyền để chỉnh sửa.");
-        } else {
-            int maPhanQuyen = (int) phanQuyenModel.getValueAt(row, 1); // Lấy mã phân quyền từ cột 1
-            int maChucVu = (int) phanQuyenModel.getValueAt(row, 4);
-            try {
-                showEditPhanQuyenModal(maChucVu, maPhanQuyen); // Hàm chỉnh sửa phân quyền
-            } catch (SQLException ex) {
-                Logger.getLogger(formchucvu.class.getName()).log(Level.SEVERE, null, ex);
+            int row = phanQuyenTable.getSelectedRow(); // Lấy hàng được chọn
+            if (row == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn một bản ghi phân quyền để chỉnh sửa.");
+            } else {
+                String tenChucVu = (String) phanQuyenModel.getValueAt(row, 3);
+                int maChucVu = (int) phanQuyenModel.getValueAt(row, 4);
+                if ("admin".equalsIgnoreCase(tenChucVu)|| maChucVu == 1) {
+                    JOptionPane.showMessageDialog(this, "Bạn không được phép chỉnh sửa phân quyền của Admin!");
+                    return; // Thoát ra nếu chức vụ là Admin
+                }
+
+                int maPhanQuyen = (int) phanQuyenModel.getValueAt(row, 1); // Lấy mã phân quyền từ cột 1
+                
+                try {
+                    showEditPhanQuyenModal(maChucVu, maPhanQuyen); // Hàm chỉnh sửa phân quyền
+                } catch (SQLException ex) {
+                    Logger.getLogger(formchucvu.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
-        }
-    });
+        });
         cmdRefresh.addActionListener(e -> {
         txtSearch.setText(""); // Xóa nội dung tìm kiếm
         loadPhanQuyenDataToTable(); // Tải lại dữ liệu vào bảng
@@ -923,9 +929,12 @@ public class formchucvu extends javax.swing.JPanel {
                     Boolean isChecked = (Boolean) model.getValueAt(i, 0); // Lấy giá trị cột checkbox
                     if (isChecked != null && isChecked) {
                         int maDanhMuc = (int) model.getValueAt(i, 1); // Giả định cột 1 là "maDanhMuc"
-
-                        // Gọi phương thức delete để đánh dấu xóa trong cơ sở dữ liệu
-                        daoDanhMuc.delete(maDanhMuc);
+                        try {
+                            // Gọi phương thức delete để đánh dấu xóa trong cơ sở dữ liệu
+                            daoDanhMuc.delete(maDanhMuc);
+                        } catch (SQLException ex) {
+                            Logger.getLogger(formchucvu.class.getName()).log(Level.SEVERE, null, ex);
+                        }
 
                         // Xóa dòng khỏi bảng hiển thị
                         model.removeRow(i);

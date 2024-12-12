@@ -89,21 +89,47 @@ public class daodanhmuc {
 
 
     // Xóa danh mục
-    public void delete(int maDanhMuc) {
-        String sql = "UPDATE danhmuc SET isDelete = 1 WHERE maDanhMuc = ?"; // Chuyển isDelete thành 1
+    public void delete(int maDanhMuc) throws SQLException {
+        // Câu lệnh xóa mềm danh mục
+        String softDeleteDanhMucSql = "UPDATE danhmuc SET isDelete = 1 WHERE maDanhMuc = ?";
+
+        // Câu lệnh xóa tất cả chức năng liên quan đến danh mục
+        String deleteChucNangSql = "DELETE FROM chucnang WHERE maDanhMuc = ?";
+
+        // Kết nối cơ sở dữ liệu
         Connection con = connect.connection();
 
         try {
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setInt(1, maDanhMuc);
-            pst.executeUpdate();
+            con.setAutoCommit(false); // Bắt đầu transaction
+
+            // Thực hiện xóa mềm danh mục
+            try (PreparedStatement pstDanhMuc = con.prepareStatement(softDeleteDanhMucSql)) {
+                pstDanhMuc.setInt(1, maDanhMuc);
+                int rowsAffected = pstDanhMuc.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    System.out.println("Xóa mềm danh mục thành công!");
+
+                    // Xóa tất cả các chức năng liên quan đến danh mục đó
+                    try (PreparedStatement pstChucNang = con.prepareStatement(deleteChucNangSql)) {
+                        pstChucNang.setInt(1, maDanhMuc);
+                        pstChucNang.executeUpdate();
+                        System.out.println("Xóa các chức năng liên quan thành công!");
+                    }
+                } else {
+                    System.out.println("Không tìm thấy danh mục với mã đã cho.");
+                }
+            }
+
+            con.commit(); // Commit transaction
         } catch (SQLException e) {
-            Logger.getLogger(daodanhmuc.class.getName()).log(Level.SEVERE, null, e);
+            con.rollback(); // Rollback nếu xảy ra lỗi
+            e.printStackTrace();
+            throw e;
         } finally {
-            try {
-                con.close();
-            } catch (SQLException e) {
-                Logger.getLogger(daodanhmuc.class.getName()).log(Level.SEVERE, null, e);
+            if (con != null) {
+                con.setAutoCommit(true); // Đặt lại trạng thái mặc định
+                con.close(); // Đóng kết nối
             }
         }
     }
@@ -157,6 +183,20 @@ public class daodanhmuc {
         }
         return count;
     }
+    public boolean checkDanhMucExists(String tenDanhMuc) throws SQLException {
+    Connection con = connect.connection();
+    String query = "SELECT COUNT(*) FROM DanhMuc WHERE TenDanhMuc = ?";
+    try (PreparedStatement stmt = con.prepareStatement(query)) {
+        stmt.setString(1, tenDanhMuc);
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Trả về true nếu tồn tại ít nhất một danh mục
+            }
+        }
+    }
+    return false;
+}
+
 
     // Main method để kiểm tra
     public static void main(String[] args) {

@@ -44,27 +44,36 @@ public class SimpleInputPositionForm extends JPanel {
     }
 
     public void addChucVu() {
-        try {
-            String tenChucVu = txtTenChucVu.getText();
-            if (tenChucVu.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Tên chức vụ không được để trống!");
-                return;
-            }
-
-            dtochucvu chucvu = new dtochucvu(0, tenChucVu, 0); // Mã chức vụ sẽ được tạo tự động
-            busChucVu.addchucvu(chucvu); // Gọi phương thức thêm từ bus
-
-            JOptionPane.showMessageDialog(this, "Chức vụ đã được thêm thành công!");
-            txtTenChucVu.setText(""); // Xóa các trường nhập
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi: " + e.getMessage());
-            e.printStackTrace(); // In ra lỗi để kiểm tra
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi không xác định: " + e.getMessage());
-            e.printStackTrace(); // In ra lỗi để kiểm tra
+    try {
+        String tenChucVu = txtTenChucVu.getText().trim();
+        
+        if (tenChucVu.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Tên chức vụ không được để trống!");
+            return;
         }
+
+        // Kiểm tra tên chức vụ đã tồn tại hay chưa
+        if (busChucVu.isTenChucVuExists(tenChucVu)) {
+            JOptionPane.showMessageDialog(this, "Tên chức vụ đã tồn tại, vui lòng nhập tên khác!");
+            return;
+        }
+
+        // Tạo đối tượng dtochucvu
+        dtochucvu chucvu = new dtochucvu(0, tenChucVu, 0); // Mã chức vụ sẽ được tạo tự động
+        busChucVu.addchucvu(chucvu); // Gọi phương thức thêm từ bus
+
+        JOptionPane.showMessageDialog(this, "Chức vụ đã được thêm thành công!");
+        txtTenChucVu.setText(""); // Xóa trường nhập sau khi thêm thành công
+
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi: " + e.getMessage());
+        e.printStackTrace();
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi không xác định: " + e.getMessage());
+        e.printStackTrace();
     }
+}
+
 
     public dtochucvu getChucVu() throws SQLException {
         buschucvu bus = new buschucvu(); // Khởi tạo bus

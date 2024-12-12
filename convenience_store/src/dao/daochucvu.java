@@ -204,4 +204,17 @@ public class daochucvu {
         }
         return tencv;
     }
+    public boolean isTenChucVuExists(String tenChucVu) throws SQLException {
+        Connection con = connect.connection();
+        String query = "SELECT COUNT(*) FROM ChucVu WHERE TenChucVu = ?";
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, tenChucVu);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        }
+        return false;
+    }
+
 }
