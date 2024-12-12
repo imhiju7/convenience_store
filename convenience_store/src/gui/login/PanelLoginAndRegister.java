@@ -164,10 +164,11 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
             // Nếu mã xác minh đúng
             JOptionPane.showMessageDialog(null, "Xác minh thành công!");
             OTP = SendEmailSMTP.getOTP();
+            String temp = txtUser.getText();
             txtUser.setText("");
             txtEmail.setText("");
             txtCode.setText("");
-            frmresetpwd resetDialog = new frmresetpwd(null,txtUser.getText());
+            frmresetpwd resetDialog = new frmresetpwd(null,temp);
             resetDialog.setVisible(true);
         }
     }
