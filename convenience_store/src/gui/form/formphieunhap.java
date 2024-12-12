@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package gui.form;
-import bus.busphieunhap;
 import javax.swing.*;
 import com.toedter.calendar.JDateChooser;
 import javax.swing.table.DefaultTableModel;
@@ -70,6 +69,7 @@ public class formphieunhap extends javax.swing.JPanel {
      */
     public formphieunhap(int manv) {
         this.manv = manv;
+        busctphieunhap.updateEXP();
         init();
     }
 
@@ -353,6 +353,8 @@ public class formphieunhap extends javax.swing.JPanel {
             modelNhapHang.addRow(cc.toTableRow(i));
             i+=1;
         }
+        index = -1;
+        
     }
     private Component createNhapHangListHeader() {
         JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,fill]push[][]")); 
@@ -363,28 +365,49 @@ public class formphieunhap extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(panel, "Mã Nhà cung cấp không thể bỏ trống", "Invalid ID", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-
             showModal();
             }
         );
         
-        JButton btnDelete = new JButton("Delete");
+        JButton btnDelete = new JButton("Xóa");
         btnDelete.addActionListener(e -> {
-            if (index == -1){
+            if (index == -1) {
                 JOptionPane.showMessageDialog(panel, "Vui lòng chọn 1 sản phẩm để xóa", "Invalid index", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            
-            nhapHangList.remove(index);
-            reloadDataToNhapHangTable();
-            index = -1;
-            if(nhapHangList != null){
-                txtNCCid.setEditable(true);
-                cbNCCname.setEnabled(true); 
+
+            // Show confirmation dialog
+            int confirm = JOptionPane.showConfirmDialog(
+                panel, 
+                "Bạn có chắc chắn muốn xóa sản phẩm này?", 
+                "Xác nhận xóa", 
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            // Proceed only if the user confirms
+            if (confirm == JOptionPane.YES_OPTION) {
+                nhapHangList.remove(index);
+                reloadDataToNhapHangTable();
+                if (nhapHangList != null) {
+                    txtNCCid.setEditable(true);
+                    cbNCCname.setEnabled(true);
+                }
             }
         });
+
+        
+        JButton btnEdit = new JButton("Sửa");
+        btnEdit.addActionListener(e -> {
+            if (index == -1){
+                JOptionPane.showMessageDialog(panel, "Vui lòng chọn 1 sản phẩm để chỉnh sửa thông tin", "Invalid index", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             
+            showModal(nhapHangList.get(index));
+        });    
         panel.add(btnAdd);
+        panel.add(btnEdit);
         panel.add(btnDelete);
         
                      
@@ -392,7 +415,60 @@ public class formphieunhap extends javax.swing.JPanel {
         return panel;
     }
 
-    private void showModal() {
+    private void showModal( dtoctphieunhap editSP) {
+    Option option = ModalDialog.createOption();
+    option.getLayoutOption()
+          .setSize(-1, 1f)
+          .setLocation(Location.TRAILING, Location.TOP)
+          .setAnimateDistance(0.7f, 0);
+
+    ModalDialog.showModal(
+        this,
+        new SimpleModalBorder(
+            SimpleInputForms(editSP), 
+            "Chỉnh sửa thông tin",
+            SimpleModalBorder.YES_NO_OPTION, // Ensure this is the option you want
+            (controller, action) -> {
+                
+                if (action == SimpleModalBorder.YES_OPTION) {
+                    
+                    if(txtSPid.getText().isEmpty() || txtGiaNhap.getText().isEmpty() || dateChooser.getDate() == null || txtLoiNhuan.getText().isEmpty()){
+                        JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin", "Cannot add", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                    
+                    double total = txtTotal.getText().isEmpty() ? 0 : doubleValueofTextField(txtTotal);
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                        dtoctphieunhap ct;
+                        LocalDate localDate = dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                        try {
+                            ct = new dtoctphieunhap(
+                                busctpn.maxID() + 1,
+                                intValueofTextField(txtSL),
+                                doubleValueofTextField(txtGiaNhap),
+                                buspn.maxID() + 1,
+                                intValueofTextField(txtSPid),
+                                java.sql.Date.valueOf(localDate), // Use java.sql.Date for database compatibility
+                                intValueofTextField(txtSL),
+                                "", // Update the logic here
+                                doubleValueofTextField(txtGiaBan)
+                            );
+                            nhapHangList.remove(index);
+                            nhapHangList.add(index, ct);
+                            total = total + intValueofTextField(txtSL)*doubleValueofTextField(txtGiaNhap);
+                            txtTotal.setText(String.valueOf(total));
+                        } catch (Exception ex) {
+                            Logger.getLogger(formphieunhap.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        reloadDataToNhapHangTable();
+                }
+                controller.close();
+            }
+        ),
+        option
+    );
+}
+    private void showModal( ) {
     Option option = ModalDialog.createOption();
     option.getLayoutOption()
           .setSize(-1, 1f)
@@ -406,40 +482,42 @@ public class formphieunhap extends javax.swing.JPanel {
             "Nhập thông tin sản phẩm",
             SimpleModalBorder.YES_NO_OPTION, // Ensure this is the option you want
             (controller, action) -> {
+                
                 if (action == SimpleModalBorder.YES_OPTION) {
                     
                     if(txtSPid.getText().isEmpty() || txtGiaNhap.getText().isEmpty() || dateChooser.getDate() == null || txtLoiNhuan.getText().isEmpty()){
                         JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin", "Cannot add", JOptionPane.WARNING_MESSAGE);
                         return;
                     }
+                    
                     double total = txtTotal.getText().isEmpty() ? 0 : doubleValueofTextField(txtTotal);
-                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-                    dtoctphieunhap ct;
-                    LocalDate localDate = dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                    try {
-                        ct = new dtoctphieunhap(
-                            busctpn.maxID() + 1,
-                            intValueofTextField(txtSL),
-                            doubleValueofTextField(txtGiaNhap),
-                            buspn.maxID() + 1,
-                            intValueofTextField(txtSPid),
-                            java.sql.Date.valueOf(localDate), // Use java.sql.Date for database compatibility
-                            intValueofTextField(txtSL),
-                            "", // Update the logic here
-                            doubleValueofTextField(txtGiaBan)
-                        );
-                        nhapHangList.add(ct);
-                        total = total + intValueofTextField(txtSL)*doubleValueofTextField(txtGiaNhap);
-                        txtTotal.setText(String.valueOf(total));
-                    } catch (Exception ex) {
-                        Logger.getLogger(formphieunhap.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    reloadDataToNhapHangTable();
-                    if(nhapHangList != null){
-                                    txtNCCid.setEditable(false);
-                        UIManager.put("ComboBox.disabledForeground", Color.BLACK);
-                        cbNCCname.setEnabled(false); // Works with new LookAndFeel settings
-                    }
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                        dtoctphieunhap ct;
+                        LocalDate localDate = dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                        try {
+                            ct = new dtoctphieunhap(
+                                busctpn.maxID() + 1,
+                                intValueofTextField(txtSL),
+                                doubleValueofTextField(txtGiaNhap),
+                                buspn.maxID() + 1,
+                                intValueofTextField(txtSPid),
+                                java.sql.Date.valueOf(localDate), // Use java.sql.Date for database compatibility
+                                intValueofTextField(txtSL),
+                                "", // Update the logic here
+                                doubleValueofTextField(txtGiaBan)
+                            );
+                            nhapHangList.add(ct);
+                            total = total + intValueofTextField(txtSL)*doubleValueofTextField(txtGiaNhap);
+                            txtTotal.setText(String.valueOf(total));
+                        } catch (Exception ex) {
+                            Logger.getLogger(formphieunhap.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        reloadDataToNhapHangTable();
+                        if(nhapHangList != null){
+                                        txtNCCid.setEditable(false);
+                            UIManager.put("ComboBox.disabledForeground", Color.BLACK);
+                            cbNCCname.setEnabled(false); // Works with new LookAndFeel settings
+                        }
                 }
                 controller.close();
             }
@@ -620,6 +698,134 @@ public class formphieunhap extends javax.swing.JPanel {
         return panel;
     }
 
+    private Component SimpleInputForms(dtoctphieunhap pn) {
+        JPanel panel = new JPanel();
+        JLabel imageDisplayLabel = new JLabel();
+        imageDisplayLabel.setPreferredSize(new Dimension(330, 350));
+        panel.setLayout(new MigLayout("fillx,wrap,insets 5 35 5 35,width 400", "[fill]", ""));
+
+        int id = pn.getMaSanPham();
+        txtSPid = new JTextField();
+        txtSPid.setText(String.valueOf(id));
+        JTextField txtSPname = new JTextField();
+        txtSPid.setEditable(false);
+        txtSPname.setText(pn.getTenSP(id));
+        txtSPname.setEditable(false);
+
+        
+        JPanel p = quantity();
+        p.setMaximumSize(new Dimension(100, 28));
+         dateChooser = new JDateChooser();
+        dateChooser.getDateEditor().getUiComponent().setEnabled(true); // Keeps it visually enabled
+        ((JTextField) dateChooser.getDateEditor().getUiComponent()).setText(String.valueOf(pn.getNgayhethan()));
+        ((JTextField) dateChooser.getDateEditor().getUiComponent()).setEditable(false);
+        dateChooser.setMaximumSize(new Dimension(180, 28));
+        txtGiaNhap = new JTextField();
+        txtGiaNhap.setText(String.valueOf(pn.getGiaNhap()));
+        txtGiaNhap.setMaximumSize(new Dimension(120, 28));
+        txtLoiNhuan = new JTextField();
+        txtLoiNhuan.setMaximumSize(new Dimension(100, 28));
+        JComboBox<String> unit = new JComboBox<>(new String[]{"Đồng", "%"});
+        unit.setMaximumSize(new Dimension(80, 28));
+         txtGiaBan = new JTextField();
+         txtGiaBan.setText(String.valueOf(pn.getGiaBan()));
+        txtGiaBan.setEditable(false);
+        txtGiaBan.setMinimumSize(new Dimension(120, 28));
+
+        txtLoiNhuan.setText(String.valueOf(pn.getGiaBan() - pn.getGiaNhap()));
+        // Placeholder styling (use your placeholder library)
+        txtSPid.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Nhập mã SP");
+
+        // Input validation for txtSPid
+        txtSPid.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if (!Character.isDigit(c)) {
+                    e.consume(); // Reject non-numeric characters
+                }
+            }
+        });
+
+        // Input validation for txtGiaNhap and txtLoiNhuan
+        txtGiaNhap.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if (!Character.isDigit(c)) {
+                    e.consume();
+                }
+            }
+        });
+        txtLoiNhuan.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if (!Character.isDigit(c)) {
+                    e.consume();
+                }
+            }
+        });
+
+        // Prevent past dates in dateChooser
+        dateChooser.getDateEditor().addPropertyChangeListener(evt -> {
+            if ("date".equals(evt.getPropertyName())) {
+                Date selectedDate = dateChooser.getDate();
+                if (selectedDate != null && selectedDate.before(new Date())) {
+                    JOptionPane.showMessageDialog(panel, "Ngày đã chọn không hợp lệ", "Invalid Date", JOptionPane.WARNING_MESSAGE);
+                    dateChooser.setDate(null); // Reset invalid date
+                }
+            }
+        });
+
+        // Add components to the panel
+        panel.add(new JLabel("Mã SP "), "gapy 5 0, split 2");
+        panel.add(new JLabel("Tên SP "));
+        panel.add(txtSPid, "split 2");
+        panel.add(txtSPname);
+        panel.add(new JLabel("Số lượng"), "gapy 5 0, split 2");
+        panel.add(new JLabel("Ngày hết hạn"));
+        panel.add(p, "gapy 10, grow, alignx center, split 2");
+        panel.add(dateChooser, "gapy 10, grow, alignx center, wrap");
+        panel.add(new JLabel("Giá nhập"), "gapy 5 0, split 2");
+        panel.add(new JLabel("Lợi nhuận"));
+        panel.add(txtGiaNhap, "split 3");
+        panel.add(txtLoiNhuan, "gapright 0, alignx right");
+        panel.add(unit, "gapleft 0");
+        panel.add(new JLabel("Giá bán"), "gapy 5 0, split 2");
+        panel.add(txtGiaBan);
+        panel.add(new JLabel("Hình ảnh sản phẩm "), "gapy 5 0");
+        panel.add(imageDisplayLabel, "height 150,grow,pushy");
+        
+            // Unit selection and txtGiaBan calculation
+        unit.addActionListener(e -> {
+            String selectedItem = (String) unit.getSelectedItem();
+            try {
+                double giaNhap = Double.parseDouble(txtGiaNhap.getText().isEmpty() ? "0" : txtGiaNhap.getText());
+                double loiNhuan = Double.parseDouble(txtLoiNhuan.getText().isEmpty() ? "0" : txtLoiNhuan.getText());
+
+                if ("Đồng".equals(selectedItem)) {
+                    // If unit is "Đồng", simply add the profit to the base price
+                    txtGiaBan.setText(String.valueOf(giaNhap + loiNhuan));
+                } else if ("%".equals(selectedItem)) {
+                    // If unit is "%", calculate as a percentage increase
+                    txtGiaBan.setText(String.valueOf(giaNhap * (1 + loiNhuan / 100)));
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(panel, "Please enter valid numbers for Giá nhập and Lợi nhuận.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        // Input validation for GiaNhap and LoiNhuan fields to recompute GiaBan on text change
+        KeyAdapter recalculateGiaBan = new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+                unit.getActionListeners()[0].actionPerformed(null); // Trigger unit ActionListener for recalculation
+            }
+        };
+        txtGiaNhap.addKeyListener(recalculateGiaBan);
+        txtLoiNhuan.addKeyListener(recalculateGiaBan);
+
+
+        return panel;
+    }
+
 
     private JPanel quantity() {
         JPanel panel = new JPanel(new GridLayout(0, 3, 0, 5));
@@ -695,16 +901,28 @@ public class formphieunhap extends javax.swing.JPanel {
             for(dtoctphieunhap ct : nhapHangList){
                 busctpn.create(ct);
             }
-            busctphieunhap.updateSLtonkho();
             JOptionPane.showMessageDialog(null, "Nhập hàng thành công");
             reset();  
             reloadGeneralTable();
         });
         
-        JButton btnClear = new JButton("Clear all");
+        JButton btnClear = new JButton("Xóa tất cả");
         btnClear.addActionListener(e -> {
-            reset();
-        });              
+            // Show confirmation dialog
+            int confirm = JOptionPane.showConfirmDialog(
+                null,
+                "Bạn có chắc chắn muốn xóa tất cả thông tin phiếu nhập?",
+                "Xác nhận xóa",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            // Proceed with reset if the user confirms
+            if (confirm == JOptionPane.YES_OPTION) {
+                reset();
+            }
+        });
+              
         panel.add(title, "gapx 20");
         panel.add(btnClear, "split 2");
         panel.add(btnConfirm);             
@@ -723,6 +941,7 @@ public class formphieunhap extends javax.swing.JPanel {
         txtNCCid.setEditable(true);
         cbNCCname.setEnabled(true);
         reloadAdditionalTable(null);
+        index = -1;
     }
     private Component createDetailTable(int maphieunhap) {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][][]0[fill,grow]"));
