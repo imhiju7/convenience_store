@@ -71,7 +71,6 @@ public class Guimain extends javax.swing.JFrame {
         bg.setLayout(layout);
         
         busnhanvien busnv = new busnhanvien();
-        busctphieunhap.updateSLtonkho();
         ArrayList<dtonhanvien> nvlist = busnv.getNhanVienList();
         for (dtonhanvien i : nvlist) {
             if (i.getManhanvien()==manv) {

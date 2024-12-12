@@ -131,7 +131,7 @@ public class daoctphieunhap {
                     " AND sp.isHidden = 0" +
                     " AND ctpn.isHidden = 0" +
                     " AND (" +
-                    " SELECT SUM(soLuong)" +
+                    " SELECT SUM(soLuongTonKho)" +
                     " FROM chitietphieunhap" +
                     " WHERE maSanPham = ctpn.maSanPham" +
                     " ) < 10;";
@@ -165,7 +165,6 @@ public class daoctphieunhap {
         return list;
     }
     
-    
     public ArrayList<dtoctphieunhap> needToFillList() {
         ArrayList<dtoctphieunhap> list = new ArrayList<>();
         java.sql.Connection con = connect.connection();
@@ -175,7 +174,7 @@ public class daoctphieunhap {
                     "WHERE sp.isHidden = 0" +
                     " AND ctpn.isHidden = 0" +
                     " AND (" +
-                    " SELECT SUM(soLuong)" +
+                    " SELECT SUM(soLuongTonKho)" +
                     " FROM chitietphieunhap" +
                     " WHERE maSanPham = ctpn.maSanPham" +
                     " ) < 10;";
@@ -269,26 +268,9 @@ public class daoctphieunhap {
             }
         }
     }
-    public static void updateSLtonkho() {
+    public static void updateEXP() {
         Connection con = connect.connection();
-        String sql = 
-                    "SELECT ctpn.* " +
-                    "FROM chitietphieunhap AS ctpn" +
-                    "JOIN sanpham AS sp " +
-                    "ON ctpn.maSanPham = sp.maSanPham" +
-                    "WHERE ctpn.isHidden = 0 " +
-                    "AND sp.isHidden = 0 " +
-                    "AND ctpn.soLuong < 10;" +
-                    "" +
-                
-                    "UPDATE sanpham sp" +
-                    "JOIN (SELECT maSanPham, SUM(soLuongTonKho) AS totalSoLuongTonKho" +
-                    "    FROM chitietphieunhap" +
-                    "    WHERE isHidden = 0" +
-                    "    GROUP BY maSanPham" +
-                    ") ctpn ON sp.maSanPham = ctpn.maSanPham" +
-                    "SET sp.soLuong = ctpn.totalSoLuongTonKho" +
-                    "WHERE sp.isHidden = 0;";
+        String sql = "UPDATE chitietphieunhap SET ishidden = 1 WHERE ngayHetHan < CURRENT_DATE;" ;
         try {
             PreparedStatement pst = con.prepareStatement(sql);
             con.close();
