@@ -516,7 +516,7 @@ public class formmenu extends Form {
         btnReset.addActionListener( e -> {
             txtSearch.setText("");
             comboMaPL.setSelectedIndex(0);
-            list_donhang.clear();
+//            list_donhang.clear();
             formInit();
         });
         
@@ -557,7 +557,7 @@ public class formmenu extends Form {
      
     private void addCart(){
         List<MenuCard> selectedCards = new ArrayList<>();
-//        StringBuilder addedNames = new StringBuilder("Đã thêm các sản phẩm: ");
+        StringBuilder addedNames = new StringBuilder("Đã thêm các sản phẩm: ");
         for (MenuCard card : cards) {
             if (card.isSelected()) { 
                 selectedCards.add(card);
@@ -570,7 +570,7 @@ public class formmenu extends Form {
         }
 
         for (MenuCard card : selectedCards) {
-//            addedNames.append(card.getSanPhamName()).append(", ");
+            addedNames.append(card.getSanPhamName()).append(", ");
             dtodonhang dh = new dtodonhang();
             dh.setMa(card.getMaSanPham());
             dh.setTen(card.getSanPhamName());
@@ -586,11 +586,11 @@ public class formmenu extends Form {
         panelCard.repaint();
         
         
-//        JOptionPane.showMessageDialog(this, "Đã thêm " + selectedCards.size() + " sản phẩm vào giỏ hàng.");
-//        if (addedNames.length() > 0) {
-//            addedNames.setLength(addedNames.length() - 2); // Xóa dấu phẩy và khoảng trắng cuối cùng
-//        }
-//        JOptionPane.showMessageDialog(this, addedNames.toString());
+        JOptionPane.showMessageDialog(this, "Đã thêm " + selectedCards.size() + " sản phẩm vào giỏ hàng.");
+        if (addedNames.length() > 0) {
+            addedNames.setLength(addedNames.length() - 2); // Xóa dấu phẩy và khoảng trắng cuối cùng
+        }
+        JOptionPane.showMessageDialog(this, addedNames.toString());
     }  
     // Khai báo biến thành viên cho dialog
 
@@ -759,7 +759,8 @@ public class formmenu extends Form {
                     
                 }
                 else{
-
+                    JOptionPane.showMessageDialog(this, "Giỏ hàng rỗng không thể thanh toán");
+                    return;
                 }
             });
 
