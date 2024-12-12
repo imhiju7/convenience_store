@@ -286,7 +286,6 @@ public class formmenu extends Form {
                 }
                 dh1.setSl(dh1.getSl() + dh.getSl());
                 JOptionPane.showMessageDialog(null, "Thêm vào giỏ hàng thành công");
-
                 return;
             }
         }
@@ -295,6 +294,33 @@ public class formmenu extends Form {
 
     }
     
+    public boolean addListGioHang1(dtodonhang dh, Integer sl) {
+     if (sl == 0) {
+         JOptionPane.showMessageDialog(null, "Sản phẩm này đã hết hàng");
+         return false;
+     }
+
+     if (sl < dh.getSl()) {
+         JOptionPane.showMessageDialog(null, "Số lượng muốn thêm đã vượt quá số lượng trong kho");
+         return false;
+     }
+
+     for (dtodonhang dh1 : list_donhang) {
+         if (dh1.getMa().equals(dh.getMa())) { // So sánh giá trị mã sản phẩm
+             if (sl < dh1.getSl() + dh.getSl()) {
+                 JOptionPane.showMessageDialog(null, 
+                     "Số lượng hiện có trong giỏ hàng và số lượng muốn thêm đã vượt quá số lượng trong kho");
+                 return false; // Dừng tại đây nếu vượt quá số lượng tồn kho
+             }
+             dh1.setSl(dh1.getSl() + dh.getSl()); // Cập nhật số lượng
+             return true; // Không cần thêm sản phẩm mới vào danh sách
+         }
+     }
+
+     list_donhang.add(dh); // Thêm sản phẩm mới nếu chưa tồn tại trong giỏ hàng
+     return true;
+ }
+
 
     private void addImageField(JPanel panel, GridBagConstraints gbc, String imgPath, JDialog showDialog) {
         gbc.gridx = 0;
@@ -569,8 +595,8 @@ public class formmenu extends Form {
             return;
         }
 
+        int slsp_themthanhcong = 0;
         for (MenuCard card : selectedCards) {
-            addedNames.append(card.getSanPhamName()).append(", ");
             dtodonhang dh = new dtodonhang();
             dh.setMa(card.getMaSanPham());
             dh.setTen(card.getSanPhamName());
@@ -578,15 +604,18 @@ public class formmenu extends Form {
             dh.setSl(1);
             Integer soluongkho = card.getSoLuong();
             
-            addListGioHang(dh, soluongkho);
-            
+            if(addListGioHang1(dh, soluongkho)){
+                addedNames.append(card.getSanPhamName()).append(", ");
+                slsp_themthanhcong++;
+            }
+
             card.setSelected(false);
         }
         panelCard.revalidate();
         panelCard.repaint();
         
         
-        JOptionPane.showMessageDialog(this, "Đã thêm " + selectedCards.size() + " sản phẩm vào giỏ hàng.");
+        JOptionPane.showMessageDialog(this, "Đã thêm " + slsp_themthanhcong + " sản phẩm vào giỏ hàng.");
         if (addedNames.length() > 0) {
             addedNames.setLength(addedNames.length() - 2); // Xóa dấu phẩy và khoảng trắng cuối cùng
         }
